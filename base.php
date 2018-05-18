@@ -4,7 +4,7 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	/**
 	 * The connection name for the model.
 	 *
-	 * @var string
+	 * @var \Joomla\Database\DatabaseDriver
 	 */
 	protected $connection;
 
