@@ -1,0 +1,28 @@
+{
+  "name": "joomla/entities",
+  "type": "project",
+  "description": "Joomla Entity Project",
+  "keywords": ["joomla", "entity"],
+  "homepage": "https://github.com/joomla-projects/entities",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": "^5.3.10|~7.0",
+    "joomla/database": "~2.0@dev",
+    "joomla/event": "~2.0@dev"
+  },
+  "require-dev": {
+    "joomla/coding-standards": "~2.0@alpha"
+  },
+  "autoload": {
+    "psr-4": {
+      "Joomla\\Entity\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Joomla\\Entity\\Tests\\": "Tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "extra": {}
+}
