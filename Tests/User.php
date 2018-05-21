@@ -11,8 +11,6 @@ namespace Joomla\Entity\Tests;
 
 class User extends \Joomla\Entity\Model
 {
-	protected $table = '#__users';
-
 	protected $defaultParams = [
 		'params' => ''
 		];

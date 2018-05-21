@@ -106,6 +106,10 @@ abstract class Model {
 
 		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
+
+		if (!isset($this->table)){
+			$this->setDefaultTable();
+		}
 	}
 
 	/**
@@ -562,4 +566,17 @@ abstract class Model {
 
 		return $model;
 	}
+
+
+	/**
+	 * sets the default value of the table name based on Model class name.
+	 */
+	private function setDefaultTable()
+	{
+		$className =  basename(str_replace('\\', '/', get_class($this)));
+
+		//TODO make a better way of constructing plurals.
+		$this->table = '#__' . strtolower($className) . 's';
+	}
+
 }
