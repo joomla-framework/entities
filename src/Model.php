@@ -1,9 +1,12 @@
 <?php
 
+namespace Joomla\Entity;
+
 use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 
-abstract class Model implements ArrayAccess, JsonSerializable {
+//abstract class Model implements ArrayAccess, JsonSerializable {
+abstract class Model {
 	/**
 	 * The connection name for the model.
 	 *
@@ -17,6 +20,13 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	 * @var DatabaseFactory
 	 */
 	protected $_dbFactory;
+
+	/**
+	 * Database driver.
+	 *
+	 * @var string
+	 */
+	protected $_driver;
 
 	/**
 	 * The table associated with the model.
@@ -53,6 +63,14 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	 */
 	protected $attributes = [];
 
+	//TODO this is a hack because an error is thrown if some params are not set for inserts.
+	/**
+	 * The model's default params.
+	 *
+	 * @var array
+	 */
+	protected $defaultParams = [];
+
 	/**
 	 * The model's original attributes.
 	 *
@@ -75,19 +93,54 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	 */
 	public function __construct(array $attributes = [])
 	{
-                $driver = 'mysqli';
+                $this->_driver = 'mysqli';
 		$options = array(
 				'host' => '127.0.0.1',
 				'user' => 'root',
 				'password' => 'root',
-				'prefix' => 'root',
 				'database' => 'gsoc18',
+				'prefix' => 'q371b_'
 			);
+		$this->_dbFactory = new DatabaseFactory;
+                $this->_db = $this->_dbFactory->getDriver($this->_driver, $options);
 
-                $this->_db = $this->_dbFactory->getDriver($driver, $options);
-
+		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
 	}
+
+	/**
+	 * @return DatabaseDriver
+	 */
+	public function getDb()
+	{
+		return $this->_db;
+	}
+
+	/**
+	 * @param DatabaseDriver $db
+	 */
+	public function setDb($db)
+	{
+		$this->_db = $db;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDriver()
+	{
+		return $this->_driver;
+	}
+
+	/**
+	 * @param string $driver
+	 */
+	public function setDriver($driver)
+	{
+		$this->_driver = $driver;
+	}
+
+
 
 	/**
 	 * @return string
@@ -192,6 +245,24 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 		foreach ($attributes as $key => $value)
 		{
 			$this->setAttribute($key, $value);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Set the array of model attributes. No checking is done.
+	 *
+	 * @param  array  $attributes
+	 * @param  bool  $sync
+	 * @return $this
+	 */
+	public function setRawAttributes(array $attributes, $sync = false)
+	{
+		$this->attributes = $attributes;
+
+		if ($sync) {
+			$this->syncOriginal();
 		}
 
 		return $this;
@@ -368,7 +439,7 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 			 return true;
 		 }
 
-		 $success = $query->insert($this);
+		 $success = $query->insert();
 
 		 if ($success){
 			 $this->exists = true;
@@ -389,7 +460,7 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 			 return true;
 		 }
 
-		 $success = $query->update($this);
+		 $success = $query->update();
 
 		 return $success;
 	 }
@@ -404,6 +475,11 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	{
 		$success = $query->delete($this);
 
+		if ($success)
+		{
+			$this->exists = false;
+		}
+
 		return $success;
 	}
 
@@ -415,6 +491,75 @@ abstract class Model implements ArrayAccess, JsonSerializable {
 	 */
 	public function newQuery()
 	{
-		return new Query($this->_dbFactory->getQuery($this->_db->getName(), $this->_db), $this->_db);
+		return new Query($this->_dbFactory->getQuery($this->_db->getName(), $this->_db), $this->_db, $this);
+	}
+
+	/**
+	 * Handle dynamic method calls into the model.
+	 *
+	 * @param  string  $method
+	 * @param  array  $parameters
+	 * @return mixed
+	 */
+	public function __call($method, $parameters)
+	{
+		if (in_array($method, ['increment', 'decrement'])) {
+			return $this->$method(...$parameters);
+		}
+
+		return $this->newQuery()->$method(...$parameters);
+	}
+
+	/**
+	 * Handle dynamic static method calls into the method.
+	 *
+	 * @param  string  $method
+	 * @param  array  $parameters
+	 * @return mixed
+	 */
+	public static function __callStatic($method, $parameters)
+	{
+		return (new static)->$method(...$parameters);
+	}
+
+	/**
+	 * Create a new model instance that is existing.
+	 *
+	 * @param  array  $attributes
+	 * @param  string|null  $connection
+	 * @return static
+	 */
+	public function newFromBuilder($attributes = [], $connection = null)
+	{
+		$model = $this->newInstance([], true);
+
+		$model->setRawAttributes((array) $attributes, true);
+
+		$model->setDriver($connection ?: $this->getDriver());
+
+		return $model;
+	}
+
+	/**
+	 * Create a new instance of the given model.
+	 *
+	 * @param  array  $attributes
+	 * @param  bool  $exists
+	 * @return static
+	 */
+	public function newInstance($attributes = [], $exists = false)
+	{
+		// This method just provides a convenient way for us to generate fresh model
+		// instances of this current model. It is particularly useful during the
+		// hydration of new objects via the Eloquent query builder instances.
+		$model = new static((array) $attributes);
+
+		$model->exists = $exists;
+
+		$model->setDriver(
+			$this->getDriver()
+		);
+
+		return $model;
 	}
 }

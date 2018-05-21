@@ -6,7 +6,7 @@
   "homepage": "https://github.com/joomla-projects/entities",
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": "^5.3.10|~7.0",
+    "php": "^7.1.3",
     "joomla/database": "~2.0@dev",
     "joomla/event": "~2.0@dev"
   },
