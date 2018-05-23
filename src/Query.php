@@ -13,6 +13,7 @@ use Joomla\Database\DatabaseDriver;
 
 /**
  * Class Query
+ * @since 1.0
  */
 class Query
 {
