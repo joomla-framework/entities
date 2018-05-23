@@ -9,9 +9,17 @@
 
 namespace Joomla\Entity\Tests;
 
+/**
+ * Class User
+ * @package Joomla\Entity\Tests
+ * @since 1.0
+ */
 class User extends \Joomla\Entity\Model
 {
-	protected $defaultParams = [
+	/**
+	 * @var array
+	 */
+	protected $defaultParams = array(
 		'params' => ''
-		];
+	);
 }

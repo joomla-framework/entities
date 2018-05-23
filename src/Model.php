@@ -12,28 +12,21 @@ use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 
-//abstract class Model implements ArrayAccess, JsonSerializable {
-abstract class Model {
+// Should implement ArrayAccess, JsonSerializable
+
+/**
+ * Class Model
+ * @package Joomla\Entity
+ * @since 1.0
+ */
+abstract class Model
+{
 	/**
 	 * The connection name for the model.
 	 *
 	 * @var DatabaseDriver
 	 */
 	protected $db;
-
-	/**
-	 * Database factory.
-	 *
-	 * @var DatabaseFactory
-	 */
-	protected $_dbFactory;
-
-	/**
-	 * Database driver.
-	 *
-	 * @var string
-	 */
-	protected $driver;
 
 	/**
 	 * The table associated with the model.
@@ -59,7 +52,7 @@ abstract class Model {
 	/**
 	 * Indicates if the IDs are auto-incrementing.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	public $incrementing = true;
 
@@ -68,54 +61,54 @@ abstract class Model {
 	 *
 	 * @var array
 	 */
-	protected $attributes = [];
+	protected $attributes = array();
 
-	//TODO this is a hack because an error is thrown if some params are not set for inserts.
 	/**
 	 * The model's default params.
 	 *
+	 * TODO this is a hack because an error is thrown if some params are not set for inserts.
 	 * @var array
 	 */
-	protected $defaultParams = [];
+	protected $defaultParams = array();
 
 	/**
 	 * The model's original attributes.
 	 *
 	 * @var array
 	 */
-	protected $original = [];
+	protected $original = array();
 
 	/**
 	 * Indicates if the model exists.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	public $exists = false;
 
 	/**
 	 * Create a new Joomla entity model instance.
 	 *
-	 * @param  array  $attributes
-	 * @return void
+	 * @param   array $attributes -> preloads any attributed for the model
 	 */
-	public function __construct(array $attributes = [])
+	public function __construct(array $attributes = array())
 	{
-                $this->driver     = 'mysqli';
 		$options          = array(
 				'host' => '127.0.0.1',
 				'user' => 'root',
 				'password' => 'root',
 				'database' => 'gsoc18',
-				'prefix' => 'q371b_'
+				'prefix' => 'q371b_',
+				'driver' => 'msqli'
 			);
 
 		$dbFactory = new DatabaseFactory;
-                $this->db = $dbFactory->getDriver($this->driver, $options);
+		$this->db = $dbFactory->getDriver($options['driver'], $options);
 
 		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
 
-		if (!isset($this->table)){
+		if (!isset($this->table))
+		{
 			$this->setDefaultTable();
 		}
 	}
@@ -129,30 +122,13 @@ abstract class Model {
 	}
 
 	/**
-	 * @param DatabaseDriver $db
+	 * @param   DatabaseDriver $db database driver
+	 * @return void
 	 */
 	public function setDb($db)
 	{
 		$this->db = $db;
 	}
-
-	/**
-	 * @return string
-	 */
-	public function getDriver()
-	{
-		return $this->driver;
-	}
-
-	/**
-	 * @param string $driver
-	 */
-	public function setDriver($driver)
-	{
-		$this->driver = $driver;
-	}
-
-
 
 	/**
 	 * @return string
@@ -171,7 +147,8 @@ abstract class Model {
 	}
 
 	/**
-	 * @param string $primaryKey
+	 * @param   string $primaryKey model's primary key
+	 * @return void
 	 */
 	public function setPrimaryKey($primaryKey)
 	{
@@ -181,8 +158,8 @@ abstract class Model {
 	/**
 	 * Set a given attribute on the model.
 	 *
-	 * @param  string  $key
-	 * @param  mixed  $value
+	 * @param   string  $key   model's attribute name
+	 * @param   mixed   $value model's attribute value
 	 * @return $this
 	 */
 	public function setAttribute($key, $value)
@@ -195,10 +172,11 @@ abstract class Model {
 	/**
 	 * Get an attribute from the model.
 	 *
-	 * @param  string  $key
+	 * @param   string  $key model's attribute name
 	 * @return mixed
 	 */
-	public function getAttribute($key){
+	public function getAttribute($key)
+	{
 		if (!$key)
 		{
 			return null;
@@ -215,7 +193,7 @@ abstract class Model {
 	/**
 	 * Dynamically retrieve attributes on the model.
 	 *
-	 * @param  string  $key
+	 * @param   string  $key model's attribute name
 	 * @return mixed
 	 */
 	public function __get($key)
@@ -226,8 +204,8 @@ abstract class Model {
 	/**
 	 * Dynamically set attributes on the model.
 	 *
-	 * @param  string  $key
-	 * @param  mixed  $value
+	 * @param   string  $key   model's attribute name
+	 * @param   mixed   $value model's attribute value
 	 * @return void
 	 */
 	public function __set($key, $value)
@@ -236,19 +214,17 @@ abstract class Model {
 	}
 
 	/**
-	 * @return bool
+	 * @return boolean
 	 */
 	public function isIncrementing()
 	{
 		return $this->incrementing;
 	}
 
-
-
 	/**
 	 * Fill the model with an array of attributes.
 	 *
-	 * @param  array  $attributes
+	 * @param   array  $attributes model's attributes
 	 * @return $this
 	 *
 	 */
@@ -265,15 +241,16 @@ abstract class Model {
 	/**
 	 * Set the array of model attributes. No checking is done.
 	 *
-	 * @param  array  $attributes
-	 * @param  bool  $sync
+	 * @param   array    $attributes model's attributes
+	 * @param   boolean  $sync       true if the data has been persisted
 	 * @return $this
 	 */
 	public function setRawAttributes(array $attributes, $sync = false)
 	{
 		$this->attributes = $attributes;
 
-		if ($sync) {
+		if ($sync)
+		{
 			$this->syncOriginal();
 		}
 
@@ -305,8 +282,8 @@ abstract class Model {
 	/**
 	 * Determine if the model or given attribute(s) have been modified.
 	 *
-	 * @param  array|string|null  $attributes
-	 * @return bool
+	 * @param   array|string|null  $attributes model's attributes
+	 * @return boolean
 	 */
 	public function isDirty($attributes = null)
 	{
@@ -322,7 +299,7 @@ abstract class Model {
 	 */
 	public function getDirty()
 	{
-		$dirty = [];
+		$dirty = array();
 
 		foreach ($this->getAttributes() as $key => $value)
 		{
@@ -338,24 +315,29 @@ abstract class Model {
 	/**
 	 * Determine if the given attributes were changed.
 	 *
-	 * @param  array  $changes
-	 * @param  array|string|null  $attributes
-	 * @return bool
+	 * @param   array              $changes    changes in attributes
+	 * @param   array|string|null  $attributes attributes, optional
+	 * @return boolean
 	 */
-	protected function hasChanges($changes, $attributes = [])
+	protected function hasChanges($changes, $attributes = array())
 	{
-		// If no specific attributes were provided, we will just see if the dirty array
-		// already contains any attributes. If it does we will just return that this
-		// count is greater than zero. Else, we need to check specific attributes.
-		if (empty($attributes)) {
+		/** If no specific attributes were provided, we will just see if the dirty array
+		 * already contains any attributes. If it does we will just return that this
+		 * count is greater than zero. Else, we need to check specific attributes.
+		 */
+		if (empty($attributes))
+		{
 			return count($changes) > 0;
 		}
 
-		// Here we will spin through every attribute and see if this is in the array of
-		// dirty attributes. If it is, we will return true and if we make it through
-		// all of the attributes for the entire array we will return false at end.
-		foreach ($attributes as $attribute) {
-			if (array_key_exists($attribute, $changes)) {
+		/** Here we will spin through every attribute and see if this is in the array of
+		 * dirty attributes. If it is, we will return true and if we make it through
+		 * all of the attributes for the entire array we will return false at end.
+		 */
+		foreach ($attributes as $attribute)
+		{
+			if (array_key_exists($attribute, $changes))
+			{
 				return true;
 			}
 		}
@@ -366,38 +348,40 @@ abstract class Model {
 	/**
 	 * Update the model in the database.
 	 *
-	 * @param  array  $attributes
-	 * @param  array  $options
-	 * @return bool
+	 * @param   array  $attributes model's attributes
+	 * @return boolean
 	 */
-	 public function update(array $attributes = [], array $options = [])
-	 {
-		 if (!$this->exists) {
+	public function update(array $attributes = array())
+	{
+		if (!$this->exists)
+		{
 			 return false;
-		 }
+		}
 
 		 // TODO is it a lot better performance wise if we only save the modified attributes?
-		 return $this->setAttributes($attributes)->save($options);
-	 }
+		 return $this->setAttributes($attributes)->save();
+	}
 
 	/**
 	 * Delete the model from the database.
 	 *
-	 * @return bool|null
+	 * @return boolean|null
 	 *
 	 * @throws \Exception
 	 */
 	public function delete()
 	{
-		if (is_null($this->getPrimaryKey())) {
+		if (is_null($this->getPrimaryKey()))
+		{
 			throw new Exception('No primary key defined on model.');
 		}
 
-		if (!$this->exists) {
+		if (!$this->exists)
+		{
 			return false;
 		}
 
-		//TODO relations to be taken cared of here.
+		// TODO relations to be taken cared of here.
 
 		$query = $this->newQuery();
 
@@ -407,32 +391,37 @@ abstract class Model {
 	/**
 	 * Save the model to the database.
 	 *
-	 * @param  array  $options
-	 * @return bool
+	 * @return boolean
 	 */
-	public function save(array $options = [])
+	public function save()
 	{
 		$query = $this->newQuery();
 
-		// If the model already exists in the database we can just update our record
-		// that is already in this database using the current IDs in this "where"
-		// clause to only update this model. Otherwise, we'll just insert them.
-		if ($this->exists) {
+		/** If the model already exists in the database we can just update our record
+		 * that is already in this database using the current IDs in this "where"
+		 * clause to only update this model. Otherwise, we'll just insert them.
+		 */
+		if ($this->exists)
+		{
 			$saved = $this->isDirty() ?
 				$this->performUpdate($query) : true;
 		}
 
-		// If the model is brand new, we'll insert it into our database and set the
-		// ID attribute on the model to the value of the newly inserted row's ID
-		// which is typically an auto-increment value managed by the database.
-		else {
+		/** If the model is brand new, we'll insert it into our database and set the
+		 * ID attribute on the model to the value of the newly inserted row's ID
+		 * which is typically an auto-increment value managed by the database.
+		 */
+		else
+		{
 			$saved = $this->performInsert($query);
 		}
 
-		// If the model is successfully saved, we need to do a few more things once
-		// that is done. We will call the "saved" method here to run any actions
-		// we need to happen after a model gets successfully saved right here.
-		if ($saved) {
+		/** If the model is successfully saved, we need to do a few more things once
+		 * that is done. We will call the "saved" method here to run any actions
+		 * we need to happen after a model gets successfully saved right here.
+		 */
+		if ($saved)
+		{
 			$this->syncOriginal();
 		}
 
@@ -442,46 +431,49 @@ abstract class Model {
 	/**
 	 * Perform a model insert operation.
 	 *
-	 * @param  Query  $query
-	 * @return bool
+	 * @param   Query  $query instance of query
+	 * @return boolean
 	 */
-	 protected function performInsert(Query $query)
-	 {
-		 if (empty($this->attributes)) {
+	protected function performInsert(Query $query)
+	{
+		if (empty($this->attributes))
+		{
 			 return true;
-		 }
+		}
 
 		 $success = $query->insert();
 
-		 if ($success){
+		if ($success)
+		{
 			 $this->exists = true;
-		 }
+		}
 
 		 return $success;
-	 }
+	}
 
 	/**
 	 * Perform a model insert operation.
 	 *
-	 * @param  Query  $query
-	 * @return bool
+	 * @param   Query  $query istance of query
+	 * @return boolean
 	 */
-	 protected function performUpdate($query)
-	 {
-		 if (empty($this->attributes)) {
+	protected function performUpdate($query)
+	{
+		if (empty($this->attributes))
+		{
 			 return true;
-		 }
+		}
 
 		 $success = $query->update();
 
 		 return $success;
-	 }
+	}
 
 	/**
 	 * Perform a model insert operation.
 	 *
-	 * @param  Query  $query
-	 * @return bool
+	 * @param   Query  $query istance of query
+	 * @return boolean
 	 */
 	protected function performDelete($query)
 	{
@@ -509,13 +501,14 @@ abstract class Model {
 	/**
 	 * Handle dynamic method calls into the model.
 	 *
-	 * @param  string  $method
-	 * @param  array  $parameters
+	 * @param   string  $method     method called dinamically
+	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, ['increment', 'decrement'])) {
+		if (in_array($method, array('increment', 'decrement')))
+		{
 			return $this->$method(...$parameters);
 		}
 
@@ -525,8 +518,8 @@ abstract class Model {
 	/**
 	 * Handle dynamic static method calls into the method.
 	 *
-	 * @param  string  $method
-	 * @param  array  $parameters
+	 * @param   string  $method     method called dinamically on a static object
+	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
 	public static function __callStatic($method, $parameters)
@@ -537,17 +530,15 @@ abstract class Model {
 	/**
 	 * Create a new model instance that is existing.
 	 *
-	 * @param  array  $attributes
-	 * @param  string|null  $connection
+	 * @param   array        $attributes attributes to be set on the new model instance
+	 * @param   string|null  $connection database connection to be set on the enw instance
 	 * @return static
 	 */
-	public function newFromBuilder($attributes = [], $connection = null)
+	public function newFromBuilder($attributes = array(), $connection = null)
 	{
-		$model = $this->newInstance([], true);
+		$model = $this->newInstance(array(), true);
 
 		$model->setRawAttributes((array) $attributes, true);
-
-		$model->setDriver($connection ?: $this->getDriver());
 
 		return $model;
 	}
@@ -555,21 +546,22 @@ abstract class Model {
 	/**
 	 * Create a new instance of the given model.
 	 *
-	 * @param  array  $attributes
-	 * @param  bool  $exists
+	 * @param   array  $attributes attributes to be set on the new model instance
+	 * @param   bool   $exists     true if the model is already in the database
 	 * @return static
 	 */
-	public function newInstance($attributes = [], $exists = false)
+	public function newInstance($attributes = array(), $exists = false)
 	{
-		// This method just provides a convenient way for us to generate fresh model
-		// instances of this current model. It is particularly useful during the
-		// hydration of new objects via the Eloquent query builder instances.
+		/** This method just provides a convenient way for us to generate fresh model
+		 * instances of this current model. It is particularly useful during the
+		 * hydration of new objects via the Query instances.
+		 */
 		$model = new static((array) $attributes);
 
 		$model->exists = $exists;
 
-		$model->setDriver(
-			$this->getDriver()
+		$model->setDb(
+			$this->getDb()
 		);
 
 		return $model;
@@ -578,10 +570,11 @@ abstract class Model {
 
 	/**
 	 * sets the default value of the table name based on Model class name.
+	 * @return void
 	 */
 	private function setDefaultTable()
 	{
-		$className =  strtolower(basename(str_replace('\\', '/', get_class($this))));
+		$className = strtolower(basename(str_replace('\\', '/', get_class($this))));
 
 		$this->table = '#__' . Inflector::pluralize($className);
 	}

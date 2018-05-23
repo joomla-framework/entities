@@ -42,17 +42,16 @@ class Query
 	 *
 	 * @var array
 	 */
-	protected $passthru = [
+	protected $passthru = array(
 		'select', 'where', 'from'
-	];
+	);
 
 	/**
 	 * Create a new Query instance.
 	 *
-	 * @param  QueryInterface  $query
-	 * @param  DatabaseDriver $db
-	 * @param  Model $model
-	 * @return void
+	 * @param   QueryInterface $query Joomla Database QueryInterface instantiated in the model
+	 * @param   DatabaseDriver $db    Joomla DatabaseDriver
+	 * @param   Model          $model Model passed by reference
 	 */
 	public function __construct($query, $db, &$model)
 	{
@@ -62,18 +61,16 @@ class Query
 
 	}
 
-
 	/**
 	 * Inserts a single instance of a model.
 	 *
-	 * @param Model $model
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function insert()
 	{
-		$fields       = [];
-		$values       = [];
+		$fields = array();
+		$values = array();
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getAttributes() as $k => $v)
@@ -95,6 +92,7 @@ class Query
 		{
 			$id = $this->db->insertid();
 			$key = $this->model->getPrimaryKey();
+
 			// Update the primary key if it exists.
 			if ($key && $id && is_string($key))
 			{
@@ -108,24 +106,24 @@ class Query
 	/**
 	 * Updates a single instance of a model.
 	 *
-	 * @param Model $model
-	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function update()
 	{
-		$fields       = [];
+		$fields = array();
 
 		$statement = 'UPDATE ' . $this->db->quoteName($this->model->getTable()) . ' SET %s WHERE %s';
 
-		$where = $this->getWherePrimaryKey($this->model);
+		$where = $this->getWherePrimaryKey();
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getDirty() as $k => $v)
 		{
-			if ($v == null){
+			if ($v == null)
+			{
 				$v = 'NULL';
 			}
+
 			// Prepare and sanitize the fields and values for the database query.
 			$fields[] = $this->db->quoteName($k) . '=' . $this->db->quote($v);
 		}
@@ -144,9 +142,7 @@ class Query
 	/**
 	 * Deletes a single instance of a model.
 	 *
-	 * @param Model $model
-	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function delete()
 	{
@@ -162,80 +158,66 @@ class Query
 	/**
 	 * Constructs the where clause based on the primary key
 	 *
-	 * @param Model $model
-	 *
 	 * @return string
 	 */
-	protected function getWherePrimaryKey($model)
+	protected function getWherePrimaryKey()
 	{
-		$key = $model->getPrimaryKey();
-		return $this->db->quoteName($key) . '=' . $this->db->quote($model->$key);
+		$key = $this->model->getPrimaryKey();
+
+		return $this->db->quoteName($key) . '=' . $this->db->quote($this->model->$key);
 
 	}
 
 	/**
 	 * Find a model by its primary key.
 	 *
-	 * @param  mixed  $id
-	 * @param  array  $columns
+	 * @param   mixed  $id      primary key
+	 * @param   array  $columns columns to be selected in query
 	 * @return Model
 	 */
-	public function find($id, $columns = ['*'])
+	public function find($id, $columns = array('*'))
 	{
+		// TODO, what if the key does not exits, error handling
 		$this->from($this->model->getTable())->select($columns)->whereKey($id);
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
-		//TODO something like first() from Collection would make this nicer
-		//TODO, what fi the key does not exits, error handling
-		return $this->hydrate([$item])[0];
+		// TODO something like first() from Collection would make this nicer
+		return $this->hydrate(array($item))[0];
 	}
 
 	/**
 	 * Add a where clause on the primary key to the query.
 	 *
-	 * @param  mixed  $id
+	 * @param   mixed $id primary key
 	 * @return $this
 	 */
 	public function whereKey($id)
 	{
-		return $this->where($this->model->getPrimaryKey() .' = ' . $id);
+		return $this->where($this->model->getPrimaryKey() . ' = ' . $id);
 	}
 
 	/**
 	 * Create a collection of models from plain arrays.
 	 *
-	 * @param  array  $items
+	 * @param   array $items array of results from the database query
 	 * @return array
 	 */
-	// TODO shall we use something like Collection?
 	public function hydrate(array $items)
 	{
-		$instance = $this->newModelInstance();
+		$instance = $this->model->newInstance();
 
-		return array_map(function ($item) use ($instance) {
-			return $instance->newFromBuilder($item);
-		}, $items);
-	}
-
-	/**
-	 * Create a new instance of the model being queried.
-	 *
-	 * @param  array  $attributes
-	 * @return Model
-	 */
-	public function newModelInstance($attributes = [])
-	{
-		$model = $this->model->newInstance($attributes);
-		$model->setDriver($this->db->getServerType());
-
-		return $model;
+		return array_map(
+			function ($item) use ($instance) {
+				return $instance->newFromBuilder($item);
+			}, $items
+		);
 	}
 
 	/**
 	 * Dynamically handle calls into the query instance.
 	 *
-	 * @param  string  $method
-	 * @param  array  $parameters
+	 * @param   string  $method     method called dinamically
+	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
 	public function __call($method, $parameters)
@@ -246,9 +228,11 @@ class Query
 		}
 		else
 		{
-			throw new BadMethodCallException(sprintf(
-				'Method %s does not exist in QueryInterface.',  $method
-			));
+			throw new BadMethodCallException(
+				sprintf(
+					'Method %s does not exist in QueryInterface.',  $method
+				)
+			);
 		}
 
 		return $this;
