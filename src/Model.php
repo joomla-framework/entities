@@ -1,9 +1,16 @@
 <?php
+/**
+ * Part of the Joomla GSoC Webservices Project
+ *
+ * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE
+ */
 
 namespace Joomla\Entity;
 
 use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
+use Joomla\String\Inflector;
 
 //abstract class Model implements ArrayAccess, JsonSerializable {
 abstract class Model {
@@ -12,7 +19,7 @@ abstract class Model {
 	 *
 	 * @var DatabaseDriver
 	 */
-	protected $_db;
+	protected $db;
 
 	/**
 	 * Database factory.
@@ -26,7 +33,7 @@ abstract class Model {
 	 *
 	 * @var string
 	 */
-	protected $_driver;
+	protected $driver;
 
 	/**
 	 * The table associated with the model.
@@ -93,16 +100,17 @@ abstract class Model {
 	 */
 	public function __construct(array $attributes = [])
 	{
-                $this->_driver = 'mysqli';
-		$options = array(
+                $this->driver     = 'mysqli';
+		$options          = array(
 				'host' => '127.0.0.1',
 				'user' => 'root',
 				'password' => 'root',
 				'database' => 'gsoc18',
 				'prefix' => 'q371b_'
 			);
-		$this->_dbFactory = new DatabaseFactory;
-                $this->_db = $this->_dbFactory->getDriver($this->_driver, $options);
+
+		$dbFactory = new DatabaseFactory;
+                $this->db = $dbFactory->getDriver($this->driver, $options);
 
 		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
@@ -117,7 +125,7 @@ abstract class Model {
 	 */
 	public function getDb()
 	{
-		return $this->_db;
+		return $this->db;
 	}
 
 	/**
@@ -125,7 +133,7 @@ abstract class Model {
 	 */
 	public function setDb($db)
 	{
-		$this->_db = $db;
+		$this->db = $db;
 	}
 
 	/**
@@ -133,7 +141,7 @@ abstract class Model {
 	 */
 	public function getDriver()
 	{
-		return $this->_driver;
+		return $this->driver;
 	}
 
 	/**
@@ -141,7 +149,7 @@ abstract class Model {
 	 */
 	public function setDriver($driver)
 	{
-		$this->_driver = $driver;
+		$this->driver = $driver;
 	}
 
 
@@ -495,7 +503,7 @@ abstract class Model {
 	 */
 	public function newQuery()
 	{
-		return new Query($this->_dbFactory->getQuery($this->_db->getName(), $this->_db), $this->_db, $this);
+		return new Query($this->db->getQuery(true), $this->db, $this);
 	}
 
 	/**
@@ -573,10 +581,9 @@ abstract class Model {
 	 */
 	private function setDefaultTable()
 	{
-		$className =  basename(str_replace('\\', '/', get_class($this)));
+		$className =  strtolower(basename(str_replace('\\', '/', get_class($this))));
 
-		//TODO make a better way of constructing plurals.
-		$this->table = '#__' . strtolower($className) . 's';
+		$this->table = '#__' . Inflector::pluralize($className);
 	}
 
 }
