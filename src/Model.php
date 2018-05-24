@@ -12,7 +12,7 @@ use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 
-// Should implement ArrayAccess, JsonSerializable
+// TODO Should implement ArrayAccess, JsonSerializable
 
 /**
  * Class Model
@@ -21,6 +21,8 @@ use Joomla\String\Inflector;
  */
 abstract class Model
 {
+	use Helpers\Attributes;
+
 	/**
 	 * The connection name for the model.
 	 *
@@ -47,7 +49,7 @@ abstract class Model
 	 *
 	 * @var string
 	 */
-	protected $keyType = 'int';
+	protected $primaryKeyType = 'int';
 
 	/**
 	 * Indicates if the IDs are auto-incrementing.
@@ -57,33 +59,13 @@ abstract class Model
 	public $incrementing = true;
 
 	/**
-	 * The model's attributes.
-	 *
-	 * @var array
-	 */
-	protected $attributes = array();
-
-	/**
-	 * The model's default params.
-	 *
-	 * TODO this is a hack because an error is thrown if some params are not set for inserts.
-	 * @var array
-	 */
-	protected $defaultParams = array();
-
-	/**
-	 * The model's original attributes.
-	 *
-	 * @var array
-	 */
-	protected $original = array();
-
-	/**
 	 * Indicates if the model exists.
 	 *
 	 * @var boolean
 	 */
 	public $exists = false;
+
+	// TODO implement timestamps
 
 	/**
 	 * Create a new Joomla entity model instance.
@@ -156,38 +138,20 @@ abstract class Model
 	}
 
 	/**
-	 * Set a given attribute on the model.
-	 *
-	 * @param   string  $key   model's attribute name
-	 * @param   mixed   $value model's attribute value
-	 * @return $this
+	 * @return string
 	 */
-	public function setAttribute($key, $value)
+	public function getPrimaryKeyType(): string
 	{
-		$this->attributes[$key] = $value;
-
-		return $this;
+		return $this->primaryKeyType;
 	}
 
 	/**
-	 * Get an attribute from the model.
-	 *
-	 * @param   string  $key model's attribute name
-	 * @return mixed
+	 * @param   string $primaryKeyType primary key type
+	 * @return void
 	 */
-	public function getAttribute($key)
+	public function setPrimaryKeyType(string $primaryKeyType): void
 	{
-		if (!$key)
-		{
-			return null;
-		}
-
-		if (array_key_exists($key, $this->attributes))
-		{
-			return $this->attributes[$key];
-		}
-
-		return null;
+		$this->primaryKeyType = $primaryKeyType;
 	}
 
 	/**
@@ -198,7 +162,7 @@ abstract class Model
 	 */
 	public function __get($key)
 	{
-		return $this->getAttribute($key);
+		return $this->getAttributeRaw($key);
 	}
 
 	/**
@@ -219,130 +183,6 @@ abstract class Model
 	public function isIncrementing()
 	{
 		return $this->incrementing;
-	}
-
-	/**
-	 * Fill the model with an array of attributes.
-	 *
-	 * @param   array  $attributes model's attributes
-	 * @return $this
-	 *
-	 */
-	public function setAttributes(array $attributes)
-	{
-		foreach ($attributes as $key => $value)
-		{
-			$this->setAttribute($key, $value);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Set the array of model attributes. No checking is done.
-	 *
-	 * @param   array    $attributes model's attributes
-	 * @param   boolean  $sync       true if the data has been persisted
-	 * @return $this
-	 */
-	public function setRawAttributes(array $attributes, $sync = false)
-	{
-		$this->attributes = $attributes;
-
-		if ($sync)
-		{
-			$this->syncOriginal();
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Get all of the current attributes on the model.
-	 *
-	 * @return array
-	 */
-	public function getAttributes()
-	{
-		return $this->attributes;
-	}
-
-	/**
-	 * Sync the original attributes with the current.
-	 *
-	 * @return $this
-	 */
-	public function syncOriginal()
-	{
-		$this->original = $this->attributes;
-
-		return $this;
-	}
-
-	/**
-	 * Determine if the model or given attribute(s) have been modified.
-	 *
-	 * @param   array|string|null  $attributes model's attributes
-	 * @return boolean
-	 */
-	public function isDirty($attributes = null)
-	{
-		return $this->hasChanges(
-			$this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
-		);
-	}
-
-	/**
-	 * Get the attributes that have been changed since last sync.
-	 *
-	 * @return array
-	 */
-	public function getDirty()
-	{
-		$dirty = array();
-
-		foreach ($this->getAttributes() as $key => $value)
-		{
-			if (!$this->original[$key] == $value)
-			{
-				$dirty[$key] = $value;
-			}
-		}
-
-		return $dirty;
-	}
-
-	/**
-	 * Determine if the given attributes were changed.
-	 *
-	 * @param   array              $changes    changes in attributes
-	 * @param   array|string|null  $attributes attributes, optional
-	 * @return boolean
-	 */
-	protected function hasChanges($changes, $attributes = array())
-	{
-		/** If no specific attributes were provided, we will just see if the dirty array
-		 * already contains any attributes. If it does we will just return that this
-		 * count is greater than zero. Else, we need to check specific attributes.
-		 */
-		if (empty($attributes))
-		{
-			return count($changes) > 0;
-		}
-
-		/** Here we will spin through every attribute and see if this is in the array of
-		 * dirty attributes. If it is, we will return true and if we make it through
-		 * all of the attributes for the entire array we will return false at end.
-		 */
-		foreach ($attributes as $attribute)
-		{
-			if (array_key_exists($attribute, $changes))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
