@@ -129,12 +129,29 @@ abstract class Model
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getPrimaryKeyValue()
+	{
+		return $this->getAttributeValue($this->primaryKey);
+	}
+
+	/**
 	 * @param   string $primaryKey model's primary key
 	 * @return void
 	 */
 	public function setPrimaryKey($primaryKey)
 	{
 		$this->primaryKey = $primaryKey;
+	}
+
+	/**
+	 * @param   string $primaryKey model's primary key
+	 * @return void
+	 */
+	public function setPrimaryKeyValue($value)
+	{
+		$this->setAttribute($this->primaryKey, $value);
 	}
 
 	/**
@@ -162,7 +179,7 @@ abstract class Model
 	 */
 	public function __get($key)
 	{
-		return $this->getAttributeRaw($key);
+		return $this->getAttributeValue($key);
 	}
 
 	/**

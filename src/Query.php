@@ -39,15 +39,6 @@ class Query
 	protected $model;
 
 	/**
-	 * The methods that should be returned from Joomla Database query builder.
-	 *
-	 * @var array
-	 */
-	protected $passthru = array(
-		'select', 'where', 'from'
-	);
-
-	/**
 	 * Create a new Query instance.
 	 *
 	 * @param   QueryInterface $query Joomla Database QueryInterface instantiated in the model
@@ -97,7 +88,7 @@ class Query
 			// Update the primary key if it exists.
 			if ($key && $id && is_string($key))
 			{
-				$this->model->setPrimaryKey($id);
+				$this->model->setPrimaryKeyValue($id);
 			}
 		}
 
@@ -187,6 +178,22 @@ class Query
 	}
 
 	/**
+	 * Find last inserted.
+	 *
+	 * @param   array  $columns columns to be selected in query
+	 * @return Model
+	 */
+	public function findLast($columns = array('*'))
+	{
+		// TODO, what if the key does not exits, error handling
+		$this->from($this->model->getTable())->select($columns)->order('id DESC')->setLimit(1);
+		$item = $this->db->setQuery($this->query)->loadAssoc();
+
+		// TODO something like first() from Collection would make this nicer
+		return $this->hydrate(array($item))[0];
+	}
+
+	/**
 	 * Add a where clause on the primary key to the query.
 	 *
 	 * @param   mixed $id primary key
@@ -223,18 +230,7 @@ class Query
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, $this->passthru))
-		{
-			$this->query->{$method}(...$parameters);
-		}
-		else
-		{
-			throw new BadMethodCallException(
-				sprintf(
-					'Method %s does not exist in QueryInterface.',  $method
-				)
-			);
-		}
+		$this->query->{$method}(...$parameters);
 
 		return $this;
 	}

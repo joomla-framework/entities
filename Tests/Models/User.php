@@ -7,7 +7,7 @@
  */
 
 
-namespace Joomla\Entity\Tests;
+namespace Joomla\Entity\Tests\Models;
 
 /**
  * Class User
