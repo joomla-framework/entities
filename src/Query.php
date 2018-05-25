@@ -39,18 +39,6 @@ class Query
 	protected $model;
 
 	/**
-<<<<<<< HEAD
-=======
-	 * The methods that should be returned from Joomla Database query builder.
-	 *
-	 * @var array
-	 */
-	protected $passthru = array(
-		'select', 'where', 'from'
-	);
-
-	/**
->>>>>>> f1a8228cb2a17776b9a8ff5b92c89a5705ce49e6
 	 * Create a new Query instance.
 	 *
 	 * @param   QueryInterface $query Joomla Database QueryInterface instantiated in the model
@@ -190,7 +178,6 @@ class Query
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Find last inserted.
 	 *
 	 * @param   array  $columns columns to be selected in query
@@ -207,8 +194,6 @@ class Query
 	}
 
 	/**
-=======
->>>>>>> f1a8228cb2a17776b9a8ff5b92c89a5705ce49e6
 	 * Add a where clause on the primary key to the query.
 	 *
 	 * @param   mixed $id primary key
