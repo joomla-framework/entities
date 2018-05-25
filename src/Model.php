@@ -129,7 +129,6 @@ abstract class Model
 	}
 
 	/**
-<<<<<<< HEAD
 	 * @return string
 	 */
 	public function getPrimaryKeyValue()
@@ -138,8 +137,6 @@ abstract class Model
 	}
 
 	/**
-=======
->>>>>>> f1a8228cb2a17776b9a8ff5b92c89a5705ce49e6
 	 * @param   string $primaryKey model's primary key
 	 * @return void
 	 */
@@ -149,8 +146,7 @@ abstract class Model
 	}
 
 	/**
-<<<<<<< HEAD
-	 * @param   string $primaryKey model's primary key
+	 * @param   string $value model's primary key
 	 * @return void
 	 */
 	public function setPrimaryKeyValue($value)
@@ -159,8 +155,6 @@ abstract class Model
 	}
 
 	/**
-=======
->>>>>>> f1a8228cb2a17776b9a8ff5b92c89a5705ce49e6
 	 * @return string
 	 */
 	public function getPrimaryKeyType(): string
