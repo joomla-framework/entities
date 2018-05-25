@@ -80,7 +80,7 @@ abstract class Model
 				'password' => 'root',
 				'database' => 'gsoc18',
 				'prefix' => 'q371b_',
-				'driver' => 'msqli'
+				'driver' => 'mysqli'
 			);
 
 		$dbFactory = new DatabaseFactory;
