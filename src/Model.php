@@ -65,6 +65,20 @@ abstract class Model
 	 */
 	public $exists = false;
 
+	/**
+	 * The name of the "created at" column.
+	 *
+	 * @var string
+	 */
+	const CREATED_AT = 'create_time';
+
+	/**
+	 * The name of the "updated at" column.
+	 *
+	 * @var string
+	 */
+	const UPDATED_AT = 'update_time';
+
 	// TODO implement timestamps
 
 	/**
@@ -395,7 +409,7 @@ abstract class Model
 	{
 		$model = $this->newInstance(array(), true);
 
-		$model->setRawAttributes((array) $attributes, true);
+		$model->setAttributesRaw((array) $attributes, true);
 
 		return $model;
 	}

@@ -10,7 +10,8 @@
     "joomla/database": "~2.0@dev",
     "joomla/string": "~2.0@dev",
     "doctrine/inflector": "1.2.0",
-    "joomla/event": "~2.0@dev"
+    "joomla/event": "~2.0@dev",
+    "nesbot/carbon": "~1.29"
   },
   "require-dev": {
     "joomla/coding-standards": "~2.0@alpha",
