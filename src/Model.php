@@ -13,7 +13,7 @@ use JsonSerializable;
 use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
-
+use Joomla\Entity\JsonEncodingException;
 /**
  * Class Model
  * @package Joomla\Entity
@@ -78,8 +78,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var string
 	 */
 	const UPDATED_AT = 'update_time';
-
-	// TODO implement timestamps
 
 	/**
 	 * Create a new Joomla entity model instance.
@@ -518,4 +516,49 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		$this->offsetUnset($key);
 	}
+
+	/**
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+
+		// TODO relations
+		return array_merge($this->getAttributes());
+
+		// A return array_merge($this->getAttributes(), $this->getRelations());
+	}
+
+	/**
+	 * Convert the model instance to JSON.
+	 *
+	 * @param   int  $options ?
+	 * @return string
+	 *
+	 * @throws JsonEncodingException
+	 */
+	public function toJson($options = 0)
+	{
+		$json = json_encode($this->jsonSerialize(), $options);
+
+		if (JSON_ERROR_NONE !== json_last_error())
+		{
+			throw JsonEncodingException::forModel($this, json_last_error_msg());
+		}
+
+		return $json;
+	}
+
+	/**
+	 * Convert the object into something JSON serializable.
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize()
+	{
+		return $this->toArray();
+	}
+
 }
