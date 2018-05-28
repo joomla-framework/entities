@@ -23,7 +23,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 {
 	use ModelHelpers\Attributes;
 	use ModelHelpers\Timestamps;
-	use ModelHelpers\Relationships;
 
 	/**
 	 * The connection name for the model.
