@@ -13,7 +13,7 @@ use JsonSerializable;
 use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
-use Joomla\Entity\JsonEncodingException;
+use Joomla\Entity\Exeptions\JsonEncodingException;
 /**
  * Class Model
  * @package Joomla\Entity

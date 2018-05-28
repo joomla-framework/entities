@@ -1,6 +1,6 @@
 <?php
 
-namespace Joomla\Entity;
+namespace Joomla\Entity\Exeptions;
 
 use RuntimeException;
 
