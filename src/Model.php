@@ -21,7 +21,9 @@ use Joomla\Entity\Exeptions\JsonEncodingException;
  */
 abstract class Model implements ArrayAccess, JsonSerializable
 {
-	use Helpers\Attributes;
+	use ModelHelpers\Attributes;
+	use ModelHelpers\Timestamps;
+	use ModelHelpers\Relationships;
 
 	/**
 	 * The connection name for the model.
@@ -559,6 +561,78 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public function jsonSerialize()
 	{
 		return $this->toArray();
+	}
+
+	/**
+	 * Increment a column's value by a given amount.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   boolean    $lazy   laxy increment if true
+	 * @return integer
+	 */
+	protected function increment($column, $amount = 1, $lazy = false)
+	{
+		return $this->incrementOrDecrement($column, $amount, $lazy, 'increment');
+	}
+
+	/**
+	 * Decrement a column's value by a given amount.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   boolean    $lazy   laxy increment if true
+	 * @return integer
+	 */
+	protected function decrement($column, $amount = 1, $lazy = false)
+	{
+		return $this->incrementOrDecrement($column, $amount, $lazy, 'decrement');
+	}
+
+	/**
+	 * Run the increment or decrement method on the model.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   float|int  $lazy   ?
+	 * @param   string     $method ?
+	 * @return integer|Model
+	 */
+	protected function incrementOrDecrement($column, $amount, $lazy, $method)
+	{
+
+		$amount = $method == 'increment' ? $amount : $amount * -1;
+
+		$amount = $amount + $this->$column;
+
+		$this->setAttribute($column, $amount);
+
+		if ($lazy)
+		{
+			return $this;
+		}
+
+		if ($this->exists)
+		{
+			return $this->update();
+		}
+
+		return $this->save();
+	}
+
+	/**
+	 * Increment the underlying attribute value and sync with original.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   string     $method ?
+	 * @return void
+	 */
+	protected function incrementOrDecrementAttributeValue($column, $amount, $method)
+	{
+		$this->{$column} = $this->{$column} + ($method == 'increment' ? $amount : $amount * -1);
+
+		$this->syncOriginalAttribute($column);
 	}
 
 }

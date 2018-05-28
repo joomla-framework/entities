@@ -72,8 +72,7 @@ class ModelTest extends TestCase
 	 */
 	public function testUpdate()
 	{
-		$id = User::findLast()->id;
-		$user = User::find($id);
+		$user = User::findLast();
 
 		$user->resetCount = 10;
 
@@ -81,7 +80,22 @@ class ModelTest extends TestCase
 
 		$this->assertEquals(
 			$user->resetCount,
-			User::find($id)->resetCount
+			User::find($user->id)->resetCount
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testIncrement()
+	{
+		$user = User::findLast();
+
+		$user->increment('resetCount');
+
+		$this->assertEquals(
+			$user->resetCount,
+			User::find($user->id)->resetCount
 		);
 	}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Joomla\Entity\Helpers;
+namespace Joomla\Entity\ModelHelpers;
 
 use Carbon\Carbon;
 

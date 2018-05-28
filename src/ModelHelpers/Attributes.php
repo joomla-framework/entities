@@ -6,12 +6,12 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Helpers;
+namespace Joomla\Entity\ModelHelpers;
 
 use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
-use Joomla\Entity\JsonEncodingException;
+use Joomla\Entity\Exeptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
 
 /**
@@ -281,7 +281,7 @@ trait Attributes
 		$attributes = $this->addDateAttributes($attributes);
 
 		$attributes = $this->addMutatedAttributes(
-			$attributes, $mutatedAttributes = $this->getMutatedAttributes()
+			$attributes, $mutatedAttributes = $this->getMutatorMethods()
 		);
 
 		/** Next we will handle any casts that have been setup for this model and cast
@@ -413,6 +413,19 @@ trait Attributes
 	}
 
 	/**
+	 * Sync only one attribute with the original.
+	 *
+	 * @param   string $key attribute name
+	 * @return $this
+	 */
+	public function syncOriginalAttribute($key)
+	{
+		$this->original[$key] = $this->attributes[$key];
+
+		return $this;
+	}
+
+	/**
 	 * Determine if the model or given attribute(s) have been modified.
 	 *
 	 * @param   array|string|null  $attributes model's attributes
@@ -420,6 +433,7 @@ trait Attributes
 	 */
 	public function isDirty($attributes = null)
 	{
+
 		return $this->hasChanges(
 			$this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
 		);
@@ -434,9 +448,10 @@ trait Attributes
 	{
 		$dirty = array();
 
+
 		foreach ($this->getAttributesRaw() as $key => $value)
 		{
-			if (!$this->original[$key] == $value)
+			if (!($this->original[$key] == $value))
 			{
 				$dirty[$key] = $value;
 			}
@@ -508,6 +523,7 @@ trait Attributes
 
 		return $this;
 	}
+
 	/**
 	 * Get an array attribute with the given key and value set.
 	 *
@@ -788,10 +804,11 @@ trait Attributes
 	}
 
 	/**
+	 * TODO do we need to cache this?, if so, what cache do we use?
 	 * Get the mutated attributes for a given instance.
 	 *
 	 * @return array
-	 */
+
 	public function getMutatedAttributes()
 	{
 		$class = static::class;
@@ -804,34 +821,45 @@ trait Attributes
 		return static::$mutatorCache[$class];
 	}
 
-	/**
+
 	 * Extract and cache all the mutated attributes of a class.
 	 *
 	 * @param   string  $class ?
 	 * @return void
-	 */
+
 	public static function cacheMutatedAttributes($class)
 	{
-		static::$mutatorCache[$class] = collect(static::getMutatorMethods($class))
-			->map(
-				function ($match)
-				{
-					return lcfirst(static::$snakeAttributes ? Str::snake($match) : $match);
-				}
-			)->all();
-	}
+		$mutatedAttributes = static::getMutatorMethods($class);
+
+		$cache = array();
+
+		foreach ($mutatedAttributes as $mutatedAttribute)
+		{
+			$cache[] = lcfirst(Normalise::toCamelCase($mutatedAttribute));
+		}
+
+		static::$mutatorCache[$class] = $cache;
+	}*/
 
 	/**
 	 * Get all of the attribute mutator methods.
 	 *
-	 * @param   mixed  $class ?
 	 * @return array
 	 */
-	protected static function getMutatorMethods($class)
+	protected static function getMutatorMethods()
 	{
+		$class = static::class;
+
 		preg_match_all('/(?<=^|;)get([^;]+?)Attribute(;|$)/', implode(';', get_class_methods($class)), $matches);
 
-		return $matches[1];
+		$result = array();
+
+		foreach ($matches[1] as $match)
+		{
+			$result[] = lcfirst(Normalise::toCamelCase($match));
+		}
+
+		return $result;
 	}
 
 	/**
