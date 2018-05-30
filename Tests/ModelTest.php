@@ -58,6 +58,11 @@ class ModelTest extends TestCase
 
 		$user->email = "test@test.com";
 
+		$params = array();
+		$params['test'] = 'val';
+
+		$user->params = $params;
+
 		$user->save();
 
 		$this->assertEquals(

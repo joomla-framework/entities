@@ -99,7 +99,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$dbFactory = new DatabaseFactory;
 		$this->db = $dbFactory->getDriver($options['driver'], $options);
 
-		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
 
 		if (!isset($this->table))

@@ -65,7 +65,7 @@ class Query
 		$values = array();
 
 		// Iterate over the object variables to build the query fields and values.
-		foreach ($this->model->getAttributes() as $k => $v)
+		foreach ($this->model->getAttributesRaw() as $k => $v)
 		{
 			// Prepare and sanitize the fields and values for the database query.
 			$fields[] = $this->db->quoteName($k);

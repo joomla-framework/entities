@@ -17,9 +17,12 @@ namespace Joomla\Entity\Tests\Models;
 class User extends \Joomla\Entity\Model
 {
 	/**
+	 * The attributes that should be cast to native types.
+	 *
 	 * @var array
 	 */
-	protected $defaultParams = array(
-		'params' => ''
+	protected $casts = array(
+		'params' => 'array'
 	);
+
 }

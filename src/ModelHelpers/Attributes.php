@@ -29,14 +29,6 @@ trait Attributes
 	protected $attributes = array();
 
 	/**
-	 * The model's default params.
-	 *
-	 * TODO this is a hack because an error is thrown if some params are not set for inserts.
-	 * @var array
-	 */
-	protected $defaultParams = array();
-
-	/**
 	 * The model's original attributes.
 	 *
 	 * @var array
@@ -649,7 +641,7 @@ trait Attributes
 	 * Return a timestamp as unix timestamp.
 	 *
 	 * @param   mixed  $value value
-	 * @return int
+	 * @return integer
 	 */
 	protected function asTimestamp($value)
 	{
@@ -783,8 +775,8 @@ trait Attributes
 	/**
 	 * Determine if a set mutator exists for an attribute.
 	 *
-	 * @param  string  $key
-	 * @return bool
+	 * @param   string  $key ?
+	 * @return boolean
 	 */
 	public function hasSetMutator($key)
 	{
