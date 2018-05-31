@@ -1,24 +1,19 @@
 <?php
 /**
- * Part of the Joomla GSoC Webservices Project
- *
  * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Tests;
+namespace Joomla\Database\Tests;
 
-use PHPUnit\Framework\TestCase;
+use Joomla\Entity\Tests\Helpers\SqliteCase;
 use Joomla\Entity\Tests\Models\User;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 /**
- * Class ModelTest
- * @package Joomla\Entity\Tests
- * @since 1.0
+ *
+ * @since  1.0
  */
-class ModelTest extends TestCase
+class SqliteUserModelTest extends SqliteCase
 {
 
 	/**
@@ -26,8 +21,9 @@ class ModelTest extends TestCase
 	 */
 	public function testFind()
 	{
-		$id = User::findLast()->id;
-		$user = User::find($id);
+		$model = new User(self::$driver);
+		$id = $model->findLast()->id;
+		$user = $model->find($id);
 
 		$this->assertNotEmpty(
 			$user->getAttributes()
@@ -40,7 +36,8 @@ class ModelTest extends TestCase
 	 */
 	public function testFindLast()
 	{
-		$user = User::findLast();
+		$model = new User(self::$driver);
+		$user = $model->findLast();
 
 		$this->assertGreaterThanOrEqual(
 			0,
@@ -54,7 +51,8 @@ class ModelTest extends TestCase
 	 */
 	public function testInsert()
 	{
-		$user = new User;
+		$model = new User(self::$driver);
+		$user = new User(self::$driver);
 
 		$user->email = "test@test.com";
 
@@ -66,7 +64,7 @@ class ModelTest extends TestCase
 		$user->save();
 
 		$this->assertEquals(
-			User::findLast()->id,
+			$model->findLast()->id,
 			$user->id
 		);
 
@@ -77,7 +75,8 @@ class ModelTest extends TestCase
 	 */
 	public function testUpdate()
 	{
-		$user = User::findLast();
+		$model = new User(self::$driver);
+		$user = $model->findLast();
 
 		$user->resetCount = 10;
 
@@ -85,7 +84,7 @@ class ModelTest extends TestCase
 
 		$this->assertEquals(
 			$user->resetCount,
-			User::find($user->id)->resetCount
+			$model->find($user->id)->resetCount
 		);
 	}
 
@@ -94,15 +93,14 @@ class ModelTest extends TestCase
 	 */
 	public function testIncrement()
 	{
-		$user = User::findLast();
+		$model = new User(self::$driver);
+		$user = $model->findLast();
 
 		$user->increment('resetCount');
 
 		$this->assertEquals(
 			$user->resetCount,
-			User::find($user->id)->resetCount
+			$model->find($user->id)->resetCount
 		);
 	}
-
 }
-

@@ -10,7 +10,6 @@ namespace Joomla\Entity;
 
 use ArrayAccess;
 use JsonSerializable;
-use Joomla\Database\DatabaseFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 use Joomla\Entity\Exeptions\JsonEncodingException;
@@ -83,21 +82,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Create a new Joomla entity model instance.
 	 *
-	 * @param   array $attributes -> preloads any attributed for the model
+	 * @param   DatabaseDriver $db         database driver instance
+	 * @param   array          $attributes -> preloads any attributed for the model
 	 */
-	public function __construct(array $attributes = array())
+	public function __construct($db, array $attributes = array())
 	{
-		$options          = array(
-				'host' => '127.0.0.1',
-				'user' => 'root',
-				'password' => 'root',
-				'database' => 'gsoc18',
-				'prefix' => 'q371b_',
-				'driver' => 'mysqli'
-			);
-
-		$dbFactory = new DatabaseFactory;
-		$this->db = $dbFactory->getDriver($options['driver'], $options);
+		$this->db = $db;
 
 		$this->setAttributes($attributes);
 

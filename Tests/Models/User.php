@@ -9,12 +9,14 @@
 
 namespace Joomla\Entity\Tests\Models;
 
+use Joomla\Entity\Model;
+
 /**
  * Class User
  * @package Joomla\Entity\Tests
  * @since 1.0
  */
-class User extends \Joomla\Entity\Model
+class User extends Model
 {
 	/**
 	 * The attributes that should be cast to native types.
