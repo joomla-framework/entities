@@ -33,8 +33,7 @@ class SqliteUserModelTest extends SqliteCase
 	public function testFind()
 	{
 		$model = new User(self::$driver);
-		$id = $model->findLast()->id;
-		$user = $model->find($id);
+		$user = $model->find(42);
 
 		$this->assertNotEmpty(
 			$user->getAttributes()
@@ -50,8 +49,8 @@ class SqliteUserModelTest extends SqliteCase
 		$model = new User(self::$driver);
 		$user = $model->findLast();
 
-		$this->assertGreaterThanOrEqual(
-			0,
+		$this->assertEquals(
+			100,
 			$user->getPrimaryKeyValue()
 		);
 
@@ -62,7 +61,6 @@ class SqliteUserModelTest extends SqliteCase
 	 */
 	public function testInsert()
 	{
-		$model = new User(self::$driver);
 		$user = new User(self::$driver);
 
 		$user->email = "test@test.com";
@@ -75,7 +73,7 @@ class SqliteUserModelTest extends SqliteCase
 		$user->save();
 
 		$this->assertEquals(
-			$model->findLast()->id,
+			101,
 			$user->id
 		);
 
@@ -87,15 +85,15 @@ class SqliteUserModelTest extends SqliteCase
 	public function testUpdate()
 	{
 		$model = new User(self::$driver);
-		$user = $model->findLast();
 
+		$user = $model->find(100);
 		$user->resetCount = 10;
 
 		$user->update();
 
 		$this->assertEquals(
-			$user->resetCount,
-			$model->find($user->id)->resetCount
+			10,
+			$model->find(100)->resetCount
 		);
 	}
 
@@ -105,13 +103,13 @@ class SqliteUserModelTest extends SqliteCase
 	public function testIncrement()
 	{
 		$model = new User(self::$driver);
-		$user = $model->findLast();
+		$user = $model->find(42);
 
 		$user->increment('resetCount');
 
 		$this->assertEquals(
-			$user->resetCount,
-			$model->find($user->id)->resetCount
+			1,
+			$model->find(42)->resetCount
 		);
 	}
 }
