@@ -154,6 +154,8 @@ trait Attributes
 			return null;
 		}
 
+		$key = $this->getColumnAlias($key);
+
 		/** If the attribute exists in the attribute array or has a "get" mutator we will
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
 		 * are asking for a relationship's value. This covers both types of values.
@@ -665,7 +667,17 @@ trait Attributes
 	 */
 	public function getDates()
 	{
-		$defaults = array(static::CREATED_AT, static::UPDATED_AT);
+		$defaults = array();
+
+		if ($date = $this->getColumnAlias('createdAt'))
+		{
+			$defaults[] = $date;
+		}
+
+		if ($date = $this->getColumnAlias('updatedAt'))
+		{
+			$defaults[] = $date;
+		}
 
 		return $this->usesTimestamps()
 			? array_unique(array_merge($this->dates, $defaults))

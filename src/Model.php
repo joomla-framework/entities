@@ -54,6 +54,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	protected $primaryKeyType = 'int';
 
 	/**
+	 * Array with alias for "special" columns such as ordering, hits etc etc
+	 *
+	 * @var    array
+	 */
+	protected $columnAliases = array(
+		'createdAt' => null,
+		'updatedAt' => null
+	);
+
+	/**
 	 * Indicates if the IDs are auto-incrementing.
 	 *
 	 * @var boolean
@@ -73,20 +83,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var array
 	 */
 	public $dataSets = array();
-
-	/**
-	 * The name of the "created at" column.
-	 *
-	 * @var string
-	 */
-	const CREATED_AT = 'create_time';
-
-	/**
-	 * The name of the "updated at" column.
-	 *
-	 * @var string
-	 */
-	const UPDATED_AT = 'update_time';
 
 	/**
 	 * Create a new Joomla entity model instance.
@@ -656,4 +652,52 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		return $dataSet;
 	}
 
+	/**
+	 * Method to return the real name of a "special" column such as ordering, hits, published
+	 * etc etc. In this way you are free to follow your db naming convention and use the
+	 * built in \Joomla functions.
+	 *
+	 * @param   string  $column  Name of the "special" column (ie ordering, hits)
+	 *
+	 * @return  string  The string that identify the special
+	 *
+	 * @since   3.4
+	 */
+	public function getColumnAlias($column)
+	{
+		// Get the column data if set
+		if (isset($this->columnAliases[$column]))
+		{
+			$return = $this->columnAliases[$column];
+		}
+		else
+		{
+			$return = $column;
+		}
+
+		// Sanitize the name
+		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
+
+		return $return;
+	}
+
+	/**
+	 * Method to register a column alias for a "special" column.
+	 *
+	 * @param   string  $column       The "special" column (ie ordering)
+	 * @param   string  $columnAlias  The real column name (ie foo_ordering)
+	 *
+	 * @return  void
+	 *
+	 * @since   3.4
+	 */
+	public function setColumnAlias($column, $columnAlias)
+	{
+		// Santize the column name alias
+		$column = strtolower($column);
+		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
+
+		// Set the column alias internally
+		$this->columnAliases[$column] = $columnAlias;
+	}
 }

@@ -49,13 +49,15 @@ trait Timestamps
 	protected function updateTimestamps()
 	{
 		$time = $this->freshTimestamp();
+		$updatedAt = $this->getColumnAlias('updated_at');
+		$createdAt = $this->getColumnAlias('updated_at');
 
-		if (! is_null(static::UPDATED_AT) && ! $this->isDirty(static::UPDATED_AT))
+		if (! is_null($updatedAt) && ! $this->isDirty($updatedAt))
 		{
 			$this->setUpdatedAt($time);
 		}
 
-		if (! $this->exists && ! is_null(static::CREATED_AT) && ! $this->isDirty(static::CREATED_AT))
+		if (! $this->exists && ! is_null($createdAt) && ! $this->isDirty($createdAt))
 		{
 			$this->setCreatedAt($time);
 		}
@@ -69,7 +71,7 @@ trait Timestamps
 	 */
 	public function setCreatedAt($value)
 	{
-		$this->{static::CREATED_AT} = $value;
+		$this->createdAt = $value;
 
 		return $this;
 	}
@@ -82,7 +84,7 @@ trait Timestamps
 	 */
 	public function setUpdatedAt($value)
 	{
-		$this->{static::UPDATED_AT} = $value;
+		$this->updateAt = $value;
 
 		return $this;
 	}
@@ -124,7 +126,7 @@ trait Timestamps
 	 */
 	public function getCreatedAtColumn()
 	{
-		return static::CREATED_AT;
+		return $this->createdAt;
 	}
 
 	/**
@@ -134,6 +136,6 @@ trait Timestamps
 	 */
 	public function getUpdatedAtColumn()
 	{
-		return static::UPDATED_AT;
+		return $this->updatedAt;
 	}
 }
