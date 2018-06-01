@@ -29,15 +29,12 @@ class User extends Model
 	);
 
 	/**
-	 * Adds the data set to be loaded into the database during setup
+	 * Data Sets used for testing. Each item must be defined by its full path to the CSV file.
 	 *
-	 * @param   CsvDataSet $dataSet csv dataset for testing
-	 * @return CsvDataSet
+	 * @var array
 	 */
-	public static function addDataSet(CsvDataSet $dataSet)
-	{
-		$dataSet->addTable('users', realpath(__DIR__) . '/../Stubs/users.csv');
+	public $dataSets = array(
+		__DIR__ . '/../Stubs/users.csv'
+	);
 
-		return $dataSet;
-	}
 }

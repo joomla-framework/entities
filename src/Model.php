@@ -13,6 +13,8 @@ use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 use Joomla\Entity\Exeptions\JsonEncodingException;
+use PHPUnit\DbUnit\DataSet\CsvDataSet;
+
 /**
  * Class Model
  * @package Joomla\Entity
@@ -66,6 +68,13 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public $exists = false;
 
 	/**
+	 * Data Sets used for testing. Each item must be defined by its full path to the CSV file.
+	 *
+	 * @var array
+	 */
+	public $dataSets = array();
+
+	/**
 	 * The name of the "created at" column.
 	 *
 	 * @var string
@@ -85,7 +94,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   DatabaseDriver $db         database driver instance
 	 * @param   array          $attributes -> preloads any attributed for the model
 	 */
-	public function __construct(DatabaseDriver $db, array $attributes = array())
+	public function __construct(DatabaseDriver $db = null, array $attributes = array())
 	{
 		$this->db = $db;
 
@@ -622,6 +631,29 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$this->{$column} = $this->{$column} + ($method == 'increment' ? $amount : $amount * -1);
 
 		$this->syncOriginalAttribute($column);
+	}
+
+	/**
+	 * Adds the data set to be loaded into the database during setup
+	 *
+	 * @param   CsvDataSet $dataSet csv dataset for testing
+	 * @return CsvDataSet
+	 */
+	public static function addDataSet(CsvDataSet $dataSet)
+	{
+		$static = (new static);
+
+		// TODO I would really like to inject the db object for static objects somehow.
+		// $table = str_replace("#__", $static->db->getPrefix(), $static->getTable());
+
+		$table = str_replace("#__", '', $static->getTable());
+
+		foreach ($static->dataSets as $csv)
+		{
+			$dataSet->addTable($table, $csv);
+		}
+
+		return $dataSet;
 	}
 
 }
