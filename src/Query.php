@@ -212,7 +212,7 @@ class Query
 	 */
 	public function hydrate(array $items)
 	{
-		$instance = $this->model->newInstance();
+		$instance = $this->model->newInstance($this->db);
 
 		return array_map(
 			function ($item) use ($instance) {

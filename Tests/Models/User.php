@@ -10,6 +10,7 @@
 namespace Joomla\Entity\Tests\Models;
 
 use Joomla\Entity\Model;
+use PHPUnit\DbUnit\DataSet\CsvDataSet;
 
 /**
  * Class User
@@ -27,4 +28,16 @@ class User extends Model
 		'params' => 'array'
 	);
 
+	/**
+	 * Adds the data set to be loaded into the database during setup
+	 *
+	 * @param   CsvDataSet $dataSet csv dataset for testing
+	 * @return CsvDataSet
+	 */
+	public static function addDataSet(CsvDataSet $dataSet)
+	{
+		$dataSet->addTable('users', realpath(__DIR__) . '/../Stubs/users.csv');
+
+		return $dataSet;
+	}
 }

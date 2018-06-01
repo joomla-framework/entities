@@ -4,7 +4,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Database\Tests;
+namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Helpers\SqliteCase;
 use Joomla\Entity\Tests\Models\User;
@@ -15,6 +15,17 @@ use Joomla\Entity\Tests\Models\User;
  */
 class SqliteUserModelTest extends SqliteCase
 {
+
+	/**
+	 * This method is called before the first test of this test class is run.
+	 * @return void
+	 */
+	public static function setUpBeforeClass()
+	{
+		static::$models = array("User");
+
+		parent::setUpBeforeClass();
+	}
 
 	/**
 	 * @return void

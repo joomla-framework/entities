@@ -397,7 +397,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function newFromBuilder($attributes = array(), $connection = null)
 	{
-		$model = $this->newInstance(array(), true);
+		$model = $this->newInstance($this->db, array(), true);
 
 		$model->setAttributesRaw((array) $attributes, true);
 
@@ -407,17 +407,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Create a new instance of the given model.
 	 *
-	 * @param   array  $attributes attributes to be set on the new model instance
-	 * @param   bool   $exists     true if the model is already in the database
+	 * @param   DatabaseDriver $db         database driver
+	 * @param   array          $attributes attributes to be set on the new model instance
+	 * @param   bool           $exists     true if the model is already in the database
 	 * @return static
 	 */
-	public function newInstance($attributes = array(), $exists = false)
+	public function newInstance(DatabaseDriver $db, $attributes = array(), $exists = false)
 	{
 		/** This method just provides a convenient way for us to generate fresh model
 		 * instances of this current model. It is particularly useful during the
 		 * hydration of new objects via the Query instances.
 		 */
-		$model = new static((array) $attributes);
+		$model = new static($db, (array) $attributes);
 
 		$model->exists = $exists;
 
