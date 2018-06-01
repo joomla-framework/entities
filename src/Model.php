@@ -85,7 +85,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   DatabaseDriver $db         database driver instance
 	 * @param   array          $attributes -> preloads any attributed for the model
 	 */
-	public function __construct($db, array $attributes = array())
+	public function __construct(DatabaseDriver $db, array $attributes = array())
 	{
 		$this->db = $db;
 
