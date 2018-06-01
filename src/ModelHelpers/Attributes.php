@@ -440,7 +440,6 @@ trait Attributes
 	{
 		$dirty = array();
 
-
 		foreach ($this->getAttributesRaw() as $key => $value)
 		{
 			if (!($this->original[$key] == $value))
