@@ -8,20 +8,21 @@
 
 namespace Joomla\Entity;
 
-use Joomla\Database\DatabaseFactory;
+use ArrayAccess;
+use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
-
-// TODO Should implement ArrayAccess, JsonSerializable
+use Joomla\Entity\Exeptions\JsonEncodingException;
 
 /**
  * Class Model
  * @package Joomla\Entity
  * @since 1.0
  */
-abstract class Model
+abstract class Model implements ArrayAccess, JsonSerializable
 {
-	use Helpers\Attributes;
+	use ModelHelpers\Attributes;
+	use ModelHelpers\Timestamps;
 
 	/**
 	 * The connection name for the model.
@@ -65,28 +66,16 @@ abstract class Model
 	 */
 	public $exists = false;
 
-	// TODO implement timestamps
-
 	/**
 	 * Create a new Joomla entity model instance.
 	 *
-	 * @param   array $attributes -> preloads any attributed for the model
+	 * @param   DatabaseDriver $db         database driver instance
+	 * @param   array          $attributes -> preloads any attributed for the model
 	 */
-	public function __construct(array $attributes = array())
+	public function __construct(DatabaseDriver $db = null, array $attributes = array())
 	{
-		$options          = array(
-				'host' => '127.0.0.1',
-				'user' => 'root',
-				'password' => 'root',
-				'database' => 'gsoc18',
-				'prefix' => 'q371b_',
-				'driver' => 'msqli'
-			);
+		$this->db = $db;
 
-		$dbFactory = new DatabaseFactory;
-		$this->db = $dbFactory->getDriver($options['driver'], $options);
-
-		$this->setAttributes($this->defaultParams);
 		$this->setAttributes($attributes);
 
 		if (!isset($this->table))
@@ -129,12 +118,29 @@ abstract class Model
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getPrimaryKeyValue()
+	{
+		return $this->getAttributeValue($this->primaryKey);
+	}
+
+	/**
 	 * @param   string $primaryKey model's primary key
 	 * @return void
 	 */
 	public function setPrimaryKey($primaryKey)
 	{
 		$this->primaryKey = $primaryKey;
+	}
+
+	/**
+	 * @param   string $value model's primary key
+	 * @return void
+	 */
+	public function setPrimaryKeyValue($value)
+	{
+		$this->setAttribute($this->primaryKey, $value);
 	}
 
 	/**
@@ -162,7 +168,7 @@ abstract class Model
 	 */
 	public function __get($key)
 	{
-		return $this->getAttributeRaw($key);
+		return $this->getAttributeValue($key);
 	}
 
 	/**
@@ -176,6 +182,8 @@ abstract class Model
 	{
 		$this->setAttribute($key, $value);
 	}
+
+
 
 	/**
 	 * @return boolean
@@ -356,18 +364,6 @@ abstract class Model
 	}
 
 	/**
-	 * Handle dynamic static method calls into the method.
-	 *
-	 * @param   string  $method     method called dinamically on a static object
-	 * @param   array   $parameters parameters to be passed to the dynamic called method
-	 * @return mixed
-	 */
-	public static function __callStatic($method, $parameters)
-	{
-		return (new static)->$method(...$parameters);
-	}
-
-	/**
 	 * Create a new model instance that is existing.
 	 *
 	 * @param   array        $attributes attributes to be set on the new model instance
@@ -376,9 +372,9 @@ abstract class Model
 	 */
 	public function newFromBuilder($attributes = array(), $connection = null)
 	{
-		$model = $this->newInstance(array(), true);
+		$model = $this->newInstance($this->db, array(), true);
 
-		$model->setRawAttributes((array) $attributes, true);
+		$model->setAttributesRaw((array) $attributes, true);
 
 		return $model;
 	}
@@ -386,17 +382,18 @@ abstract class Model
 	/**
 	 * Create a new instance of the given model.
 	 *
-	 * @param   array  $attributes attributes to be set on the new model instance
-	 * @param   bool   $exists     true if the model is already in the database
+	 * @param   DatabaseDriver $db         database driver
+	 * @param   array          $attributes attributes to be set on the new model instance
+	 * @param   bool           $exists     true if the model is already in the database
 	 * @return static
 	 */
-	public function newInstance($attributes = array(), $exists = false)
+	public function newInstance(DatabaseDriver $db, $attributes = array(), $exists = false)
 	{
 		/** This method just provides a convenient way for us to generate fresh model
 		 * instances of this current model. It is particularly useful during the
 		 * hydration of new objects via the Query instances.
 		 */
-		$model = new static((array) $attributes);
+		$model = new static($db, (array) $attributes);
 
 		$model->exists = $exists;
 
@@ -419,4 +416,235 @@ abstract class Model
 		$this->table = '#__' . Inflector::pluralize($className);
 	}
 
+	/**
+	 * Determine if the given attribute exists.
+	 *
+	 * @param   mixed  $offset ?
+	 * @return boolean
+	 */
+	public function offsetExists($offset)
+	{
+		return ! is_null($this->getAttribute($offset));
+	}
+
+	/**
+	 * Get the value for a given offset.
+	 *
+	 * @param   mixed  $offset ?
+	 * @return mixed
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->getAttribute($offset);
+	}
+
+	/**
+	 * Set the value for a given offset.
+	 *
+	 * @param   mixed  $offset ?
+	 * @param   mixed  $value  ?
+	 * @return void
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->setAttribute($offset, $value);
+	}
+
+	/**
+	 * Unset the value for a given offset.
+	 *
+	 * @param   mixed  $offset ?
+	 * @return void
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->attributes[$offset], $this->relations[$offset]);
+	}
+
+	/**
+	 * Determine if an attribute or relation exists on the model.
+	 *
+	 * @param   string  $key attribute name
+	 * @return boolean
+	 */
+	public function __isset($key)
+	{
+		return $this->offsetExists($key);
+	}
+
+	/**
+	 * Unset an attribute on the model.
+	 *
+	 * @param   string  $key attribute name
+	 * @return void
+	 */
+	public function __unset($key)
+	{
+		$this->offsetUnset($key);
+	}
+
+	/**
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+
+		// TODO relations
+		return array_merge($this->getAttributes());
+
+		// A return array_merge($this->getAttributes(), $this->getRelations());
+	}
+
+	/**
+	 * Convert the model instance to JSON.
+	 *
+	 * @param   int  $options ?
+	 * @return string
+	 *
+	 * @throws JsonEncodingException
+	 */
+	public function toJson($options = 0)
+	{
+		$json = json_encode($this->jsonSerialize(), $options);
+
+		if (JSON_ERROR_NONE !== json_last_error())
+		{
+			throw JsonEncodingException::forModel($this, json_last_error_msg());
+		}
+
+		return $json;
+	}
+
+	/**
+	 * Convert the object into something JSON serializable.
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize()
+	{
+		return $this->toArray();
+	}
+
+	/**
+	 * Increment a column's value by a given amount.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   boolean    $lazy   laxy increment if true
+	 * @return integer
+	 */
+	protected function increment($column, $amount = 1, $lazy = false)
+	{
+		return $this->incrementOrDecrement($column, $amount, $lazy, 'increment');
+	}
+
+	/**
+	 * Decrement a column's value by a given amount.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   boolean    $lazy   laxy increment if true
+	 * @return integer
+	 */
+	protected function decrement($column, $amount = 1, $lazy = false)
+	{
+		return $this->incrementOrDecrement($column, $amount, $lazy, 'decrement');
+	}
+
+	/**
+	 * Run the increment or decrement method on the model.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   float|int  $lazy   ?
+	 * @param   string     $method ?
+	 * @return integer|Model
+	 */
+	protected function incrementOrDecrement($column, $amount, $lazy, $method)
+	{
+
+		$amount = $method == 'increment' ? $amount : $amount * -1;
+
+		$amount = $amount + $this->$column;
+
+		$this->setAttribute($column, $amount);
+
+		if ($lazy)
+		{
+			return $this;
+		}
+
+		if ($this->exists)
+		{
+			return $this->update();
+		}
+
+		return $this->save();
+	}
+
+	/**
+	 * Increment the underlying attribute value and sync with original.
+	 *
+	 * @param   string     $column ?
+	 * @param   float|int  $amount ?
+	 * @param   string     $method ?
+	 * @return void
+	 */
+	protected function incrementOrDecrementAttributeValue($column, $amount, $method)
+	{
+		$this->{$column} = $this->{$column} + ($method == 'increment' ? $amount : $amount * -1);
+
+		$this->syncOriginalAttribute($column);
+	}
+
+	/**
+	 * Method to return the real name of a "special" column such as ordering, hits, published
+	 * etc etc. In this way you are free to follow your db naming convention and use the
+	 * built in \Joomla functions.
+	 *
+	 * @param   string  $column  Name of the "special" column (ie ordering, hits)
+	 *
+	 * @return  string  The string that identify the special
+	 *
+	 * @since   3.4
+	 */
+	public function getColumnAlias($column)
+	{
+		// Get the column data if set
+		if (isset($this->columnAlias[$column]))
+		{
+			$return = $this->columnAlias[$column];
+		}
+		else
+		{
+			$return = $column;
+		}
+
+		// Sanitize the name
+		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
+
+		return $return;
+	}
+
+	/**
+	 * Method to register a column alias for a "special" column.
+	 *
+	 * @param   string  $column       The "special" column (ie ordering)
+	 * @param   string  $columnAlias  The real column name (ie foo_ordering)
+	 *
+	 * @return  void
+	 *
+	 * @since   3.4
+	 */
+	public function setColumnAlias($column, $columnAlias)
+	{
+		// Santize the column name alias
+		$column = strtolower($column);
+		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
+
+		// Set the column alias internally
+		$this->columnAlias[$column] = $columnAlias;
+	}
 }

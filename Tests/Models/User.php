@@ -7,19 +7,30 @@
  */
 
 
-namespace Joomla\Entity\Tests;
+namespace Joomla\Entity\Tests\Models;
+
+use Joomla\Entity\Model;
 
 /**
  * Class User
  * @package Joomla\Entity\Tests
  * @since 1.0
  */
-class User extends \Joomla\Entity\Model
+class User extends Model
 {
 	/**
+	 * Indicates if the model should be timestamped.
+	 *
+	 * @var boolean
+	 */
+	public $timestamps = false;
+
+	/**
+	 * The attributes that should be cast to native types.
+	 *
 	 * @var array
 	 */
-	protected $defaultParams = array(
-		'params' => ''
+	protected $casts = array(
+		'params' => 'array'
 	);
 }

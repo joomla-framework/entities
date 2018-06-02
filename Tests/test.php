@@ -9,7 +9,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Joomla\Entity\Tests\User;
+use Joomla\Entity\Tests\Models\User;
 
 $user = User::find(132);
 

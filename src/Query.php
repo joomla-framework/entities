@@ -8,6 +8,7 @@
 
 namespace Joomla\Entity;
 
+use BadMethodCallException;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
 
@@ -39,12 +40,12 @@ class Query
 	protected $model;
 
 	/**
-	 * The methods that should be returned from Joomla Database query builder.
+	 * The methods that should be returned from query builder.
 	 *
 	 * @var array
 	 */
-	protected $passthru = array(
-		'select', 'where', 'from'
+	protected $passThrough = array(
+		'select', 'where', 'from', 'having', 'join', 'order', 'setLimit'
 	);
 
 	/**
@@ -74,7 +75,7 @@ class Query
 		$values = array();
 
 		// Iterate over the object variables to build the query fields and values.
-		foreach ($this->model->getAttributes() as $k => $v)
+		foreach ($this->model->getAttributesRaw() as $k => $v)
 		{
 			// Prepare and sanitize the fields and values for the database query.
 			$fields[] = $this->db->quoteName($k);
@@ -97,7 +98,7 @@ class Query
 			// Update the primary key if it exists.
 			if ($key && $id && is_string($key))
 			{
-				$this->model->setPrimaryKey($id);
+				$this->model->setPrimaryKeyValue($id);
 			}
 		}
 
@@ -187,6 +188,22 @@ class Query
 	}
 
 	/**
+	 * Find last inserted.
+	 *
+	 * @param   array  $columns columns to be selected in query
+	 * @return Model
+	 */
+	public function findLast($columns = array('*'))
+	{
+		// TODO, what if the key does not exits, error handling
+		$this->from($this->model->getTable())->select($columns)->order('id DESC')->setLimit(1);
+		$item = $this->db->setQuery($this->query)->loadAssoc();
+
+		// TODO something like first() from Collection would make this nicer
+		return $this->hydrate(array($item))[0];
+	}
+
+	/**
 	 * Add a where clause on the primary key to the query.
 	 *
 	 * @param   mixed $id primary key
@@ -205,7 +222,7 @@ class Query
 	 */
 	public function hydrate(array $items)
 	{
-		$instance = $this->model->newInstance();
+		$instance = $this->model->newInstance($this->db);
 
 		return array_map(
 			function ($item) use ($instance) {
@@ -223,20 +240,17 @@ class Query
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, $this->passthru))
+		if (in_array($method, $this->passThrough))
 		{
 			$this->query->{$method}(...$parameters);
+
+			return $this;
 		}
 		else
 		{
-			throw new BadMethodCallException(
-				sprintf(
-					'Method %s does not exist in QueryInterface.',  $method
-				)
-			);
+			throw new BadMethodCallException(sprintf('Method %s does not exist or is not exposed from QueryInterface.',  $method));
 		}
 
-		return $this;
 	}
 
 }
