@@ -57,6 +57,13 @@ trait Attributes
 	protected $dateFormat;
 
 	/**
+	 * The cache of the mutated attributes for each class.
+	 *
+	 * @var array
+	 */
+	protected static $mutatorCache = array();
+
+	/**
 	 * Set a given attribute on the model.
 	 *
 	 * @param   string  $key   model's attribute name
@@ -811,7 +818,7 @@ trait Attributes
 	 * Get the mutated attributes for a given instance.
 	 *
 	 * @return array
-
+	 */
 	public function getMutatedAttributes()
 	{
 		$class = static::class;
@@ -824,12 +831,12 @@ trait Attributes
 		return static::$mutatorCache[$class];
 	}
 
-
+	/**
 	 * Extract and cache all the mutated attributes of a class.
 	 *
 	 * @param   string  $class ?
 	 * @return void
-
+	 */
 	public static function cacheMutatedAttributes($class)
 	{
 		$mutatedAttributes = static::getMutatorMethods($class);
@@ -842,7 +849,7 @@ trait Attributes
 		}
 
 		static::$mutatorCache[$class] = $cache;
-	}*/
+	}
 
 	/**
 	 * Get all of the attribute mutator methods.
