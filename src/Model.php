@@ -155,7 +155,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   string $primaryKeyType primary key type
 	 * @return void
 	 */
-	public function setPrimaryKeyType(string $primaryKeyType): void
+	public function setPrimaryKeyType(string $primaryKeyType)
 	{
 		$this->primaryKeyType = $primaryKeyType;
 	}
