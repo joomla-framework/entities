@@ -19,6 +19,13 @@ use Joomla\Entity\Model;
 class User extends Model
 {
 	/**
+	 * Indicates if the model should be timestamped.
+	 *
+	 * @var boolean
+	 */
+	public $timestamps = false;
+
+	/**
 	 * The attributes that should be cast to native types.
 	 *
 	 * @var array

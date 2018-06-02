@@ -22,7 +22,7 @@ use Joomla\Entity\Helpers\ArrayHelper;
 trait Attributes
 {
 	/**
-	 * The model's attributes.
+	 * The model's attributes. Mapped to column names.
 	 *
 	 * @var array
 	 */
@@ -36,21 +36,21 @@ trait Attributes
 	protected $original = array();
 
 	/**
-	 * The attributes that should be cast to native types.
+	 * The attributes that should be cast to native types. Already aliased!
 	 *
 	 * @var array
 	 */
 	protected $casts = array();
 
 	/**
-	 * The attributes that should be mutated to dates.
+	 * The attributes that should be mutated to dates. Already aliased!
 	 *
 	 * @var array
 	 */
 	protected $dates = array();
 
 	/**
-	 * The storage format of the model's date columns.
+	 * The storage format of the model's date columns. Already aliased!
 	 *
 	 * @var string
 	 */
@@ -62,6 +62,16 @@ trait Attributes
 	 * @var array
 	 */
 	protected static $mutatorCache = array();
+
+	/**
+	 * Array with alias for "special" columns such as ordering, hits etc etc
+	 *
+	 * @var    array
+	 */
+	protected $columnAlias = array(
+		'createdAt' => null,
+		'updatedAt' => null
+	);
 
 	/**
 	 * Set a given attribute on the model.
@@ -86,6 +96,8 @@ trait Attributes
 	 */
 	public function setAttribute($key, $value)
 	{
+		$key = $this->getColumnAlias($key);
+
 		/** First we will check for the presence of a mutator for the set operation
 		 * which simply lets the developers tweak the attribute as it is set on
 		 * the model, such as "json_encoding" an listing of data for storage.
@@ -174,6 +186,8 @@ trait Attributes
 	 */
 	public function getAttributeValue($key)
 	{
+		$key = $this->getColumnAlias($key);
+
 		$value = $this->attributes[$key];
 
 		/** If the attribute has a get mutator, we will call that then return what
@@ -256,7 +270,14 @@ trait Attributes
 		 * formatting while accessing attributes vs. arraying / JSONing a model.
 		 */
 
-		$attributes = $this->getAttributesRaw();
+		$attributesRaw = $this->getAttributesRaw();
+
+		$attributes = array();
+
+		foreach ($attributesRaw as $key => $value)
+		{
+			$attributes[$this->getColumnAlias($key)] = $value;
+		}
 
 		$attributes = $this->addDateAttributes($attributes);
 
@@ -277,6 +298,7 @@ trait Attributes
 
 	/**
 	 * Add the date attributes to the attributes array.
+	 * $attributes need to be already aliased!
 	 *
 	 * @param   array  $attributes model attributes - may have been already processed
 	 * @return array
@@ -300,6 +322,7 @@ trait Attributes
 
 	/**
 	 * Add the mutated attributes to the attributes array.
+	 * $attributes need to be already aliased!
 	 *
 	 * @param   array  $attributes        model attributes
 	 * @param   array  $mutatedAttributes model mutated attributes
@@ -330,6 +353,7 @@ trait Attributes
 
 	/**
 	 * Add the casted attributes to the attributes array.
+	 * $attributes need to be already casted!
 	 *
 	 * @param   array  $attributes        model attributes
 	 * @param   array  $mutatedAttributes model mutated attributes
@@ -677,7 +701,7 @@ trait Attributes
 	 */
 	public function getDateFormat()
 	{
-		return $this->dateFormat ?: $this->getConnection()->getQueryGrammar()->getDateFormat();
+		return $this->dateFormat ?: $this->db->getDateFormat();
 	}
 
 	/**

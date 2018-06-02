@@ -6,8 +6,8 @@
 
 namespace Joomla\Entity\Tests\Helpers;
 
+use Joomla\Database\DatabaseFactory;
 use Joomla\Database\Sqlite\SqliteDriver;
-use Joomla\Database\DatabaseDriver;
 
 /**
  * Abstract test case class for SQLite database testing.
@@ -40,7 +40,8 @@ abstract class SqliteCase extends AbstractDatabaseTestCase
 		try
 		{
 			// Attempt to instantiate the driver.
-			static::$driver = DatabaseDriver::getInstance(static::$options);
+			$dbFactory = new DatabaseFactory;
+			static::$driver = $dbFactory->getDriver(static::$options['driver'], static::$options);
 
 			// Get the PDO instance for an SQLite memory database and load the test schema into it.
 			static::$driver->connect();

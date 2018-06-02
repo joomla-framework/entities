@@ -49,44 +49,16 @@ trait Timestamps
 	protected function updateTimestamps()
 	{
 		$time = $this->freshTimestamp();
-		$updatedAt = $this->getColumnAlias('updated_at');
-		$createdAt = $this->getColumnAlias('updated_at');
 
-		if (! is_null($updatedAt) && ! $this->isDirty($updatedAt))
+		if (! $this->isDirty('updatedAt'))
 		{
-			$this->setUpdatedAt($time);
+			$this->updatedAt = $time;
 		}
 
-		if (! $this->exists && ! is_null($createdAt) && ! $this->isDirty($createdAt))
+		if (! $this->exists && ! $this->isDirty('createdAt'))
 		{
-			$this->setCreatedAt($time);
+			$this->createdAt = $time;
 		}
-	}
-
-	/**
-	 * Set the value of the "created at" attribute.
-	 *
-	 * @param   mixed  $value created_at value
-	 * @return $this
-	 */
-	public function setCreatedAt($value)
-	{
-		$this->createdAt = $value;
-
-		return $this;
-	}
-
-	/**
-	 * Set the value of the "updated at" attribute.
-	 *
-	 * @param   mixed  $value updated_at value
-	 * @return $this
-	 */
-	public function setUpdatedAt($value)
-	{
-		$this->updateAt = $value;
-
-		return $this;
 	}
 
 	/**
@@ -117,25 +89,5 @@ trait Timestamps
 	public function usesTimestamps()
 	{
 		return $this->timestamps;
-	}
-
-	/**
-	 * Get the name of the "created at" column.
-	 *
-	 * @return string
-	 */
-	public function getCreatedAtColumn()
-	{
-		return $this->createdAt;
-	}
-
-	/**
-	 * Get the name of the "updated at" column.
-	 *
-	 * @return string
-	 */
-	public function getUpdatedAtColumn()
-	{
-		return $this->updatedAt;
 	}
 }

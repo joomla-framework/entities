@@ -13,7 +13,6 @@ use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 use Joomla\Entity\Exeptions\JsonEncodingException;
-use PHPUnit\DbUnit\DataSet\CsvDataSet;
 
 /**
  * Class Model
@@ -52,16 +51,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var string
 	 */
 	protected $primaryKeyType = 'int';
-
-	/**
-	 * Array with alias for "special" columns such as ordering, hits etc etc
-	 *
-	 * @var    array
-	 */
-	protected $columnAliases = array(
-		'createdAt' => null,
-		'updatedAt' => null
-	);
 
 	/**
 	 * Indicates if the IDs are auto-incrementing.
@@ -624,9 +613,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public function getColumnAlias($column)
 	{
 		// Get the column data if set
-		if (isset($this->columnAliases[$column]))
+		if (isset($this->columnAlias[$column]))
 		{
-			$return = $this->columnAliases[$column];
+			$return = $this->columnAlias[$column];
 		}
 		else
 		{
@@ -656,6 +645,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
 
 		// Set the column alias internally
-		$this->columnAliases[$column] = $columnAlias;
+		$this->columnAlias[$column] = $columnAlias;
 	}
 }

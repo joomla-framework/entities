@@ -7,6 +7,7 @@
 namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Helpers\SqliteCase;
+use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\User;
 
 /**
@@ -22,7 +23,10 @@ class SqliteUserModelTest extends SqliteCase
 	 */
 	public static function setUpBeforeClass()
 	{
-		static::$dataSets = array('users' => __DIR__ . '/Stubs/users.csv');
+		static::$dataSets = array(
+			'users' => __DIR__ . '/Stubs/users.csv',
+			'banners' => __DIR__ . '/Stubs/banners.csv'
+			);
 
 		parent::setUpBeforeClass();
 	}
@@ -110,6 +114,22 @@ class SqliteUserModelTest extends SqliteCase
 		$this->assertEquals(
 			1,
 			$model->find(42)->resetCount
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testTouch()
+	{
+		$model = new Banner(self::$driver);
+		$banner = $model->find(4);
+
+		$banner->touch();
+
+		$this->assertEquals(
+			$banner->updatedAt,
+			$model->find(4)->updatedAt
 		);
 	}
 
