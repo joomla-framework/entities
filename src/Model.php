@@ -221,7 +221,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		if (is_null($this->getPrimaryKey()))
 		{
-			throw new Exception('No primary key defined on model.');
+			throw new \Exception('No primary key defined on model.');
 		}
 
 		if (!$this->exists)
@@ -325,7 +325,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	protected function performDelete($query)
 	{
-		$success = $query->delete($this);
+		$success = $query->delete();
 
 		if ($success)
 		{
@@ -367,10 +367,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Create a new model instance that is existing.
 	 *
 	 * @param   array        $attributes attributes to be set on the new model instance
-	 * @param   string|null  $connection database connection to be set on the enw instance
+	 *
 	 * @return static
 	 */
-	public function newFromBuilder($attributes = array(), $connection = null)
+	public function newFromBuilder($attributes = array())
 	{
 		$model = $this->newInstance($this->db, array(), true);
 
@@ -458,7 +458,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->attributes[$offset], $this->relations[$offset]);
+		unset($this->attributes[$offset]);
 	}
 
 	/**
