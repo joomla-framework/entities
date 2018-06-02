@@ -8,6 +8,7 @@
 
 namespace Joomla\Entity;
 
+use BadMethodCallException;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
 
@@ -37,6 +38,15 @@ class Query
 	 * @var Model
 	 */
 	protected $model;
+
+	/**
+	 * The methods that should be returned from query builder.
+	 *
+	 * @var array
+	 */
+	protected $passThrough = array(
+		'select', 'where', 'from', 'having', 'join', 'order', 'setLimit'
+	);
 
 	/**
 	 * Create a new Query instance.
@@ -230,9 +240,17 @@ class Query
 	 */
 	public function __call($method, $parameters)
 	{
-		$this->query->{$method}(...$parameters);
+		if (in_array($method, $this->passThrough))
+		{
+			$this->query->{$method}(...$parameters);
 
-		return $this;
+			return $this;
+		}
+		else
+		{
+			throw new BadMethodCallException(sprintf('Method %s does not exist or is not exposed from QueryInterface.',  $method));
+		}
+
 	}
 
 }
