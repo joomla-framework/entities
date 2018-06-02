@@ -128,27 +128,6 @@ trait Attributes
 	}
 
 	/**
-	 * Get an raw attribute from the model.
-	 *
-	 * @param   string  $key model's attribute name
-	 * @return mixed
-	 */
-	public function getAttributeRaw($key)
-	{
-		if (!$key)
-		{
-			return null;
-		}
-
-		if (array_key_exists($key, $this->attributes))
-		{
-			return $this->attributes[$key];
-		}
-
-		return null;
-	}
-
-	/**
 	 * Get an attribute from the model. (including mutations)
 	 *
 	 * @param   string  $key attribute name
@@ -195,7 +174,7 @@ trait Attributes
 	 */
 	public function getAttributeValue($key)
 	{
-		$value = $this->getAttributeRaw($key);
+		$value = $this->attributes[$key];
 
 		/** If the attribute has a get mutator, we will call that then return what
 		 * it returns as the value, which is useful for transforming values on
@@ -208,7 +187,7 @@ trait Attributes
 
 		/** If the attribute exists within the cast array, we will convert it to
 		 * an appropriate native PHP type dependant upon the associated value
-		 * given with the key in the pair. Dayle made this comment line up.
+		 * given with the key in the pair.
 		 */
 		if ($this->hasCast($key))
 		{

@@ -34,11 +34,11 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	protected static $options = array ();
 
 	/**
-	 * List of models to be used in testing. Used for definig the datasets.
+	 * List of data sets to be used in testing. Mapping between table and data set csv file location.
 	 *
 	 * @var array
 	 */
-	protected static $models = array ();
+	protected static $dataSets = array ();
 
 	/**
 	 * Sets up the fixture.
@@ -80,9 +80,10 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	{
 		$dataSet = new CsvDataSet(',', "'", '\\');
 
-		foreach (static::$models as $model)
+		foreach (static::$dataSets as $table => $csv)
 		{
-			$dataSet = call_user_func("\Joomla\Entity\Tests\Models\\" . $model . "::addDataSet", $dataSet);
+			$dataSet->addTable($table, $csv);
+
 		}
 
 		return $dataSet;

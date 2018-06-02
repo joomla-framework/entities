@@ -22,7 +22,7 @@ class SqliteUserModelTest extends SqliteCase
 	 */
 	public static function setUpBeforeClass()
 	{
-		static::$models = array("User");
+		static::$dataSets = array('users' => __DIR__ . '/Stubs/users.csv');
 
 		parent::setUpBeforeClass();
 	}
@@ -112,4 +112,6 @@ class SqliteUserModelTest extends SqliteCase
 			$model->find(42)->resetCount
 		);
 	}
+
+	// TODO getPrimaryKey, getPrimaryKeyValue
 }

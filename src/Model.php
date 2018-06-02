@@ -78,13 +78,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public $exists = false;
 
 	/**
-	 * Data Sets used for testing. Each item must be defined by its full path to the CSV file.
-	 *
-	 * @var array
-	 */
-	public $dataSets = array();
-
-	/**
 	 * Create a new Joomla entity model instance.
 	 *
 	 * @param   DatabaseDriver $db         database driver instance
@@ -382,18 +375,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * Handle dynamic static method calls into the method.
-	 *
-	 * @param   string  $method     method called dinamically on a static object
-	 * @param   array   $parameters parameters to be passed to the dynamic called method
-	 * @return mixed
-	 */
-	public static function __callStatic($method, $parameters)
-	{
-		return (new static)->$method(...$parameters);
-	}
-
-	/**
 	 * Create a new model instance that is existing.
 	 *
 	 * @param   array        $attributes attributes to be set on the new model instance
@@ -627,29 +608,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$this->{$column} = $this->{$column} + ($method == 'increment' ? $amount : $amount * -1);
 
 		$this->syncOriginalAttribute($column);
-	}
-
-	/**
-	 * Adds the data set to be loaded into the database during setup
-	 *
-	 * @param   CsvDataSet $dataSet csv dataset for testing
-	 * @return CsvDataSet
-	 */
-	public static function addDataSet(CsvDataSet $dataSet)
-	{
-		$static = (new static);
-
-		// TODO I would really like to inject the db object for static objects somehow.
-		// $table = str_replace("#__", $static->db->getPrefix(), $static->getTable());
-
-		$table = str_replace("#__", '', $static->getTable());
-
-		foreach ($static->dataSets as $csv)
-		{
-			$dataSet->addTable($table, $csv);
-		}
-
-		return $dataSet;
 	}
 
 	/**
