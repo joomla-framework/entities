@@ -168,5 +168,4 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 		return $default;
 	}
 
-
 }
