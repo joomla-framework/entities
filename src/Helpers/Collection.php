@@ -12,6 +12,7 @@ use ArrayAccess;
 use JsonSerializable;
 use IteratorAggregate;
 use ArrayIterator;
+use Joomla\Entity\Model;
 
 
 /**
@@ -27,6 +28,16 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 * @var array
 	 */
 	protected $items = array();
+
+	/**
+	 * Create a new collection.
+	 *
+	 * @param   array  $items array of Models
+	 */
+	public function __construct($items = array())
+	{
+		$this->items = $items;
+	}
 
 	/**
 	 * Get an iterator for the items.
@@ -104,6 +115,57 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 			},
 			$this->items
 		);
+	}
+
+	/**
+	 * Determine if the collection is empty or not.
+	 *
+	 * @return boolean
+	 */
+	public function isEmpty()
+	{
+		return empty($this->items);
+	}
+
+	/**
+	 * Get the first item in the collection
+	 *
+	 * @param   mixed $default default value to be returned when empty Collection
+	 * @return mixed
+	 */
+	public function first($default = null)
+	{
+		if ($this->isEmpty())
+		{
+			return $default;
+		}
+
+		return $this->items[0];
+	}
+
+	/**
+	 * Find a model in the collection by key.
+	 *
+	 * @param   mixed  $key     key to be found
+	 * @param   mixed  $default default value to be returned when key not found
+	 * @return mixed
+	 */
+	public function find($key, $default = null)
+	{
+		if ($key instanceof Model)
+		{
+			$key = $key->getPrimaryKeyValue();
+		}
+
+		foreach ($this->items as $item)
+		{
+			if ($item->getPrimaryKeyValue() == $key)
+			{
+				return $item;
+			}
+		}
+
+		return $default;
 	}
 
 

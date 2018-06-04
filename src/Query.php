@@ -11,6 +11,7 @@ namespace Joomla\Entity;
 use BadMethodCallException;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Entity\Helpers\Collection;
 
 /**
  * Class Query
@@ -180,11 +181,11 @@ class Query
 	public function find($id, $columns = array('*'))
 	{
 		// TODO, what if the key does not exits, error handling
-		$this->from($this->model->getTable())->select($columns)->whereKey($id);
+		$this->from($this->model->getTable())->select($columns)->whereKey($id)->setLimit(1);
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
 		// TODO something like first() from Collection would make this nicer
-		return $this->hydrate(array($item))[0];
+		return $this->hydrate(array($item))->first();
 	}
 
 	/**
@@ -200,7 +201,7 @@ class Query
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
 		// TODO something like first() from Collection would make this nicer
-		return $this->hydrate(array($item))[0];
+		return $this->hydrate(array($item))->first();
 	}
 
 	/**
@@ -218,17 +219,19 @@ class Query
 	 * Create a collection of models from plain arrays.
 	 *
 	 * @param   array $items array of results from the database query
-	 * @return array
+	 * @return Collection
 	 */
 	public function hydrate(array $items)
 	{
 		$instance = $this->model->newInstance($this->db);
 
-		return array_map(
+		$models = array_map(
 			function ($item) use ($instance) {
 				return $instance->newFromBuilder($item);
 			}, $items
 		);
+
+		return new Collection($models);
 	}
 
 	/**
