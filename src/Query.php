@@ -9,6 +9,7 @@
 namespace Joomla\Entity;
 
 use BadMethodCallException;
+use Joomla\Database\Query\LimitableInterface;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Entity\Helpers\Collection;
@@ -61,7 +62,6 @@ class Query
 		$this->query = $query;
 		$this->db    = $db;
 		$this->model = $model;
-
 	}
 
 	/**
@@ -115,10 +115,6 @@ class Query
 	{
 		$fields = array();
 
-		$statement = 'UPDATE ' . $this->db->quoteName($this->model->getTable()) . ' SET %s WHERE %s';
-
-		$where = $this->getWherePrimaryKey();
-
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getDirty() as $k => $v)
 		{
@@ -136,8 +132,13 @@ class Query
 			return true;
 		}
 
+		$this->query = $this->db->getQuery(true);
+		$this->query->update($this->model->getTable())
+			->set($fields)
+			->where($this->getWherePrimaryKey());
+
 		// Set the query and execute the insert.
-		$success = $this->db->setQuery(sprintf($statement, implode(',', $fields), $where))->execute();
+		$success = $this->db->setQuery($this->query)->execute();
 
 		return $success;
 	}
@@ -149,7 +150,7 @@ class Query
 	 */
 	public function delete()
 	{
-		$this->query->delete($this->model->getTable())->where($this->getWherePrimaryKey($this->model));
+		$this->query->delete($this->model->getTable())->where($this->getWherePrimaryKey());
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
@@ -181,11 +182,15 @@ class Query
 	public function find($id, $columns = array('*'))
 	{
 		// TODO, what if the key does not exits, error handling
-		$this->from($this->model->getTable())->select($columns)->whereKey($id)->setLimit(1);
+		$this->query->from($this->model->getTable())
+			->select($columns);
+
+		$this->whereKey($id);
+
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
 		// TODO something like first() from Collection would make this nicer
-		return $this->hydrate(array($item))->first();
+		return $this->hydrate(array($item))[0];
 	}
 
 	/**
@@ -193,11 +198,21 @@ class Query
 	 *
 	 * @param   array  $columns columns to be selected in query
 	 * @return Model
+	 * @throws \BadMethodCallException
 	 */
 	public function findLast($columns = array('*'))
 	{
+		if (!($this->query instanceof LimitableInterface))
+		{
+			throw new \BadMethodCallException('Query class does not support limit by');
+		}
+
 		// TODO, what if the key does not exits, error handling
-		$this->from($this->model->getTable())->select($columns)->order('id DESC')->setLimit(1);
+		$this->query->select($columns)
+			->from($this->model->getTable())
+			->order('id DESC')
+			->setLimit(1);
+
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
 		// TODO something like first() from Collection would make this nicer
@@ -212,7 +227,9 @@ class Query
 	 */
 	public function whereKey($id)
 	{
-		return $this->where($this->model->getPrimaryKey() . ' = ' . $id);
+		$this->query->where($this->model->getPrimaryKey() . ' = ' . $id)->setLimit(1);
+
+		return $this;
 	}
 
 	/**
@@ -243,17 +260,13 @@ class Query
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, $this->passThrough))
-		{
-			$this->query->{$method}(...$parameters);
-
-			return $this;
-		}
-		else
+		if (!in_array($method, $this->passThrough))
 		{
 			throw new BadMethodCallException(sprintf('Method %s does not exist or is not exposed from QueryInterface.',  $method));
 		}
 
-	}
+		$this->query->{$method}(...$parameters);
 
+		return $this;
+	}
 }
