@@ -189,7 +189,6 @@ class Query
 
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
-		// TODO something like first() from Collection would make this nicer
 		return $this->hydrate(array($item))[0];
 	}
 
@@ -215,7 +214,6 @@ class Query
 
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
-		// TODO something like first() from Collection would make this nicer
 		return $this->hydrate(array($item))->first();
 	}
 

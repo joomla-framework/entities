@@ -25,14 +25,14 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	/**
 	 * The items contained in the collection.
 	 *
-	 * @var array
+	 * @var Model[]
 	 */
 	protected $items = array();
 
 	/**
 	 * Create a new collection.
 	 *
-	 * @param   array  $items array of Models
+	 * @param   Model[]  $items array of Models
 	 */
 	public function __construct($items = array())
 	{
