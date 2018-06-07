@@ -213,15 +213,22 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Delete the model from the database.
 	 *
+	 * @param  mixed  $pk  The primary key to delete (optional)
+	 *
 	 * @return boolean|null
 	 *
 	 * @throws \Exception
 	 */
-	public function delete()
+	public function delete($pk = null)
 	{
 		if (is_null($this->getPrimaryKey()))
 		{
 			throw new \Exception('No primary key defined on model.');
+		}
+
+		if (!is_null($pk))
+		{
+			$this->setPrimaryKeyValue($pk);
 		}
 
 		if (!$this->exists)
