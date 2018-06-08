@@ -2,12 +2,11 @@
 /**
  * Part of the Joomla GSoC Webservices Project
  *
- * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
 namespace Joomla\Entity\ModelHelpers;
-
 
 use Joomla\String\Normalise;
 use Carbon\Carbon;
@@ -493,7 +492,6 @@ trait Attributes
 	 */
 	public function isDirty($attributes = null)
 	{
-
 		return $this->hasChanges(
 			$this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
 		);
@@ -593,14 +591,12 @@ trait Attributes
 	 */
 	protected function getNewJsonAttributeArray($path, $key, $value)
 	{
-
 		$array = $this->getJsonAttributeAsArray($key);
 
 		ArrayHelper::set($array, $path, $value);
 
 		return $array;
 	}
-
 
 	/**
 	 * Get an array attribute or return an empty array if it is not set.
@@ -838,6 +834,7 @@ trait Attributes
 	{
 		return $this->hasCast($key, array('array', 'json', 'object', 'collection'));
 	}
+
 	/**
 	 * Determine if a get mutator exists for an attribute.
 	 *
@@ -1034,5 +1031,4 @@ trait Attributes
 		return strncmp($cast, 'date:', 5) === 0 ||
 			strncmp($cast, 'datetime:', 9) === 0;
 	}
-
 }
