@@ -15,7 +15,10 @@ use Joomla\String\Inflector;
 use Joomla\Entity\Exeptions\JsonEncodingException;
 
 /**
- * Class Model
+ * Base Entity class for items
+ *
+ * @method $this find() find(mixed $id, array  $columns)
+ *
  * @package Joomla\Entity
  * @since 1.0
  */
