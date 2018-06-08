@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla GSoC Webservices Project
  *
- * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -168,7 +168,6 @@ class Query
 		return $success;
 	}
 
-
 	/**
 	 * Constructs the where clause based on the primary key
 	 *
@@ -179,7 +178,6 @@ class Query
 		$key = $this->model->getPrimaryKey();
 
 		return $this->db->quoteName($key) . '=' . $this->db->quote($this->model->$key);
-
 	}
 
 	/**
@@ -191,7 +189,7 @@ class Query
 	 */
 	public function find($id, $columns = array('*'))
 	{
-		// TODO, what if the key does not exits, error handling
+		// @TODO: what if the key does not exits, error handling
 		$this->query->from($this->model->getTable())
 			->select($columns);
 
@@ -216,7 +214,7 @@ class Query
 			throw new \BadMethodCallException('Query class does not support limit by');
 		}
 
-		// TODO, what if the key does not exits, error handling
+		// @TODO: what if the key does not exits, error handling
 		$this->query->select($columns)
 			->from($this->model->getTable())
 			->order('id DESC')
@@ -534,8 +532,7 @@ class Query
 	 */
 	protected function isNestedUnder($relation, $name)
 	{
-
-		// TODO maybe make some nice ArrayHelper functions for contains and startWith
+		// @TODO: maybe make some nice ArrayHelper functions for contains and startWith
 		return strpos($name, '.') && strpos($name, $relation . '.') == 0;
 	}
 

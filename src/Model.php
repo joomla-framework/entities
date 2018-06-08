@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla GSoC Webservices Project
  *
- * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -214,8 +214,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$this->setAttribute($key, $value);
 	}
 
-
-
 	/**
 	 * @return boolean
 	 */
@@ -320,14 +318,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return true;
 		}
 
-		 $success = $query->insert();
+		$success = $query->insert();
 
 		if ($success)
 		{
 			 $this->exists = true;
 		}
 
-		 return $success;
+		return $success;
 	}
 
 	/**
@@ -343,9 +341,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return true;
 		}
 
-		 $success = $query->update();
+		$success = $query->update();
 
-		 return $success;
+		return $success;
 	}
 
 	/**
@@ -437,7 +435,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		return $model;
 	}
 
-
 	/**
 	 * sets the default value of the table name based on Model class name.
 	 * @return void
@@ -447,7 +444,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$className = basename(str_replace('\\', '/', get_class($this)));
 
 		$tableArray = explode(" ", strtolower(Normalise::fromCamelCase($className)));
-
 
 		$plural = Inflector::pluralize(end($tableArray));
 
