@@ -17,7 +17,7 @@ use Joomla\Entity\Exeptions\JsonEncodingException;
 /**
  * Base Entity class for items
  *
- * @method $this find() find(mixed $id, array  $columns)
+ * @method $this find() find(mixed $id, array $columns = array('*'))
  *
  * @package Joomla\Entity
  * @since 1.0
