@@ -9,6 +9,7 @@ namespace Joomla\Entity\Tests;
 use Joomla\Entity\Tests\Helpers\SqliteCase;
 use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\User;
+use Joomla\Entity\Tests\Models\UserProfile;
 
 /**
  *
@@ -24,8 +25,9 @@ class SqliteUserModelTest extends SqliteCase
 	public static function setUpBeforeClass()
 	{
 		static::$dataSets = array(
-			'users' => __DIR__ . '/Stubs/users.csv',
-			'banners' => __DIR__ . '/Stubs/banners.csv'
+			'banners'       => __DIR__ . '/Stubs/banners.csv',
+			'users'         => __DIR__ . '/Stubs/users.csv',
+			'user_profiles' => __DIR__ . '/Stubs/user_profiles.csv'
 			);
 
 		parent::setUpBeforeClass();
@@ -131,6 +133,20 @@ class SqliteUserModelTest extends SqliteCase
 			$banner->updatedAt,
 			$model->find(4)->updatedAt
 		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testOneToOne()
+	{
+		$userModel = new User(self::$driver);
+		$userProfileModel = new UserProfile(self::$driver);
+
+		$user = $userModel->find(42);
+		$userProfile = $userProfileModel->find(42);
+
+		$this->assertTrue($userProfile->is($user->profile));
 	}
 
 	// TODO getPrimaryKey, getPrimaryKeyValue

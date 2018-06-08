@@ -144,6 +144,16 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	}
 
 	/**
+	 * Get the all the items in the collection as an array
+	 *
+	 * @return array
+	 */
+	public function all()
+	{
+		return $this->items;
+	}
+
+	/**
 	 * Find a model in the collection by key.
 	 *
 	 * @param   mixed  $key     key to be found
@@ -166,6 +176,17 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Adds an item to the collection
+	 *
+	 * @param   mixed $item item
+	 * @return void
+	 */
+	public function add($item)
+	{
+		$this->items[] = $item;
 	}
 
 }

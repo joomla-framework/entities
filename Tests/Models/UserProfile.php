@@ -9,15 +9,15 @@
 
 namespace Joomla\Entity\Tests\Models;
 
-use Joomla\Entity\Model;
 use Joomla\Entity\Relations\Relation;
+use Joomla\Entity\Model;
 
 /**
  * Class User
  * @package Joomla\Entity\Tests
  * @since 1.0
  */
-class User extends Model
+class UserProfile extends Model
 {
 	/**
 	 * Indicates if the model should be timestamped.
@@ -27,20 +27,9 @@ class User extends Model
 	public $timestamps = false;
 
 	/**
-	 * The attributes that should be cast to native types.
+	 * The primary key for the model.
 	 *
-	 * @var array
+	 * @var string
 	 */
-	protected $casts = array(
-		'params' => 'array'
-	);
-
-	/**
-	 * Get the profile for the current user.
-	 * @return Relation
-	 */
-	public function profile()
-	{
-		return $this->hasOne('Joomla\Entity\Tests\Models\UserProfile');
-	}
+	protected $primaryKey = 'user_id';
 }

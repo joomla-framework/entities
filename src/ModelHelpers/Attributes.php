@@ -8,11 +8,14 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+
 use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
-use Joomla\Entity\Exeptions\JsonEncodingException;
+use LogicException;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
+use Joomla\Entity\Relations\Relation;
 
 /**
  * Trait Attributes
@@ -172,10 +175,7 @@ trait Attributes
 			return null;
 		}
 
-		// TODO relations
-		// return $this->getRelationValue($key);
-
-		return null;
+		return $this->getRelationValue($key);
 	}
 
 	/**
@@ -219,6 +219,62 @@ trait Attributes
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Get a relation.
+	 *
+	 * @param   string  $key relation name
+	 * @return mixed
+	 */
+	public function getRelationValue($key)
+	{
+		/** If the key already exists in the relationships array, it just means the
+		 * relationship has already been loaded, so we'll just return it out of
+		 * here because there is no need to query within the relations twice.
+		 */
+		if ($this->relationLoaded($key))
+		{
+			return $this->relations[$key];
+		}
+
+		/** If the "attribute" exists as a method on the model, we will just assume
+		 * it is a relationship and will load and return results from the query
+		 * and hydrate the relationship's value on the "relationships" array.
+		 */
+
+		if (method_exists($this, $key))
+		{
+			return $this->getRelationFromMethod($key);
+		}
+	}
+
+	/**
+	 * Get a relation value from a method.
+	 *
+	 * @param   string  $method relation name
+	 * @return mixed
+	 *
+	 * @throws \LogicException
+	 */
+	protected function getRelationFromMethod($method)
+	{
+		$relation = $this->$method();
+
+		if (! $relation instanceof Relation)
+		{
+			throw new LogicException(
+				sprintf(
+					'%s::%s must return a relationship instance.', static::class, $method
+				)
+			);
+		}
+
+		$results = $relation->getResults();
+
+		$this->setRelation($method, $results);
+
+		return $results;
 	}
 
 	/**
@@ -817,7 +873,6 @@ trait Attributes
 	}
 
 	/**
-	 * TODO do we need to cache this?, if so, what cache do we use?
 	 * Get the mutated attributes for a given instance.
 	 *
 	 * @return array
