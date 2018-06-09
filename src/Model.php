@@ -226,7 +226,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Update the model in the database.
 	 *
 	 * @param   array  $attributes model's attributes
-	 * @return boolean
+	 *
+	 * @return  boolean
 	 */
 	public function update(array $attributes = array())
 	{
@@ -242,9 +243,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Delete the model from the database.
 	 *
-	 * @return boolean|null
-	 *
-	 * @throws \Exception
+	 * @return  boolean|null
+	 * @throws  \Exception
 	 */
 	public function delete()
 	{
