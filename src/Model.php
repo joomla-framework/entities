@@ -216,7 +216,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Delete the model from the database.
 	 *
-	 * @param  mixed  $pk  The primary key to delete (optional)
+	 * @param   mixed  $pk  The primary key to delete (optional)
 	 *
 	 * @return boolean|null
 	 *
