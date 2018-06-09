@@ -135,7 +135,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * @param   string $key key to get full qualified name
+	 * @param   string  $key  Key to get full qualified name
 	 * @return string
 	 */
 	public function getFullAttributeName($key)
