@@ -12,6 +12,11 @@ use Joomla\Entity\Model;
 use Joomla\Entity\Query;
 use Joomla\Entity\Helpers\Collection;
 
+/**
+ * Class HasOneOrMany
+ * @package Joomla\Entity\Relations
+ * @since   1.0
+ */
 abstract class HasOneOrMany extends Relation
 {
 	/**
@@ -42,7 +47,6 @@ abstract class HasOneOrMany extends Relation
 	 * @param   Model   $parent     ?
 	 * @param   string  $foreignKey ?
 	 * @param   string  $localKey   ?
-	 * @return void
 	 */
 	public function __construct(Query $query, Model $parent, $foreignKey, $localKey)
 	{
