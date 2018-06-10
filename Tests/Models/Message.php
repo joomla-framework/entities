@@ -6,29 +6,30 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-
 namespace Joomla\Entity\Tests\Models;
 
 use Joomla\Entity\Model;
 
 /**
- * Class User
- * @package Joomla\Entity\Tests
- * @since 1.0
+ * Class Message
+ * @package Joomla\Entity\Tests\Models
+ * @since   1.0
  */
-class UserProfile extends Model
+class Message extends Model
 {
 	/**
-	 * Indicates if the model should be timestamped.
+	 * The attributes that should be mutated to dates. Already aliased!
 	 *
-	 * @var boolean
+	 * @var array
 	 */
-	public $timestamps = false;
+	protected $dates = array(
+		'date_time'
+	);
 
 	/**
 	 * The primary key for the model.
 	 *
 	 * @var string
 	 */
-	protected $primaryKey = 'user_id';
+	protected $primaryKey = 'message_id';
 }

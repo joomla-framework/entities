@@ -21,7 +21,7 @@ use Joomla\Entity\Helpers\Collection;
 abstract class Relation
 {
 	/**
-	 * The Eloquent query builder instance.
+	 * The Query instance.
 	 *
 	 * @var Query
 	 */

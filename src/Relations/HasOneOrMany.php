@@ -83,7 +83,7 @@ abstract class HasOneOrMany extends Relation
 		// TODO there may be a problem with the where in, a more complicated logic for values and strings may be needed.
 		// Also, this may be included in the Query, as it may be needed somewhere else.
 		$this->query->where(
-			$this->foreignKey . ' IN (' . implode(',', $this->getKeys($models, $this->localKey)) . ')'
+			$this->foreignKey . ' IN (' . implode(', ', $this->getKeys($models, $this->localKey)) . ')'
 		);
 	}
 
@@ -157,12 +157,12 @@ abstract class HasOneOrMany extends Relation
 
 		foreach ($results as $key => $value)
 		{
-			if (! isset($dictionary[$key]))
+			if (! isset($dictionary[$value->{$foreign}]))
 			{
-				$dictionary[$key] = array();
+				$dictionary[$value->{$foreign}] = array();
 			}
 
-			$dictionary[$key][] = array($value->{$foreign} => $value);
+			$dictionary[$value->{$foreign}][] = $value;
 		}
 
 		return $dictionary;

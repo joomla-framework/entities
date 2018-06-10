@@ -24,8 +24,8 @@ CREATE TABLE `banners` (
   `custombannercode` TEXT NOT NULL,
   `sticky` INTEGER NOT NULL DEFAULT '0',
   `ordering` INTEGER NOT NULL DEFAULT '0',
-  `metakey` text NOT NULL,
-  `params` text NOT NULL,
+  `metakey` TEXT NOT NULL,
+  `params` TEXT NOT NULL,
   `own_prefix` INTEGER NOT NULL DEFAULT '0',
   `metakey_prefix` TEXT NOT NULL DEFAULT '',
   `purchase_type` INTEGER NOT NULL DEFAULT '-1',
@@ -51,6 +51,26 @@ CREATE INDEX `idx_banner_catid` ON `banners` (`catid`);
 CREATE INDEX `idx_language` ON `banners` (`language`);
 
 -- --------------------------------------------------------
+
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `message_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `user_id_from` INTEGER NOT NULL DEFAULT '0',
+  `user_id_to` INTEGER NOT NULL DEFAULT '0',
+  `folder_id` INTEGER NOT NULL DEFAULT '0',
+  `date_time` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `state` INTEGER NOT NULL DEFAULT '0',
+  `priority` INTEGER NOT NULL DEFAULT '0',
+  `subject` TEXT NOT NULL DEFAULT '',
+  `message` TEXT NOT NULL
+);
+
+-- --------------------------------------------------------
+
 
 --
 -- Table structure for table `users`

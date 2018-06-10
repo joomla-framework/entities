@@ -36,11 +36,38 @@ class User extends Model
 	);
 
 	/**
+	 * The relations to eager load on every query.
+	 *
+	 * @var array
+	 */
+	protected $with = array(
+		'sentMessages'
+	);
+
+	/**
 	 * Get the profile for the current user.
 	 * @return Relation
 	 */
 	public function profile()
 	{
 		return $this->hasOne('Joomla\Entity\Tests\Models\UserProfile');
+	}
+
+	/**
+	 * Get the sent messages for the current user.
+	 * @return Relation
+	 */
+	public function sentMessages()
+	{
+		return $this->hasMany('Joomla\Entity\Tests\Models\Message', 'user_id_from');
+	}
+
+	/**
+	 * Get the received messages  for the current user.
+	 * @return Relation
+	 */
+	public function receivedMessages()
+	{
+		return $this->hasMany('Joomla\Entity\Tests\Models\Message', 'user_id_to');
 	}
 }

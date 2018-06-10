@@ -927,6 +927,8 @@ trait Attributes
 		return $result;
 	}
 
+	// TODO add cached Set Mutators
+
 	/**
 	 * Determine whether an attribute should be cast to a native type.
 	 *

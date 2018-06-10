@@ -8,6 +8,7 @@ namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Helpers\SqliteCase;
 use Joomla\Entity\Tests\Models\Banner;
+use Joomla\Entity\Tests\Models\Message;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\Models\UserProfile;
 
@@ -26,6 +27,7 @@ class SqliteUserModelTest extends SqliteCase
 	{
 		static::$dataSets = array(
 			'banners'       => __DIR__ . '/Stubs/banners.csv',
+			'messages'      => __DIR__ . '/Stubs/messages.csv',
 			'users'         => __DIR__ . '/Stubs/users.csv',
 			'user_profiles' => __DIR__ . '/Stubs/user_profiles.csv'
 			);
@@ -147,6 +149,34 @@ class SqliteUserModelTest extends SqliteCase
 		$userProfile = $userProfileModel->find(42);
 
 		$this->assertTrue($userProfile->is($user->profile));
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testOneToMany()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$messages = $user->receivedMessages;
+
+		$this->assertCount(4, $messages);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testOneToManyEager()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$sentMessages = $user->getRelations()['sentMessages'];
+
+		$this->assertCount(1, $sentMessages);
 	}
 
 	// TODO getPrimaryKey, getPrimaryKeyValue

@@ -197,7 +197,12 @@ class Query
 
 		$item = $this->db->setQuery($this->query)->loadAssoc();
 
-		return $this->hydrate(array($item))->first();
+		// TODO find, get findLast, basically all methods that execute a query need to be written in the same style
+		$models = $this->hydrate(array($item))->all();
+
+		$models = $this->eagerLoadRelations($models);
+
+		return $models[0];
 	}
 
 	/**
@@ -361,6 +366,22 @@ class Query
 
 		foreach ($relations as $name => $constraints)
 		{
+			/** If the "relation" value is actually a numeric key, we can assume that no
+			 * constraints have been specified for the eager load and we'll just put
+			 * an empty Closure with the loader so that we can treat all the same.
+			 */
+			if (is_numeric($name))
+			{
+				$name = $constraints;
+
+				// TODO do we want createSelectWithConstraint? e.g to not load the whole related Model object
+				$constraints = function ()
+				{
+
+					// Empty callback
+				};
+			}
+
 			/** We need to separate out any nested includes. Which allows the developers
 			 * to load deep relationships using "dots" without stating each level of
 			 * the relationship with its own key in the array of eager load names.
@@ -418,8 +439,6 @@ class Query
 			/** For nested eager loads we'll skip loading them here and they will be set as an
 			 * eager load on the query to retrieve the relation so that they will be eager
 			 * loaded on that query, because that is where they get hydrated as models.
-			 *
-			 * TODO I don't get this yet
 			 */
 			if (strpos($name, '.') === false)
 			{

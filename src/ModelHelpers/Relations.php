@@ -9,9 +9,9 @@
 namespace Joomla\Entity\ModelHelpers;
 
 use \Joomla\Entity\Relations\HasOne;
+use \Joomla\Entity\Relations\HasMany;
 use \Joomla\Entity\Helpers\Collection;
 use Joomla\String\Inflector;
-use Joomla\String\Normalise;
 
 /**
  * Trait HasRelationships
@@ -196,5 +196,38 @@ trait Relations
 	protected function newHasOne($query, $parent, $foreignKey, $localKey)
 	{
 		return new HasOne($query, $parent, $foreignKey, $localKey);
+	}
+
+	/**
+	 * Define a one-to-many relationship.
+	 *
+	 * @param   string  $related    ?
+	 * @param   string  $foreignKey ?
+	 * @param   string  $localKey   ?
+	 * @return \Joomla\Entity\Relations\HasMany
+	 */
+	public function hasMany($related, $foreignKey = null, $localKey = null)
+	{
+		$instance = $this->newRelatedInstance($related);
+
+		$foreignKey = $foreignKey ?: Inflector::singularize($this->table) . '_id';
+
+		$localKey = $localKey ?: $this->getPrimaryKey();
+
+		return $this->newHasMany($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+	}
+
+	/**
+	 * Instantiate a new HasMany relationship.
+	 *
+	 * @param   \Joomla\Entity\Query $query      ?
+	 * @param   \Joomla\Entity\Model $parent     ?
+	 * @param   string               $foreignKey ?
+	 * @param   string               $localKey   ?
+	 * @return \Joomla\Entity\Relations\HasMany
+	 */
+	protected function newHasMany($query, $parent, $foreignKey, $localKey)
+	{
+		return new HasMany($query, $parent, $foreignKey, $localKey);
 	}
 }

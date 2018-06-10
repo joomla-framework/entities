@@ -18,7 +18,7 @@ use RuntimeException;
 class RelationNotFoundException extends RuntimeException
 {
 	/**
-	 * The name of the affected Eloquent model.
+	 * The name of the affected model.
 	 *
 	 * @var string
 	 */
