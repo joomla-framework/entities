@@ -11,7 +11,7 @@ namespace Joomla\Entity\ModelHelpers;
 use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
-use Joomla\Entity\Exeptions\JsonEncodingException;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
 
 /**

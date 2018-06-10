@@ -12,7 +12,7 @@ use ArrayAccess;
 use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
-use Joomla\Entity\Exeptions\JsonEncodingException;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 
 /**
  * Base Entity class for items
