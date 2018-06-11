@@ -13,6 +13,7 @@ use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 use Joomla\Entity\Exceptions\JsonEncodingException;
+use Joomla\String\Normalise;
 
 /**
  * Base Entity class for items
@@ -26,6 +27,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 {
 	use ModelHelpers\Attributes;
 	use ModelHelpers\Timestamps;
+	use ModelHelpers\Relations;
 
 	/**
 	 * The connection name for the model.
@@ -68,6 +70,13 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var boolean
 	 */
 	public $exists = false;
+
+	/**
+	 * The relations to eager load on every query.
+	 *
+	 * @var array
+	 */
+	protected $with = array();
 
 	/**
 	 * Create a new Joomla entity model instance.
@@ -123,6 +132,28 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * @return string
 	 */
+	public function getFullPrimaryKey()
+	{
+		return $this->table . '.' . $this->primaryKey;
+	}
+
+	/**
+	 * @param   string  $key  Key to get full qualified name
+	 * @return string
+	 */
+	public function getFullAttributeName($key)
+	{
+		if (strpos($key, '.'))
+		{
+			return $this->table . '.' . $key;
+		}
+
+		return $key;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getPrimaryKeyValue()
 	{
 		return $this->getAttributeValue($this->primaryKey);
@@ -171,7 +202,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function __get($key)
 	{
-		return $this->getAttributeValue($key);
+		return $this->getAttribute($key);
 	}
 
 	/**
@@ -186,8 +217,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$this->setAttribute($key, $value);
 	}
 
-
-
 	/**
 	 * @return boolean
 	 */
@@ -200,7 +229,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Update the model in the database.
 	 *
 	 * @param   array  $attributes model's attributes
-	 * @return boolean
+	 *
+	 * @return  boolean
 	 */
 	public function update(array $attributes = array())
 	{
@@ -218,9 +248,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @param   mixed  $pk  The primary key to delete (optional)
 	 *
-	 * @return boolean|null
+	 * @return  boolean|null
 	 *
-	 * @throws \Exception
+	 * @throws  \Exception
 	 */
 	public function delete($pk = null)
 	{
@@ -299,14 +329,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return true;
 		}
 
-		 $success = $query->insert();
+		$success = $query->insert();
 
 		if ($success)
 		{
 			 $this->exists = true;
 		}
 
-		 return $success;
+		return $success;
 	}
 
 	/**
@@ -322,9 +352,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return true;
 		}
 
-		 $success = $query->update();
+		$success = $query->update();
 
-		 return $success;
+		return $success;
 	}
 
 	/**
@@ -353,13 +383,15 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function newQuery()
 	{
-		return new Query($this->db->getQuery(true), $this->db, $this);
+		$query = new Query($this->db->getQuery(true), $this->db, $this);
+
+		return $query->with($this->with);
 	}
 
 	/**
 	 * Handle dynamic method calls into the model.
 	 *
-	 * @param   string  $method     method called dinamically
+	 * @param   string  $method     method called dynamically
 	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
@@ -414,16 +446,22 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		return $model;
 	}
 
-
 	/**
 	 * sets the default value of the table name based on Model class name.
 	 * @return void
 	 */
 	private function setDefaultTable()
 	{
-		$className = strtolower(basename(str_replace('\\', '/', get_class($this))));
+		$className = basename(str_replace('\\', '/', get_class($this)));
 
-		$this->table = '#__' . Inflector::pluralize($className);
+		$tableArray = explode(" ", strtolower(Normalise::fromCamelCase($className)));
+
+		$plural = Inflector::pluralize(end($tableArray));
+
+		$tableArray[key($tableArray)] = $plural;
+
+		$table = Normalise::toUnderscoreSeparated(implode(" ", $tableArray));
+		$this->table = '#__' . $table;
 	}
 
 	/**
@@ -468,7 +506,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->attributes[$offset]);
+		unset($this->attributes[$offset], $this->relations[$offset]);
 	}
 
 	/**
@@ -500,11 +538,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function toArray()
 	{
-
-		// TODO relations
-		return array_merge($this->getAttributes());
-
-		// A return array_merge($this->getAttributes(), $this->getRelations());
+		 return array_merge($this->getAttributes(), $this->getRelations());
 	}
 
 	/**
@@ -535,6 +569,20 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public function jsonSerialize()
 	{
 		return $this->toArray();
+	}
+
+	/**
+	 * Determine if two models have the same ID and belong to the same table.
+	 *
+	 * @param   Model|null  $model model to be compared with
+	 * @return boolean
+	 */
+	public function is($model)
+	{
+		return ! is_null($model) &&
+			$this->getPrimaryKeyValue() === $model->getPrimaryKeyValue() &&
+			$this->getTable() === $model->getTable() &&
+			$this->getDb() === $model->getDb();
 	}
 
 	/**
@@ -656,5 +704,55 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 		// Set the column alias internally
 		$this->columnAlias[$column] = $columnAlias;
+	}
+
+	/**
+	 * Begin querying a model with eager loading.
+	 *
+	 * @param   array|string  $relations relations that should be eager loaded
+	 * @return Query|static
+	 */
+	public function with($relations)
+	{
+		return $this->newQuery()->with(
+			is_string($relations) ? func_get_args() : $relations
+		);
+	}
+
+	/**
+	 * Eager load relations on the model.
+	 *
+	 * @param   array|string  $relations relations that should be eager loaded
+	 * @return $this
+	 */
+	public function load($relations)
+	{
+		$query = $this->newQuery()->with(
+			is_string($relations) ? func_get_args() : $relations
+		);
+
+		$query->eagerLoadRelations(array($this));
+
+		return $this;
+	}
+
+	/**
+	 * Eager load relations on the model if they are not already eager loaded.
+	 *
+	 * @param   array|string  $relations relations that should be eager loaded
+	 * @return $this
+	 */
+	public function loadMissing($relations)
+	{
+		$relations = is_string($relations) ? func_get_args() : $relations;
+
+		return $this->load(
+			array_filter($relations,
+				function ($relation)
+				{
+					return ! $this->relationLoaded($relation);
+				}
+			)
+		);
 	}
 }

@@ -11,8 +11,10 @@ namespace Joomla\Entity\ModelHelpers;
 use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
+use LogicException;
 use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
+use Joomla\Entity\Relations\Relation;
 
 /**
  * Trait Attributes
@@ -172,10 +174,7 @@ trait Attributes
 			return null;
 		}
 
-		// TODO relations
-		// return $this->getRelationValue($key);
-
-		return null;
+		return $this->getRelationValue($key);
 	}
 
 	/**
@@ -219,6 +218,62 @@ trait Attributes
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Get a relation.
+	 *
+	 * @param   string  $key relation name
+	 * @return mixed
+	 */
+	public function getRelationValue($key)
+	{
+		/** If the key already exists in the relationships array, it just means the
+		 * relationship has already been loaded, so we'll just return it out of
+		 * here because there is no need to query within the relations twice.
+		 */
+		if ($this->relationLoaded($key))
+		{
+			return $this->relations[$key];
+		}
+
+		/** If the "attribute" exists as a method on the model, we will just assume
+		 * it is a relationship and will load and return results from the query
+		 * and hydrate the relationship's value on the "relationships" array.
+		 */
+
+		if (method_exists($this, $key))
+		{
+			return $this->getRelationFromMethod($key);
+		}
+	}
+
+	/**
+	 * Get a relation value from a method.
+	 *
+	 * @param   string  $method relation name
+	 * @return mixed
+	 *
+	 * @throws \LogicException
+	 */
+	protected function getRelationFromMethod($method)
+	{
+		$relation = $this->$method();
+
+		if (! $relation instanceof Relation)
+		{
+			throw new LogicException(
+				sprintf(
+					'%s::%s must return a relationship instance.', static::class, $method
+				)
+			);
+		}
+
+		$results = $relation->getResults();
+
+		$this->setRelation($method, $results);
+
+		return $results;
 	}
 
 	/**
@@ -437,7 +492,6 @@ trait Attributes
 	 */
 	public function isDirty($attributes = null)
 	{
-
 		return $this->hasChanges(
 			$this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
 		);
@@ -537,14 +591,12 @@ trait Attributes
 	 */
 	protected function getNewJsonAttributeArray($path, $key, $value)
 	{
-
 		$array = $this->getJsonAttributeAsArray($key);
 
 		ArrayHelper::set($array, $path, $value);
 
 		return $array;
 	}
-
 
 	/**
 	 * Get an array attribute or return an empty array if it is not set.
@@ -782,6 +834,7 @@ trait Attributes
 	{
 		return $this->hasCast($key, array('array', 'json', 'object', 'collection'));
 	}
+
 	/**
 	 * Determine if a get mutator exists for an attribute.
 	 *
@@ -817,7 +870,6 @@ trait Attributes
 	}
 
 	/**
-	 * TODO do we need to cache this?, if so, what cache do we use?
 	 * Get the mutated attributes for a given instance.
 	 *
 	 * @return array
@@ -874,6 +926,8 @@ trait Attributes
 
 		return $result;
 	}
+
+	// TODO add cached Set Mutators
 
 	/**
 	 * Determine whether an attribute should be cast to a native type.
@@ -979,5 +1033,4 @@ trait Attributes
 		return strncmp($cast, 'date:', 5) === 0 ||
 			strncmp($cast, 'datetime:', 9) === 0;
 	}
-
 }

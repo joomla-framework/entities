@@ -1,0 +1,6 @@
+'message_id','user_id_from','user_id_to','folder_id','date_time','state','priority','subject','message'
+'1','42','43','1','2010-02-13 00:34:42','0','1','message1','content1'
+'2','43','42','1','2010-02-13 00:34:42','0','1','message2','content2'
+'3','44','42','1','2010-02-13 00:34:42','0','1','message3','content3'
+'4','99','42','1','2010-02-13 00:34:42','0','1','message4','content4'
+'5','100','42','1','2010-02-13 00:34:42','1','1','message5','content5'

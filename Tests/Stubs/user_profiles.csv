@@ -1,0 +1,6 @@
+'user_id','profile_key','profile_value','ordering'
+'42','Public','0','0'
+'43','Registered','1','1'
+'44','Special','2','2'
+'99','Customer Access Level (Example)','3','3'
+'100','Guest','0','4'
