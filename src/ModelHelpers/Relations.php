@@ -15,7 +15,7 @@ use \Joomla\Entity\Helpers\Collection;
 use Joomla\String\Inflector;
 
 /**
- * Trait Hasrelations
+ * Trait Relations
  * @package Joomla\Entity\Helpers
  * @since 1.0
  */

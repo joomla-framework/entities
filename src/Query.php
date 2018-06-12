@@ -373,6 +373,7 @@ class Query
 			{
 				$name = $constraints;
 
+				// TODO do we want createSelectWithConstraint? e.g to not load the whole related Model object
 				$constraints = function ()
 				{
 

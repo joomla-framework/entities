@@ -41,7 +41,11 @@ abstract class HasOneOrMany extends Relation
 	protected static $selfJoinCount = 0;
 
 	/**
+<<<<<<< HEAD
 	 * Create a new has one or many relation instance.
+=======
+	 * Create a new has one or many relationship instance.
+>>>>>>> c04c39014a6632a0a30139362cc0d0c1c52d3db0
 	 *
 	 * @param   Query   $query      ?
 	 * @param   Model   $parent     ?
