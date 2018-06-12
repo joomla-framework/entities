@@ -14,7 +14,6 @@ use Joomla\Entity\Tests\Models\UserProfile;
 use Joomla\Entity\Model;
 
 /**
-/**
  *
  * @since  1.0
  */
