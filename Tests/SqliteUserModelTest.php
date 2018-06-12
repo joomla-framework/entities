@@ -11,7 +11,7 @@ use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\Message;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\Models\UserProfile;
-
+use Joomla\Entity\Model;
 /**
  *
  * @since  1.0
@@ -36,6 +36,7 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Query::find()
 	 * @return void
 	 */
 	public function testFind()
@@ -46,10 +47,10 @@ class SqliteUserModelTest extends SqliteCase
 		$this->assertNotEmpty(
 			$user->getAttributes()
 		);
-
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Query::findLast()
 	 * @return void
 	 */
 	public function testFindLast()
@@ -65,6 +66,9 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::performInsert()
+	 * @covers \Joomla\Entity\Query::insert()
 	 * @return void
 	 */
 	public function testInsert()
@@ -88,6 +92,10 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::update()
+	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::performUpdate()
+	 * @covers \Joomla\Entity\Query::update()
 	 * @return void
 	 */
 	public function testUpdate()
@@ -106,6 +114,35 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Query::find()
+	 * @return void
+	 */
+	public function testNotFind()
+	{
+		$model = new User(self::$driver);
+		$user = $model->find(420);
+		$this->assertFalse(
+			$user
+		);
+	}
+
+	/**
+	 * @covers \Joomla\Entity\Model::delete()
+	 * @return void
+	 */
+	public function testDelete()
+	{
+		$model = new User(self::$driver);
+
+		$model->delete(100);
+
+		$this->assertFalse(
+			$model->find(100)
+		);
+	}
+
+	/**
+	 * @covers \Joomla\Entity\Model::increment()
 	 * @return void
 	 */
 	public function testIncrement()
@@ -122,6 +159,7 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::touch()
 	 * @return void
 	 */
 	public function testTouch()
@@ -138,6 +176,7 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::hasOne()
 	 * @return void
 	 */
 	public function testOneToOne()
@@ -152,6 +191,7 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::hasMany()
 	 * @return void
 	 */
 	public function testOneToMany()
@@ -166,6 +206,8 @@ class SqliteUserModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::hasMany()
+	 * @covers \Joomla\Entity\Model::$with
 	 * @return void
 	 */
 	public function testOneToManyEager()
@@ -179,5 +221,26 @@ class SqliteUserModelTest extends SqliteCase
 		$this->assertCount(1, $sentMessages);
 	}
 
-	// TODO getPrimaryKey, getPrimaryKeyValue
+	/**
+	 * @covers Model::getPrimaryKey()
+	 * @return void
+	 */
+	public function testGetPrimaryKey()
+	{
+		$userModel = new User(self::$driver);
+
+		$this->assertEquals('id', $userModel->getPrimaryKey());
+	}
+
+	/**
+	 * * @covers Model::getPrimaryKeyValue()
+	 * @return void
+	 */
+	public function testGetPrimaryKeyValue()
+	{
+		$userModel = new User(self::$driver);
+		$user = $userModel->find(42);
+
+		$this->assertEquals(42, $user->getPrimaryKeyValue());
+	}
 }

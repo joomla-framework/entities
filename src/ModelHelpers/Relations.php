@@ -9,12 +9,13 @@
 namespace Joomla\Entity\ModelHelpers;
 
 use \Joomla\Entity\Relations\HasOne;
+use \Joomla\Entity\Model;
 use \Joomla\Entity\Relations\HasMany;
 use \Joomla\Entity\Helpers\Collection;
 use Joomla\String\Inflector;
 
 /**
- * Trait HasRelationships
+ * Trait Hasrelations
  * @package Joomla\Entity\Helpers
  * @since 1.0
  */
@@ -94,7 +95,7 @@ trait Relations
 	}
 
 	/**
-	 * Get a specified relationship.
+	 * Get a specified relation.
 	 *
 	 * @param   string  $relation ?
 	 * @return mixed
@@ -116,7 +117,7 @@ trait Relations
 	}
 
 	/**
-	 * Set the specific relationship in the model.
+	 * Set the specific relation in the model.
 	 *
 	 * @param   string  $relation ?
 	 * @param   mixed   $value    ?
@@ -143,7 +144,7 @@ trait Relations
 	}
 
 	/**
-	 * Get the relationships that are touched on save.
+	 * Get the relations that are touched on save.
 	 *
 	 * @return array
 	 */
@@ -153,7 +154,7 @@ trait Relations
 	}
 
 	/**
-	 * Set the relationships that are touched on save.
+	 * Set the relations that are touched on save.
 	 *
 	 * @param   array  $touches ?
 	 * @return $this
@@ -166,7 +167,7 @@ trait Relations
 	}
 
 	/**
-	 * Define a one-to-one relationship.
+	 * Define a one-to-one relation.
 	 *
 	 * @param   string  $related    ?
 	 * @param   string  $foreignKey ?
@@ -185,7 +186,7 @@ trait Relations
 	}
 
 	/**
-	 * Instantiate a new HasOne relationship.
+	 * Instantiate a new HasOne relation.
 	 *
 	 * @param   \Joomla\Entity\Query $query      ?
 	 * @param   \Joomla\Entity\Model $parent     ?
@@ -199,7 +200,7 @@ trait Relations
 	}
 
 	/**
-	 * Define a one-to-many relationship.
+	 * Define a one-to-many relation.
 	 *
 	 * @param   string  $related    ?
 	 * @param   string  $foreignKey ?
@@ -218,7 +219,7 @@ trait Relations
 	}
 
 	/**
-	 * Instantiate a new HasMany relationship.
+	 * Instantiate a new HasMany relation.
 	 *
 	 * @param   \Joomla\Entity\Query $query      ?
 	 * @param   \Joomla\Entity\Model $parent     ?

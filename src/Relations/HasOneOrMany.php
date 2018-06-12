@@ -41,7 +41,7 @@ abstract class HasOneOrMany extends Relation
 	protected static $selfJoinCount = 0;
 
 	/**
-	 * Create a new has one or many relationship instance.
+	 * Create a new has one or many relation instance.
 	 *
 	 * @param   Query   $query      ?
 	 * @param   Model   $parent     ?
@@ -79,11 +79,8 @@ abstract class HasOneOrMany extends Relation
 	 */
 	public function addEagerConstraints(array $models)
 	{
-
-		// TODO there may be a problem with the where in, a more complicated logic for values and strings may be needed.
-		// Also, this may be included in the Query, as it may be needed somewhere else.
-		$this->query->where(
-			$this->foreignKey . ' IN (' . implode(', ', $this->getKeys($models, $this->localKey)) . ')'
+		$this->query->whereIn(
+			$this->foreignKey, $this->getKeys($models, $this->localKey)
 		);
 	}
 

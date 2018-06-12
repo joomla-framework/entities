@@ -84,7 +84,7 @@ abstract class Relation
 
 		/** When resetting the relation where clause, we want to shift the first element
 		 * off of the bindings, leaving only the constraints that the developers put
-		 * as "extra" on the relationships, and not original relation constraints.
+		 * as "extra" on the relations, and not original relation constraints.
 		 */
 		try
 		{
@@ -130,14 +130,14 @@ abstract class Relation
 	abstract public function match(array $models, Collection $results, $relation);
 
 	/**
-	 * Get the results of the relationship.
+	 * Get the results of the relation.
 	 *
 	 * @return mixed
 	 */
 	abstract public function getResults();
 
 	/**
-	 * Get the relationship for eager loading.
+	 * Get the relation for eager loading.
 	 *
 	 * @return Collection
 	 */
@@ -220,7 +220,7 @@ abstract class Relation
 	}
 
 	/**
-	 * Handle dynamic method calls to the relationship.
+	 * Handle dynamic method calls to the relation.
 	 *
 	 * @param   string  $method     method called dynamically
 	 * @param   array   $parameters parameters to be passed to the dynamic called method

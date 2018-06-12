@@ -14,6 +14,7 @@ use DateTimeInterface;
 use LogicException;
 use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
+use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Relations\Relation;
 
 /**
@@ -63,7 +64,7 @@ trait Attributes
 	 *
 	 * @var array
 	 */
-	protected static $mutatorCache = array();
+	protected static $getMutatorCache = array();
 
 	/**
 	 * Array with alias for "special" columns such as ordering, hits etc etc
@@ -131,7 +132,7 @@ trait Attributes
 		 *
 		 * JSON usage should be like this: $key='info->name'
 		 */
-		if (strpos($key, '->') !== false)
+		if (StringHelper::contains($key, '->'))
 		{
 			return $this->setJsonAttribute($key, $value);
 		}
@@ -158,7 +159,7 @@ trait Attributes
 
 		/** If the attribute exists in the attribute array or has a "get" mutator we will
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
-		 * are asking for a relationship's value. This covers both types of values.
+		 * are asking for a relation's value. This covers both types of values.
 		 */
 		if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key))
 		{
@@ -166,7 +167,7 @@ trait Attributes
 		}
 
 		/** Here we will determine if the model base class itself contains this given key
-		 * since we don't want to treat any of those methods as relationships because
+		 * since we don't want to treat any of those methods as relations because
 		 * they are all intended as helper methods and none of these are relations.
 		 */
 		if (method_exists(self::class, $key))
@@ -178,7 +179,7 @@ trait Attributes
 	}
 
 	/**
-	 * Get a plain attribute (not a relationship).
+	 * Get a plain attribute (not a relation).
 	 *
 	 * @param   string  $key attribute name
 	 * @return mixed
@@ -228,8 +229,8 @@ trait Attributes
 	 */
 	public function getRelationValue($key)
 	{
-		/** If the key already exists in the relationships array, it just means the
-		 * relationship has already been loaded, so we'll just return it out of
+		/** If the key already exists in the relations array, it just means the
+		 * relation has already been loaded, so we'll just return it out of
 		 * here because there is no need to query within the relations twice.
 		 */
 		if ($this->relationLoaded($key))
@@ -238,8 +239,8 @@ trait Attributes
 		}
 
 		/** If the "attribute" exists as a method on the model, we will just assume
-		 * it is a relationship and will load and return results from the query
-		 * and hydrate the relationship's value on the "relationships" array.
+		 * it is a relation and will load and return results from the query
+		 * and hydrate the relation's value on the "relations" array.
 		 */
 
 		if (method_exists($this, $key))
@@ -264,7 +265,7 @@ trait Attributes
 		{
 			throw new LogicException(
 				sprintf(
-					'%s::%s must return a relationship instance.', static::class, $method
+					'%s::%s must return a relation instance.', static::class, $method
 				)
 			);
 		}
@@ -878,12 +879,12 @@ trait Attributes
 	{
 		$class = static::class;
 
-		if (! isset(static::$mutatorCache[$class]))
+		if (! isset(static::$getMutatorCache[$class]))
 		{
 			static::cacheMutatedAttributes($class);
 		}
 
-		return static::$mutatorCache[$class];
+		return static::$getMutatorCache[$class];
 	}
 
 	/**
@@ -903,7 +904,7 @@ trait Attributes
 			$cache[] = lcfirst(Normalise::toCamelCase($mutatedAttribute));
 		}
 
-		static::$mutatorCache[$class] = $cache;
+		static::$getMutatorCache[$class] = $cache;
 	}
 
 	/**
@@ -926,8 +927,6 @@ trait Attributes
 
 		return $result;
 	}
-
-	// TODO add cached Set Mutators
 
 	/**
 	 * Determine whether an attribute should be cast to a native type.
