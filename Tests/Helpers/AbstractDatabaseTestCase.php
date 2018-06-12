@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -113,7 +113,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 */
 	protected function getSetUpOperation()
 	{
-		// Required given the use of InnoDB contraints.
+		// Required given the use of InnoDB constraints.
 		return new Composite(
 			array (
 				Factory::DELETE_ALL(),
@@ -129,7 +129,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 */
 	protected function getTearDownOperation()
 	{
-		// Required given the use of InnoDB contraints.
+		// Required given the use of InnoDB constraints.
 		return Factory::DELETE_ALL();
 	}
 }
