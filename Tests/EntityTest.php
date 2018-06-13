@@ -17,7 +17,7 @@ use Joomla\Entity\Model;
  *
  * @since  1.0
  */
-class SqliteUserModelTest extends SqliteCase
+class EntityTest extends SqliteCase
 {
 
 	/**
@@ -44,9 +44,14 @@ class SqliteUserModelTest extends SqliteCase
 	{
 		$model = new User(self::$driver);
 		$user = $model->find(42);
+		$user2 = $model->find(420);
 
 		$this->assertNotEmpty(
 			$user->getAttributes()
+		);
+
+		$this->assertFalse(
+			$user2
 		);
 	}
 
@@ -111,19 +116,6 @@ class SqliteUserModelTest extends SqliteCase
 		$this->assertEquals(
 			10,
 			$model->find(100)->resetCount
-		);
-	}
-
-	/**
-	 * @covers \Joomla\Entity\Query::find()
-	 * @return void
-	 */
-	public function testNotFind()
-	{
-		$model = new User(self::$driver);
-		$user = $model->find(420);
-		$this->assertFalse(
-			$user
 		);
 	}
 

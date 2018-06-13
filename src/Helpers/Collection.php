@@ -160,7 +160,7 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 * @param   mixed  $default default value to be returned when key not found
 	 * @return mixed
 	 */
-	public function find($key, $default = null)
+	public function find($key, $default = false)
 	{
 		if ($key instanceof Model)
 		{
