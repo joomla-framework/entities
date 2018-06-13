@@ -14,6 +14,7 @@ use Joomla\Database\Query\LimitableInterface;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Entity\Helpers\Collection;
+use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Relations\Relation;
 use Closure;
 
@@ -185,31 +186,27 @@ class Query
 	 *
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
-	 * @return Model
+	 * @return Model|boolean
 	 */
 	public function find($id, $columns = array('*'))
 	{
-		// @TODO: what if the key does not exits, error handling
-		$this->query->from($this->model->getTable())
-			->select($columns);
-
 		$this->whereKey($id);
 
-		$item = $this->db->setQuery($this->query)->loadAssoc();
+		$models = $this->get($columns);
 
-		// TODO find, get findLast, basically all methods that execute a query need to be written in the same style
-		$models = $this->hydrate(array($item))->all();
+		if ($models->isEmpty())
+		{
+			return false;
+		}
 
-		$models = $this->eagerLoadRelations($models);
-
-		return $models[0];
+		return $models->first();
 	}
 
 	/**
 	 * Find last inserted.
 	 *
 	 * @param   array  $columns columns to be selected in query
-	 * @return Model
+	 * @return Model|boolean
 	 * @throws \BadMethodCallException
 	 */
 	public function findLast($columns = array('*'))
@@ -219,15 +216,17 @@ class Query
 			throw new \BadMethodCallException('Query class does not support limit by');
 		}
 
-		// @TODO: what if the key does not exits, error handling
-		$this->query->select($columns)
-			->from($this->model->getTable())
-			->order('id DESC')
+		$this->query->order('id DESC')
 			->setLimit(1);
 
-		$item = $this->db->setQuery($this->query)->loadAssoc();
+		$models = $this->get();
 
-		return $this->hydrate(array($item))->first();
+		if ($models->isEmpty())
+		{
+			return false;
+		}
+
+		return $models->first();
 	}
 
 	/**
@@ -303,14 +302,14 @@ class Query
 	}
 
 	/**
-	 * Execute the query as a "select" statement.
+	 * Finds all the Models with eager relations loaded
 	 *
 	 * @param   array  $columns columns to be selected in query
-	 * @return Collection|static[]
+	 * @return Collection
 	 */
 	public function get($columns = array('*'))
 	{
-		/** If we actually found models we will also eager load any relationships that
+		/** If we actually found models we will also eager load any relations that
 		 * have been specified as needing to be eager loaded
 		 */
 		$models = $this->getModels($columns);
@@ -326,7 +325,7 @@ class Query
 	/**
 	 * Get the hydrated models without eager loading.
 	 *
-	 * @param   array  $columns ?
+	 * @param   array  $columns columns to be selected in query
 	 * @return Model[]
 	 */
 	public function getModels($columns = array('*'))
@@ -340,7 +339,7 @@ class Query
 	}
 
 	/**
-	 * Set the relationships that should be eager loaded.
+	 * Set the relations that should be eager loaded.
 	 *
 	 * @param   mixed  $relations relations that should be eager loaded
 	 * @return $this
@@ -383,8 +382,8 @@ class Query
 			}
 
 			/** We need to separate out any nested includes. Which allows the developers
-			 * to load deep relationships using "dots" without stating each level of
-			 * the relationship with its own key in the array of eager load names.
+			 * to load deep relations using "dots" without stating each level of
+			 * the relation with its own key in the array of eager load names.
 			 */
 			$results = $this->addNestedWiths($name, $results);
 
@@ -395,7 +394,7 @@ class Query
 	}
 
 	/**
-	 * Parse the nested relationships in a relation.
+	 * Parse the nested relations in a relation.
 	 *
 	 * @param   string  $name    relation name
 	 * @param   array   $results eager loaded relations so far
@@ -407,7 +406,7 @@ class Query
 
 		/** If the relation has already been set on the result array, we will not set it
 		 * again, since that would override any constraints that were already placed
-		 * on the relationships. We will only set the ones that are not specified.
+		 * on the relations. We will only set the ones that are not specified.
 		 */
 		foreach (explode('.', $name) as $segment)
 		{
@@ -427,7 +426,7 @@ class Query
 	}
 
 	/**
-	 * Eager load the relationships for the models.
+	 * Eager load the relations for the models.
 	 *
 	 * @param   array  $models eager load the realtion on the specified models
 	 * @return array
@@ -440,7 +439,7 @@ class Query
 			 * eager load on the query to retrieve the relation so that they will be eager
 			 * loaded on that query, because that is where they get hydrated as models.
 			 */
-			if (strpos($name, '.') === false)
+			if (!StringHelper::contains($name, '.'))
 			{
 				$models = $this->eagerLoadRelation($models, $name, $constraints);
 			}
@@ -450,7 +449,7 @@ class Query
 	}
 
 	/**
-	 * Eagerly load the relationship on a set of models.
+	 * Eagerly load the relation on a set of models.
 	 *
 	 * @param   array     $models      ?
 	 * @param   string    $name        ?
@@ -470,7 +469,7 @@ class Query
 		$constraints($relation);
 
 		/** Once we have the results, we just match those back up to their parent models
-		 * using the relationship instance. Then we just return the finished arrays
+		 * using the relation instance. Then we just return the finished arrays
 		 * of models which have been eagerly hydrated and are readied for return.
 		 */
 		return $relation->match(
@@ -488,7 +487,7 @@ class Query
 	public function getRelation($name)
 	{
 		/**
-		 * We want to run a relationship query without any constrains so that we will
+		 * We want to run a relation query without any constrains so that we will
 		 * not have to remove these where clauses manually which gets really hacky
 		 * and error prone. We don't want constraints because we add eager ones.
 		 */
@@ -508,8 +507,8 @@ class Query
 
 		$nested = $this->relationsNestedUnder($name);
 
-		/** If there are nested relationships set on the query, we will put those onto
-		 * the query instances so that they can be handled after this relationship
+		/** If there are nested relations set on the query, we will put those onto
+		 * the query instances so that they can be handled after this relation
 		 * is loaded. In this way they will all trickle down as they are loaded.
 		 */
 		if (count($nested) > 0)
@@ -530,8 +529,8 @@ class Query
 	{
 		$nested = array();
 
-		/** We are basically looking for any relationships that are nested deeper than
-		 * the given top-level relationship. We will just check for any relations
+		/** We are basically looking for any relations that are nested deeper than
+		 * the given top-level relation. We will just check for any relations
 		 * that start with the given top relations and adds them to our arrays.
 		 */
 		foreach ($this->eagerLoad as $name => $constraints)
@@ -546,7 +545,7 @@ class Query
 	}
 
 	/**
-	 * Determine if the relationship is nested.
+	 * Determine if the relation is nested.
 	 *
 	 * @param   string  $relation relation
 	 * @param   string  $name     name of relation that is to be checked to be nested
@@ -554,8 +553,7 @@ class Query
 	 */
 	protected function isNestedUnder($relation, $name)
 	{
-		// @TODO: maybe make some nice ArrayHelper functions for contains and startWith
-		return strpos($name, '.') && strpos($name, $relation . '.') == 0;
+		return StringHelper::contains($name, '.') && StringHelper::startWith($name, $relation . '.');
 	}
 
 	/**
@@ -567,5 +565,20 @@ class Query
 	public function first($columns = array('*'))
 	{
 		return $this->setLimit(1)->get($columns)->first();
+	}
+
+
+	/**
+	 * Add a WHERE IN statement to the query
+	 *
+	 * @param   string $keyName   key name for the where clause
+	 * @param   array  $keyValues array of values to be matched
+	 * @return void
+	 */
+	public function whereIn($keyName, $keyValues)
+	{
+		$this->query->where(
+			$keyName . ' IN (' . implode(', ', $keyValues) . ')'
+		);
 	}
 }

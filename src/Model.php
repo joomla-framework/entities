@@ -13,6 +13,7 @@ use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
 use Joomla\Entity\Exceptions\JsonEncodingException;
+use Joomla\Entity\Helpers\StringHelper;
 use Joomla\String\Normalise;
 
 /**
@@ -143,7 +144,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function getFullAttributeName($key)
 	{
-		if (strpos($key, '.'))
+		if (StringHelper::contains($key, '.'))
 		{
 			return $this->table . '.' . $key;
 		}
@@ -157,15 +158,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public function getPrimaryKeyValue()
 	{
 		return $this->getAttributeValue($this->primaryKey);
-	}
-
-	/**
-	 * @param   string $primaryKey model's primary key
-	 * @return void
-	 */
-	public function setPrimaryKey($primaryKey)
-	{
-		$this->primaryKey = $primaryKey;
 	}
 
 	/**
@@ -239,8 +231,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return false;
 		}
 
-		 // TODO is it a lot better performance wise if we only save the modified attributes?
-		 return $this->setAttributes($attributes)->save();
+		return $this->setAttributes($attributes)->save();
 	}
 
 	/**
@@ -249,25 +240,26 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   mixed  $pk  The primary key to delete (optional)
 	 *
 	 * @return  boolean|null
-	 *
-	 * @throws  \Exception
 	 */
 	public function delete($pk = null)
 	{
-		if (is_null($this->getPrimaryKey()))
-		{
-			throw new \Exception('No primary key defined on model.');
-		}
-
 		if (!is_null($pk))
 		{
 			$this->setPrimaryKeyValue($pk);
 		}
-
-		if (!$this->exists)
+		else
 		{
-			return false;
+			if (!$this->exists)
+			{
+				return false;
+			}
 		}
+
+		/** Here, we'll touch the owning models, verifying these timestamps get updated
+		 * for the models. This will allow any caching to get broken on the parents
+		 * by the timestamp. Then we will go ahead and delete the model instance.
+		 */
+		$this->touchOwners();
 
 		// TODO relations to be taken cared of here.
 

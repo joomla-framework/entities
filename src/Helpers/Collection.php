@@ -133,7 +133,7 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 * @param   mixed $default default value to be returned when empty Collection
 	 * @return mixed
 	 */
-	public function first($default = null)
+	public function first($default = false)
 	{
 		if ($this->isEmpty())
 		{

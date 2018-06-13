@@ -20,7 +20,7 @@ use Joomla\Entity\Helpers\Collection;
 class HasMany extends HasOneOrMany
 {
 	/**
-	 * Get the results of the relationship.
+	 * Get the results of the relation.
 	 *
 	 * @return mixed
 	 */

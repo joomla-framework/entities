@@ -113,7 +113,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 */
 	protected function getSetUpOperation()
 	{
-		// Required given the use of InnoDB contraints.
+		// Required given the use of InnoDB constraints.
 		return new Composite(
 			array (
 				Factory::DELETE_ALL(),
@@ -129,7 +129,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 */
 	protected function getTearDownOperation()
 	{
-		// Required given the use of InnoDB contraints.
+		// Required given the use of InnoDB constraints.
 		return Factory::DELETE_ALL();
 	}
 }
