@@ -562,20 +562,4 @@ class Query
 	{
 		return StringHelper::contains($name, '.') && StringHelper::startWith($name, $relation . '.');
 	}
-
-	/**
-	 * @todo to be removed after PR accepted in database repo.
-	 *
-	 * Add a WHERE IN statement to the query
-	 *
-	 * @param   string $keyName   key name for the where clause
-	 * @param   array  $keyValues array of values to be matched
-	 * @return void
-	 */
-	public function whereIn($keyName, $keyValues)
-	{
-		$this->query->where(
-			$keyName . ' IN (' . implode(', ', $keyValues) . ')'
-		);
-	}
 }
