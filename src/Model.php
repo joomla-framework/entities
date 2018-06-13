@@ -133,23 +133,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * @return string
 	 */
-	public function getFullPrimaryKey()
+	public function getQualifiedPrimaryKey()
 	{
-		return $this->table . '.' . $this->primaryKey;
-	}
-
-	/**
-	 * @param   string  $key  Key to get full qualified name
-	 * @return string
-	 */
-	public function getFullAttributeName($key)
-	{
-		if (StringHelper::contains($key, '.'))
-		{
-			return $this->table . '.' . $key;
-		}
-
-		return $key;
+		return $this->qualifyColumn($this->primaryKey);
 	}
 
 	/**
@@ -187,6 +173,22 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	public function setPrimaryKeyType(string $primaryKeyType)
 	{
 		$this->primaryKeyType = $primaryKeyType;
+	}
+
+	/**
+	 * Qualify the given column name by the model's table.
+	 *
+	 * @param   string  $column column name to by qualifies
+	 * @return string
+	 */
+	public function qualifyColumn($column)
+	{
+		if (StringHelper::contains($column, '.'))
+		{
+			return $column;
+		}
+
+		return $this->getTable() . '.' . $column;
 	}
 
 	/**
@@ -546,6 +548,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Convert the model instance to JSON.
 	 *
 	 * @param   int  $options json_encode Bitmask
+	 *
 	 * @return string
 	 *
 	 * @throws JsonEncodingException
@@ -573,7 +576,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * Determine if two models have the same ID and belong to the same table.
+	 * Determine if two models have the same ID, belong to the same table and use the same DatabaseDriver.
 	 *
 	 * @param   Model|null  $model model to be compared with
 	 * @return boolean

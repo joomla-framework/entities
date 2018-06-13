@@ -65,9 +65,9 @@ abstract class HasOneOrMany extends Relation
 	{
 		if (static::$constraints)
 		{
-			$this->query->where($this->foreignKey . ' = ' . $this->getParentKey());
+			$this->query->where($this->foreignKey . ' = ' . $this->getParentKeyValue());
 
-			$this->query->whereNotNull($this->foreignKey);
+			$this->query->where($this->foreignKey . ' NOT NULL');
 		}
 	}
 
@@ -148,7 +148,7 @@ abstract class HasOneOrMany extends Relation
 	 */
 	protected function buildDictionary(Collection $results)
 	{
-		$foreign = $this->getForeignKeyName();
+		$foreign = $this->getForeignKey();
 
 		$dictionary = array();
 
@@ -310,7 +310,7 @@ abstract class HasOneOrMany extends Relation
 	 */
 	protected function setForeignAttributesForCreate(Model $model)
 	{
-		$model->setAttribute($this->getForeignKeyName(), $this->getParentKey());
+		$model->setAttribute($this->getForeignKey(), $this->getParentKeyValue());
 	}
 
 	/**
@@ -334,7 +334,7 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return mixed
 	 */
-	public function getParentKey()
+	public function getParentKeyValue()
 	{
 		return $this->parent->getAttribute($this->localKey);
 	}
@@ -344,9 +344,9 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return string
 	 */
-	public function getFullParentKeyName()
+	public function getFullParentKey()
 	{
-		return $this->parent->getFullAttributeName($this->localKey);
+		return $this->parent->qualifyColumn($this->localKey);
 	}
 
 	/**
@@ -354,7 +354,7 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return string
 	 */
-	public function getForeignKeyName()
+	public function getForeignKey()
 	{
 		$segments = explode('.', $this->foreignKey);
 

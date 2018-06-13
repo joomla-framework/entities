@@ -68,7 +68,7 @@ class HasOne extends HasOneOrMany
 	public function newRelatedInstanceFor($parent)
 	{
 		return $this->related->newInstance($parent->getDb())->setAttribute(
-			$this->getForeignKeyName(), $parent->{$this->localKey}
+			$this->getForeignKey(), $parent->{$this->localKey}
 		);
 	}
 }

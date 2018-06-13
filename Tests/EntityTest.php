@@ -72,6 +72,22 @@ class EntityTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Query::first()
+	 * @return void
+	 */
+	public function testFirst()
+	{
+		$model = new User(self::$driver);
+		$user = $model->first();
+
+		$this->assertEquals(
+			42,
+			$user->getPrimaryKeyValue()
+		);
+
+	}
+
+	/**
 	 * @covers \Joomla\Entity\Model::save()
 	 * @covers \Joomla\Entity\Model::performInsert()
 	 * @covers \Joomla\Entity\Query::insert()

@@ -78,7 +78,6 @@ class Query
 	/**
 	 * Inserts a single instance of a model.
 	 *
-	 *
 	 * @return boolean
 	 */
 	public function insert()
@@ -186,6 +185,7 @@ class Query
 	 *
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
+	 *
 	 * @return Model|boolean
 	 */
 	public function find($id, $columns = array('*'))
@@ -206,7 +206,9 @@ class Query
 	 * Find last inserted.
 	 *
 	 * @param   array  $columns columns to be selected in query
+	 *
 	 * @return Model|boolean
+	 *
 	 * @throws \BadMethodCallException
 	 */
 	public function findLast($columns = array('*'))
@@ -230,6 +232,17 @@ class Query
 	}
 
 	/**
+	 * Execute the query and get the first result.
+	 *
+	 * @param   array  $columns columns to be selected
+	 * @return Model|object|static|null
+	 */
+	public function first($columns = array('*'))
+	{
+		return $this->setLimit(1)->get($columns)->first();
+	}
+
+	/**
 	 * Add a where clause on the primary key to the query.
 	 *
 	 * @param   mixed $id primary key
@@ -237,20 +250,14 @@ class Query
 	 */
 	public function whereKey($id)
 	{
-		$this->query->where($this->model->getPrimaryKey() . ' = ' . $id);
+		if (is_array($id))
+		{
+			$this->whereIn($this->model->getQualifiedPrimaryKey(), $id);
 
-		return $this;
-	}
+			return $this;
+		}
 
-	/**
-	 * Add a where clause on a columnt to not be null.
-	 *
-	 * @param   mixed $column column
-	 * @return $this
-	 */
-	public function whereNotNull($column)
-	{
-		$this->query->where($column . ' NOT NULL');
+		$this->query->where($this->model->getQualifiedPrimaryKey() . ' = ' . $id);
 
 		return $this;
 	}
@@ -277,7 +284,7 @@ class Query
 	/**
 	 * Dynamically handle calls into the query instance.
 	 *
-	 * @param   string  $method     method called dinamically
+	 * @param   string  $method     method called dynamically
 	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
@@ -310,7 +317,7 @@ class Query
 	public function get($columns = array('*'))
 	{
 		/** If we actually found models we will also eager load any relations that
-		 * have been specified as needing to be eager loaded
+		 * have been specified as needed to be eager loaded
 		 */
 		$models = $this->getModels($columns);
 
@@ -361,7 +368,7 @@ class Query
 	 */
 	protected function parseWithRelations(array $relations)
 	{
-		$results = array();
+		$results = [];
 
 		foreach ($relations as $name => $constraints)
 		{
@@ -402,7 +409,7 @@ class Query
 	 */
 	protected function addNestedWiths($name, $results)
 	{
-		$progress = array();
+		$progress = [];
 
 		/** If the relation has already been set on the result array, we will not set it
 		 * again, since that would override any constraints that were already placed
@@ -557,18 +564,8 @@ class Query
 	}
 
 	/**
-	 * Execute the query and get the first result.
+	 * @todo to be removed after PR accepted in database repo.
 	 *
-	 * @param   array  $columns columns to be selected
-	 * @return Model|object|static|null
-	 */
-	public function first($columns = array('*'))
-	{
-		return $this->setLimit(1)->get($columns)->first();
-	}
-
-
-	/**
 	 * Add a WHERE IN statement to the query
 	 *
 	 * @param   string $keyName   key name for the where clause

@@ -184,7 +184,7 @@ abstract class Relation
 	 */
 	public function getFullParentKey()
 	{
-		return $this->parent->getFullPrimaryKey();
+		return $this->parent->getQualifiedPrimaryKey();
 	}
 
 	/**

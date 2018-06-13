@@ -254,6 +254,7 @@ trait Attributes
 	 * Get a relation value from a method.
 	 *
 	 * @param   string  $method relation name
+	 *
 	 * @return mixed
 	 *
 	 * @throws \LogicException
