@@ -26,10 +26,11 @@ trait Attributes
 {
 	/**
 	 * The model's attributes. Mapped to column names.
+	 * Raw data, exactly mapped to the database columns.
 	 *
 	 * @var array
 	 */
-	protected $attributes = array();
+	protected $attributesRaw = array();
 
 	/**
 	 * The model's original attributes.
@@ -85,7 +86,7 @@ trait Attributes
 	 */
 	public function setAttributeRaw($key, $value)
 	{
-		$this->attributes[$key] = $value;
+		$this->attributesRaw[$key] = $value;
 
 		return $this;
 	}
@@ -137,7 +138,7 @@ trait Attributes
 			return $this->setJsonAttribute($key, $value);
 		}
 
-		$this->attributes[$key] = $value;
+		$this->attributesRaw[$key] = $value;
 
 		return $this;
 	}
@@ -161,7 +162,7 @@ trait Attributes
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
 		 * are asking for a relation's value. This covers both types of values.
 		 */
-		if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key))
+		if (array_key_exists($key, $this->attributesRaw) || $this->hasGetMutator($key))
 		{
 			return $this->getAttributeValue($key);
 		}
@@ -188,7 +189,7 @@ trait Attributes
 	{
 		$key = $this->getColumnAlias($key);
 
-		$value = $this->attributes[$key];
+		$value = $this->attributesRaw[$key];
 
 		/** If the attribute has a get mutator, we will call that then return what
 		 * it returns as the value, which is useful for transforming values on
@@ -280,13 +281,14 @@ trait Attributes
 	/**
 	 * Fill the model with an array of attributes.
 	 *
-	 * @param   array  $attributes model's attributes
+	 * @param   array $attributesRaw model's attributes
+	 *
 	 * @return $this
 	 *
 	 */
-	public function setAttributes(array $attributes)
+	public function setAttributes(array $attributesRaw)
 	{
-		foreach ($attributes as $key => $value)
+		foreach ($attributesRaw as $key => $value)
 		{
 			$this->setAttribute($key, $value);
 		}
@@ -303,7 +305,7 @@ trait Attributes
 	 */
 	public function setAttributesRaw(array $attributes, $sync = false)
 	{
-		$this->attributes = $attributes;
+		$this->attributesRaw = $attributes;
 
 		if ($sync)
 		{
@@ -457,7 +459,7 @@ trait Attributes
 	 */
 	public function getAttributesRaw()
 	{
-		return $this->attributes;
+		return $this->attributesRaw;
 	}
 
 	/**
@@ -467,20 +469,7 @@ trait Attributes
 	 */
 	public function syncOriginal()
 	{
-		$this->original = $this->attributes;
-
-		return $this;
-	}
-
-	/**
-	 * Sync only one attribute with the original.
-	 *
-	 * @param   string $key attribute name
-	 * @return $this
-	 */
-	public function syncOriginalAttribute($key)
-	{
-		$this->original[$key] = $this->attributes[$key];
+		$this->original = $this->attributesRaw;
 
 		return $this;
 	}
@@ -573,7 +562,7 @@ trait Attributes
 	{
 		list($key, $path) = explode('->', $key, 2);
 
-		$this->attributes[$key] = $this->asJson(
+		$this->attributesRaw[$key] = $this->asJson(
 			$this->getNewJsonAttributeArray(
 				$path, $key, $value
 			)
@@ -607,8 +596,8 @@ trait Attributes
 	 */
 	protected function getJsonAttributeAsArray($key)
 	{
-		return isset($this->attributes[$key]) ?
-			$this->fromJson($this->attributes[$key]) : array();
+		return isset($this->attributesRaw[$key]) ?
+			$this->fromJson($this->attributesRaw[$key]) : array();
 	}
 
 	/**

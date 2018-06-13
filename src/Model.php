@@ -77,7 +77,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @var array
 	 */
-	protected $with = array();
+	protected $with = [];
 
 	/**
 	 * Create a new Joomla entity model instance.
@@ -153,6 +153,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
+	 * Gets the primary key value
+	 * although it should not have mutators or aliases, we use getAttributeValue for consistency.
+	 *
 	 * @return string
 	 */
 	public function getPrimaryKeyValue()
@@ -224,7 +227,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @return  boolean
 	 */
-	public function update(array $attributes = array())
+	public function update(array $attributes = [])
 	{
 		if (!$this->exists)
 		{
@@ -237,7 +240,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Delete the model from the database.
 	 *
-	 * @param   mixed  $pk  The primary key to delete (optional)
+	 * @param   mixed  $pk  The primary key to delete (optional - deletes the current model)
 	 *
 	 * @return  boolean|null
 	 */
@@ -255,13 +258,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			}
 		}
 
-		/** Here, we'll touch the owning models, verifying these timestamps get updated
-		 * for the models. This will allow any caching to get broken on the parents
-		 * by the timestamp. Then we will go ahead and delete the model instance.
+		/** Here, we'll touch the owning models, ensuring relations consistency.
+		 * Only after that we will delete the model instance.
 		 */
 		$this->touchOwners();
-
-		// TODO relations to be taken cared of here.
 
 		$query = $this->newQuery();
 
@@ -296,9 +296,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			$saved = $this->performInsert($query);
 		}
 
-		/** If the model is successfully saved, we need to do a few more things once
-		 * that is done. We will call the "saved" method here to run any actions
-		 * we need to happen after a model gets successfully saved right here.
+		/** If the model is successfully saved, we need to sync the original array
+		 * with the new persisted changes, in case there are further actions on the current model.
 		 */
 		if ($saved)
 		{
@@ -316,7 +315,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	protected function performInsert(Query $query)
 	{
-		if (empty($this->attributes))
+		if (empty($this->attributesRaw))
 		{
 			 return true;
 		}
@@ -339,7 +338,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	protected function performUpdate($query)
 	{
-		if (empty($this->attributes))
+		if (empty($this->attributesRaw))
 		{
 			 return true;
 		}
@@ -377,6 +376,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		$query = new Query($this->db->getQuery(true), $this->db, $this);
 
+		// We are adding the eager loading constrains in every query.
 		return $query->with($this->with);
 	}
 
@@ -389,7 +389,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, array('increment', 'decrement')))
+		if (in_array($method, ['increment', 'decrement']))
 		{
 			return $this->$method(...$parameters);
 		}
@@ -400,15 +400,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Create a new model instance that is existing.
 	 *
-	 * @param   array        $attributes attributes to be set on the new model instance
+	 * @param   array $attributesRaw attributes in raw format to be set on the new model instance
 	 *
+	 * @internal
 	 * @return static
 	 */
-	public function newFromBuilder($attributes = array())
+	public function newFromBuilder($attributesRaw = [])
 	{
-		$model = $this->newInstance($this->db, array(), true);
+		$model = $this->newInstance($this->db, [], true);
 
-		$model->setAttributesRaw((array) $attributes, true);
+		$model->setAttributesRaw((array) $attributesRaw, true);
 
 		return $model;
 	}
@@ -421,7 +422,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   bool           $exists     true if the model is already in the database
 	 * @return static
 	 */
-	public function newInstance(DatabaseDriver $db, $attributes = array(), $exists = false)
+	public function newInstance(DatabaseDriver $db, $attributes = [], $exists = false)
 	{
 		/** This method just provides a convenient way for us to generate fresh model
 		 * instances of this current model. It is particularly useful during the
@@ -439,7 +440,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * sets the default value of the table name based on Model class name.
+	 * Sets the default value of the table name based on Model class name.
+	 * Pluralise the last word in the Model Class name(CamelCase).
+	 * Adds underscode between words in table name.
+	 *
+	 * Examples:
+	 * User -> users
+	 * UserProfile -> user_profiles
+	 *
 	 * @return void
 	 */
 	private function setDefaultTable()
@@ -453,13 +461,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$tableArray[key($tableArray)] = $plural;
 
 		$table = Normalise::toUnderscoreSeparated(implode(" ", $tableArray));
+
 		$this->table = '#__' . $table;
 	}
 
 	/**
 	 * Determine if the given attribute exists.
 	 *
-	 * @param   mixed  $offset ?
+	 * @param   mixed  $offset key position in array
 	 * @return boolean
 	 */
 	public function offsetExists($offset)
@@ -470,7 +479,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Get the value for a given offset.
 	 *
-	 * @param   mixed  $offset ?
+	 * @param   mixed  $offset key position in array
 	 * @return mixed
 	 */
 	public function offsetGet($offset)
@@ -481,8 +490,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Set the value for a given offset.
 	 *
-	 * @param   mixed  $offset ?
-	 * @param   mixed  $value  ?
+	 * @param   mixed  $offset key position in array
+	 * @param   mixed  $value  value to be set
 	 * @return void
 	 */
 	public function offsetSet($offset, $value)
@@ -493,12 +502,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Unset the value for a given offset.
 	 *
-	 * @param   mixed  $offset ?
+	 * @param   mixed  $offset key position in array
 	 * @return void
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->attributes[$offset], $this->relations[$offset]);
+		unset($this->attributesRaw[$offset], $this->relations[$offset]);
 	}
 
 	/**
@@ -536,7 +545,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Convert the model instance to JSON.
 	 *
-	 * @param   int  $options ?
+	 * @param   int  $options json_encode Bitmask
 	 * @return string
 	 *
 	 * @throws JsonEncodingException
@@ -579,10 +588,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 	/**
 	 * Increment a column's value by a given amount.
+	 * $lazy must be set to true when further actions will be taken on to the model before persisting is desired.
 	 *
-	 * @param   string     $column ?
-	 * @param   float|int  $amount ?
-	 * @param   boolean    $lazy   laxy increment if true
+	 * @param   string     $column column to be incremented
+	 * @param   float|int  $amount amount to be added to the column value
+	 * @param   boolean    $lazy   lazy increment if true
 	 * @return integer
 	 */
 	protected function increment($column, $amount = 1, $lazy = false)
@@ -593,9 +603,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Decrement a column's value by a given amount.
 	 *
-	 * @param   string     $column ?
-	 * @param   float|int  $amount ?
-	 * @param   boolean    $lazy   laxy increment if true
+	 * @param   string     $column column to be decremented
+	 * @param   float|int  $amount amount to be subtracted from the column value
+	 * @param   boolean    $lazy   lazy increment if true
 	 * @return integer
 	 */
 	protected function decrement($column, $amount = 1, $lazy = false)
@@ -606,10 +616,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Run the increment or decrement method on the model.
 	 *
-	 * @param   string     $column ?
-	 * @param   float|int  $amount ?
-	 * @param   float|int  $lazy   ?
-	 * @param   string     $method ?
+	 * @param   string     $column column altered in the operation
+	 * @param   float|int  $amount amount value
+	 * @param   float|int  $lazy   lazy operation if true
+	 * @param   string     $method specify increment or decrement operation
 	 * @return integer|Model
 	 */
 	protected function incrementOrDecrement($column, $amount, $lazy, $method)
@@ -635,21 +645,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * Increment the underlying attribute value and sync with original.
-	 *
-	 * @param   string     $column ?
-	 * @param   float|int  $amount ?
-	 * @param   string     $method ?
-	 * @return void
-	 */
-	protected function incrementOrDecrementAttributeValue($column, $amount, $method)
-	{
-		$this->{$column} = $this->{$column} + ($method == 'increment' ? $amount : $amount * -1);
-
-		$this->syncOriginalAttribute($column);
-	}
-
-	/**
 	 * Method to return the real name of a "special" column such as ordering, hits, published
 	 * etc etc. In this way you are free to follow your db naming convention and use the
 	 * built in \Joomla functions.
@@ -657,8 +652,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   string  $column  Name of the "special" column (ie ordering, hits)
 	 *
 	 * @return  string  The string that identify the special
-	 *
-	 * @since   3.4
 	 */
 	public function getColumnAlias($column)
 	{
@@ -685,8 +678,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   string  $columnAlias  The real column name (ie foo_ordering)
 	 *
 	 * @return  void
-	 *
-	 * @since   3.4
 	 */
 	public function setColumnAlias($column, $columnAlias)
 	{
