@@ -52,5 +52,4 @@ class Banner extends Model
 		'createdAt' => 'created',
 		'updatedAt' => 'modified'
 	);
-
 }

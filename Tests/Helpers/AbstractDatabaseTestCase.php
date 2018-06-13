@@ -16,6 +16,8 @@ use PHPUnit\DbUnit\TestCase;
 
 /**
  * Base test case for the database package
+ *
+ * @since  1.0
  */
 abstract class AbstractDatabaseTestCase extends TestCase
 {
@@ -83,7 +85,6 @@ abstract class AbstractDatabaseTestCase extends TestCase
 		foreach (static::$dataSets as $table => $csv)
 		{
 			$dataSet->addTable($table, $csv);
-
 		}
 
 		return $dataSet;
