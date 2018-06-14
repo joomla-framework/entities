@@ -177,6 +177,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 	/**
 	 * Qualify the given column name by the model's table.
+	 * If table alias is specified, but does not contain the '#__' keyword,
+	 * we add it manually because it is needed for prefix replacement in the Query
 	 *
 	 * @param   string  $column column name to by qualifies
 	 * @return string
@@ -185,6 +187,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		if (StringHelper::contains($column, '.'))
 		{
+			if (!StringHelper::startWith($column, '#__'))
+			{
+				$column = "#__" . $column;
+			}
+
 			return $column;
 		}
 

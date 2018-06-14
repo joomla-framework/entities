@@ -43,5 +43,11 @@ class StringHelperTest extends TestCase
 		$this->assertTrue(StringHelper::startWith($str, $needle),
 			"Test startWith method, true."
 		);
+
+		$needle = 'NotJoomla';
+		$this->assertFalse(StringHelper::startWith($str, $needle),
+			"Test startWith method, false."
+		);
 	}
 }
+

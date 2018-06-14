@@ -6,6 +6,8 @@
 
 namespace Joomla\Entity\Tests;
 
+use Joomla\Entity\Query;
+use Joomla\Entity\Relations\Relation;
 use Joomla\Entity\Tests\Helpers\SqliteCase;
 use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\Message;
@@ -231,6 +233,8 @@ class EntityTest extends SqliteCase
 	}
 
 	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
 	 * @covers Model::getPrimaryKey()
 	 * @return void
 	 */
@@ -242,14 +246,176 @@ class EntityTest extends SqliteCase
 	}
 
 	/**
-	 * * @covers Model::getPrimaryKeyValue()
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::getPrimaryKeyValue()
 	 * @return void
 	 */
 	public function testGetPrimaryKeyValue()
 	{
-		$userModel = new User(self::$driver);
-		$user = $userModel->find(42);
+		$user = new User(self::$driver);
+		$user->setAttribute('id', 42);
 
 		$this->assertEquals(42, $user->getPrimaryKeyValue());
+	}
+
+	/**
+	 * @covers Model::toArray()
+	 * @covers Model::jsonSerialize()
+	 * @return void
+	 */
+	public function testToArray()
+	{
+		/**
+		 * @todo add cases:
+		 * - simple Model
+		 * - model with relation
+		 * optional:
+		 * - model with nested relations
+		 */
+		$this->assertTrue(true);
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::is()
+	 * @return void
+	 */
+	public function testIs()
+	{
+		$attributes = ['id' => 42, 'name' => 'myname'];
+
+		$user1 = new User(self::$driver, $attributes);
+		$user2 = new User(self::$driver, $attributes);
+
+		$this->assertTrue($user1->is($user2));
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::getColumnAlias()
+	 * @return void
+	 */
+	public function testGetColumnAlias()
+	{
+		$banner = new Banner(self::$driver);
+
+		$this->assertEquals(
+			$banner->getColumnAlias('createdAt'),
+			'created'
+			);
+
+		$this->assertEquals(
+			$banner->getColumnAlias('randomColumn'),
+			'randomColumn'
+		);
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::getQualifiedPrimaryKey()
+	 * @return void
+	 */
+	public function testGetQualifiedPrimaryKey()
+	{
+		$user = new User(self::$driver);
+
+		$this->assertEquals(
+			$user->getQualifiedPrimaryKey(),
+			'#__users.id'
+		);
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::qualifyColumn()
+	 * @return void
+	 */
+	public function testQualifyColumns()
+	{
+		$user = new User(self::$driver);
+
+		$this->assertEquals(
+			$user->qualifyColumn('id'),
+			'#__users.id'
+		);
+
+		$this->assertEquals(
+			$user->qualifyColumn('#__table_alias.id'),
+			'#__table_alias.id'
+		);
+
+		$this->assertEquals(
+			$user->qualifyColumn('table_alias.id'),
+			'#__table_alias.id'
+		);
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::newQuery()
+	 * @return void
+	 */
+	public function testNewQuery()
+	{
+		$user = new User(self::$driver);
+
+		$query = $user->newQuery();
+
+		$this->assertInstanceOf(
+			Query::class,
+			$query
+		);
+	}
+
+	/**
+	 * NOT dependent on the DatabaseDriver
+	 *
+	 * @covers Model::$with()
+	 * @return void
+	 */
+	public function testEagerLoad()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->with('receivedMessages')->find(42);
+
+		$this->assertArrayHasKey(
+			'receivedMessages',
+			$user->getRelations()
+		);
+
+		$this->assertInstanceOf(
+			Model::class,
+			$user->getRelations()['receivedMessages']->first()
+		);
+	}
+
+	/**
+	 * @covers \Joomla\Entity\Model::load()
+	 * @return void
+	 */
+	public function testLoadRelations()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$this->assertArrayNotHasKey(
+			'receivedMessages',
+			$user->getRelations()
+		);
+
+		$user->load('receivedMessages');
+
+		$this->assertArrayHasKey(
+			'receivedMessages',
+			$user->getRelations()
+		);
 	}
 }
