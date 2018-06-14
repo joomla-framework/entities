@@ -30,28 +30,28 @@ trait Attributes
 	 *
 	 * @var array
 	 */
-	protected $attributesRaw = array();
+	protected $attributesRaw = [];
 
 	/**
 	 * The model's original attributes.
 	 *
 	 * @var array
 	 */
-	protected $original = array();
+	protected $original = [];
 
 	/**
 	 * The attributes that should be cast to native types. Already aliased!
 	 *
 	 * @var array
 	 */
-	protected $casts = array();
+	protected $casts = [];
 
 	/**
 	 * The attributes that should be mutated to dates. Already aliased!
 	 *
 	 * @var array
 	 */
-	protected $dates = array();
+	protected $dates = [];
 
 	/**
 	 * The storage format of the model's date columns. Already aliased!
@@ -64,21 +64,24 @@ trait Attributes
 	 * The cache of the mutated attributes for each class.
 	 *
 	 * @var array
+	 * @TODO this is not used, we compute the getMutators every time
 	 */
-	protected static $getMutatorCache = array();
+	protected static $getMutatorCache = [];
 
 	/**
 	 * Array with alias for "special" columns such as ordering, hits etc etc
 	 *
 	 * @var    array
 	 */
-	protected $columnAlias = array(
+	protected $columnAlias = [
 		'createdAt' => null,
 		'updatedAt' => null
-	);
+	];
 
 	/**
 	 * Set a given attribute on the model.
+	 * Key must be in raw format(exact column name)
+	 * Value must be in raw format(exact value stored in the database)
 	 *
 	 * @param   string  $key   model's attribute name
 	 * @param   mixed   $value model's attribute value
@@ -95,14 +98,17 @@ trait Attributes
 	 * Set a given attribute on the model.
 	 *
 	 * @param   string  $key   attribute name
-	 * @param   mixed   $value value
+	 * @param   mixed   $value model's attribute value
 	 * @return $this
 	 */
 	public function setAttribute($key, $value)
 	{
+		/** First we check if the key has a column alias,
+		 * if no column alias is found, the same value is returned
+		 */
 		$key = $this->getColumnAlias($key);
 
-		/** First we will check for the presence of a mutator for the set operation
+		/** Then, if mutator exists for the set operation of the key
 		 * which simply lets the developers tweak the attribute as it is set on
 		 * the model, such as "json_encoding" an listing of data for storage.
 		 */
@@ -114,10 +120,9 @@ trait Attributes
 		}
 
 		/** If an attribute is listed as a "date", we'll convert it from a DateTime
-		 * instance into a form proper for storage on the database tables using
-		 * the connection grammar's date format. We will auto set the values.
+		 * instance into the database date format from the DatabaseDriver's date format.
 		 */
-		elseif ($value && $this->isDateAttribute($key))
+		if ($value && $this->isDateAttribute($key))
 		{
 			$value = $this->fromDateTime($value);
 		}
@@ -156,6 +161,9 @@ trait Attributes
 			return null;
 		}
 
+		/** First we check if the key has a column alias,
+		 * if no column alias is found, the same value is returned
+		 */
 		$key = $this->getColumnAlias($key);
 
 		/** If the attribute exists in the attribute array or has a "get" mutator we will
@@ -180,13 +188,16 @@ trait Attributes
 	}
 
 	/**
-	 * Get a plain attribute (not a relation).
+	 * Get a plain attribute from the model (not a relation).
 	 *
 	 * @param   string  $key attribute name
 	 * @return mixed
 	 */
 	public function getAttributeValue($key)
 	{
+		/** First we check if the key has a column alias,
+		 * if no column alias is found, the same value is returned
+		 */
 		$key = $this->getColumnAlias($key);
 
 		$value = $this->attributesRaw[$key];
@@ -241,7 +252,7 @@ trait Attributes
 
 		/** If the "attribute" exists as a method on the model, we will just assume
 		 * it is a relation and will load and return results from the query
-		 * and hydrate the relation's value on the "relations" array.
+		 * and hydrate the related model on the "relations" array.
 		 */
 
 		if (method_exists($this, $key))
@@ -251,7 +262,7 @@ trait Attributes
 	}
 
 	/**
-	 * Get a relation value from a method.
+	 * Get a relation hydrated model from a method.
 	 *
 	 * @param   string  $method relation name
 	 *
@@ -302,6 +313,8 @@ trait Attributes
 	 *
 	 * @param   array    $attributes model's attributes
 	 * @param   boolean  $sync       true if the data has been persisted
+	 *
+	 * @internal
 	 * @return $this
 	 */
 	public function setAttributesRaw(array $attributes, $sync = false)
@@ -326,7 +339,7 @@ trait Attributes
 	{
 		/** If an attribute is a date, we will cast it to a string after converting it
 		 * to a DateTime / Carbon instance. This is so we will get some consistent
-		 * formatting while accessing attributes vs. arraying / JSONing a model.
+		 * formatting while accessing attributes vs. JSONing a model.
 		 */
 
 		$attributesRaw = $this->getAttributesRaw();
@@ -335,6 +348,10 @@ trait Attributes
 
 		foreach ($attributesRaw as $key => $value)
 		{
+			/** First, we need to convert the raw attributes to the ones exposed by
+			 * the column aliases. At this point no mutated attributes will be
+			 * in the $attributes array.
+			 */
 			$attributes[$this->getColumnAlias($key)] = $value;
 		}
 
@@ -412,7 +429,7 @@ trait Attributes
 
 	/**
 	 * Add the casted attributes to the attributes array.
-	 * $attributes need to be already casted!
+	 * $attributes need to be already aliased!
 	 *
 	 * @param   array  $attributes        model attributes
 	 * @param   array  $mutatedAttributes model mutated attributes
@@ -456,6 +473,7 @@ trait Attributes
 	/**
 	 * Get all of the current attributes on the model in raw format.
 	 *
+	 * @internal
 	 * @return array
 	 */
 	public function getAttributesRaw()
@@ -466,6 +484,7 @@ trait Attributes
 	/**
 	 * Sync the original attributes with the current.
 	 *
+	 * @internal
 	 * @return $this
 	 */
 	public function syncOriginal()
@@ -575,9 +594,9 @@ trait Attributes
 	/**
 	 * Get an array attribute with the given key and value set.
 	 *
-	 * @param   string  $path  ?
-	 * @param   string  $key   ?
-	 * @param   mixed   $value ?
+	 * @param   string  $path  path in Json (e.g. 'params->public')
+	 * @param   string  $key   Json attribute name
+	 * @param   mixed   $value new value to be set
 	 * @return array
 	 */
 	protected function getNewJsonAttributeArray($path, $key, $value)
@@ -661,6 +680,7 @@ trait Attributes
 		/** Finally, we will just assume this date is in the format used by default on
 		 * the database connection and use that format to create the Carbon object
 		 * that is returned back out to the developers after we convert it here.
+		 * @TODO ask George, do we need this str_replace?, seems that our dateFormat doesn't need adjustments
 		 */
 		return Carbon::createFromFormat(
 			str_replace('.v', '.u', $this->getDateFormat()), $value
@@ -851,7 +871,7 @@ trait Attributes
 	/**
 	 * Get the value of an attribute using its mutator.
 	 *
-	 * @param   string $key   attribute name
+	 * @param   string $key   model's attribute name
 	 * @param   mixed  $value value to be mutated
 	 * @return mixed
 	 */
@@ -880,7 +900,7 @@ trait Attributes
 	/**
 	 * Extract and cache all the mutated attributes of a class.
 	 *
-	 * @param   string  $class ?
+	 * @param   string  $class Model class, used as key for the getMutatorMethods cache
 	 * @return void
 	 */
 	public static function cacheMutatedAttributes($class)
@@ -918,13 +938,13 @@ trait Attributes
 		return $result;
 	}
 
-	// TODO add cached Set Mutators
+	// TODO add cached Set Mutators, still in debate
 
 	/**
 	 * Determine whether an attribute should be cast to a native type.
 	 *
 	 * @param   string            $key   attribute name
-	 * @param   array|string|null $types ?
+	 * @param   array|string|null $types types of cast to be checked for
 	 * @return boolean
 	 */
 	public function hasCast($key, $types = null)
@@ -955,8 +975,8 @@ trait Attributes
 	/**
 	 * Cast an attribute to a native PHP type.
 	 *
-	 * @param   string $key   ?
-	 * @param   mixed  $value ?
+	 * @param   string $key   model's attribute name
+	 * @param   mixed  $value value that will be casted
 	 * @return mixed
 	 */
 	protected function castAttribute($key, $value)
@@ -1000,7 +1020,7 @@ trait Attributes
 	/**
 	 * Get the type of cast for a model attribute.
 	 *
-	 * @param   string $key ?
+	 * @param   string $key model's attribute name
 	 * @return string
 	 */
 	protected function getCastType($key)

@@ -541,6 +541,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function toArray()
 	{
+
+		/** @TODO how serialised dos need to be?, will the relation be needed as an array?
+		 * Will this take into account the future Hidden attributes?
+		 */
 		 return array_merge($this->getAttributes(), $this->getRelations());
 	}
 

@@ -105,7 +105,7 @@ abstract class Relation
 	/**
 	 * Set the constraints for an eager load of the relation.
 	 *
-	 * @param   array  $models ?
+	 * @param   array  $models eager load the relation on the specified models
 	 * @return void
 	 */
 	abstract public function addEagerConstraints(array $models);
@@ -198,10 +198,11 @@ abstract class Relation
 	}
 
 	/**
-	 * Get all of the primary keys for an array of models.
+	 * Get all of the keys for an array of models.
+	 * The default key is the primary key
 	 *
-	 * @param   array   $models ?
-	 * @param   string  $key    ?
+	 * @param   array   $models the array of models
+	 * @param   string  $key    the key name
 	 * @return array
 	 */
 	protected function getKeys(array $models, $key = null)

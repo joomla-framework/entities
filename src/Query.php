@@ -58,7 +58,7 @@ class Query
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'select', 'where', 'from', 'having', 'join', 'order', 'setLimit'
+		'select', 'where', 'whereIn', 'from', 'having', 'join', 'order', 'setLimit'
 	);
 
 	/**
@@ -435,7 +435,7 @@ class Query
 	/**
 	 * Eager load the relations for the models.
 	 *
-	 * @param   array  $models eager load the realtion on the specified models
+	 * @param   array  $models eager load the relation on the specified models
 	 * @return array
 	 */
 	public function eagerLoadRelations(array $models)
@@ -458,9 +458,9 @@ class Query
 	/**
 	 * Eagerly load the relation on a set of models.
 	 *
-	 * @param   array     $models      ?
-	 * @param   string    $name        ?
-	 * @param   Closure   $constraints ?
+	 * @param   array     $models      eager load the relation on the specified models
+	 * @param   string    $name        relation name
+	 * @param   Closure   $constraints relation constraints
 	 * @return array
 	 */
 	protected function eagerLoadRelation(array $models, $name, Closure $constraints)
