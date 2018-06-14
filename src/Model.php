@@ -19,7 +19,7 @@ use Joomla\String\Normalise;
 /**
  * Base Entity class for items
  *
- * @method static find() find(mixed $id, array $columns = array('*'))
+ * @method static find() find(mixed $id, array $columns = ['*'])
  *
  * @package Joomla\Entity
  * @since 1.0
@@ -85,7 +85,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   DatabaseDriver $db         database driver instance
 	 * @param   array          $attributes -> preloads any attributed for the model
 	 */
-	public function __construct(DatabaseDriver $db = null, array $attributes = array())
+	public function __construct(DatabaseDriver $db = null, array $attributes = [])
 	{
 		$this->db = $db;
 

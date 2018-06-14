@@ -50,7 +50,7 @@ class Query
 	 *
 	 * @var array
 	 */
-	protected $eagerLoad = array();
+	protected $eagerLoad = [];
 
 	/**
 	 * The methods that should be returned from query builder.
@@ -82,8 +82,8 @@ class Query
 	 */
 	public function insert()
 	{
-		$fields = array();
-		$values = array();
+		$fields = [];
+		$values = [];
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getAttributesRaw() as $k => $v)
@@ -123,7 +123,7 @@ class Query
 	 */
 	public function update()
 	{
-		$fields = array();
+		$fields = [];
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getDirty() as $k => $v)
@@ -186,9 +186,11 @@ class Query
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
 	 *
+	 * @todo columns must be raw at this point, do we want them to be unaliased here,
+	 * @todo so that the dev can use the aliased columns?
 	 * @return Model|boolean
 	 */
-	public function find($id, $columns = array('*'))
+	public function find($id, $columns = ['*'])
 	{
 		$this->whereKey($id);
 
@@ -211,7 +213,7 @@ class Query
 	 *
 	 * @throws \BadMethodCallException
 	 */
-	public function findLast($columns = array('*'))
+	public function findLast($columns = ['*'])
 	{
 		if (!($this->query instanceof LimitableInterface))
 		{
@@ -237,7 +239,7 @@ class Query
 	 * @param   array  $columns columns to be selected
 	 * @return Model|object|static|null
 	 */
-	public function first($columns = array('*'))
+	public function first($columns = ['*'])
 	{
 		return $this->setLimit(1)->get($columns)->first();
 	}
@@ -314,7 +316,7 @@ class Query
 	 * @param   array  $columns columns to be selected in query
 	 * @return Collection
 	 */
-	public function get($columns = array('*'))
+	public function get($columns = ['*'])
 	{
 		/** If we actually found models we will also eager load any relations that
 		 * have been specified as needed to be eager loaded
@@ -335,7 +337,7 @@ class Query
 	 * @param   array  $columns columns to be selected in query
 	 * @return Model[]
 	 */
-	public function getModels($columns = array('*'))
+	public function getModels($columns = ['*'])
 	{
 		$this->query->select($columns)
 			->from($this->model->getTable());
@@ -534,7 +536,7 @@ class Query
 	 */
 	protected function relationsNestedUnder($relation)
 	{
-		$nested = array();
+		$nested = [];
 
 		/** We are basically looking for any relations that are nested deeper than
 		 * the given top-level relation. We will just check for any relations

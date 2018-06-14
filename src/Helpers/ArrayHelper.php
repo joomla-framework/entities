@@ -45,7 +45,7 @@ class ArrayHelper
 			 */
 			if (! isset($array[$key]) || ! is_array($array[$key]))
 			{
-				$array[$key] = array();
+				$array[$key] = [];
 			}
 
 			$array = &$array[$key];

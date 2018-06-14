@@ -99,7 +99,7 @@ class EntityTest extends SqliteCase
 
 		$user->email = "test@test.com";
 
-		$params = array();
+		$params = [];
 		$params['test'] = 'val';
 
 		$user->params = $params;

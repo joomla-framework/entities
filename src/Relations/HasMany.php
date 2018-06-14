@@ -32,7 +32,7 @@ class HasMany extends HasOneOrMany
 	/**
 	 * Initialize the relation on a set of models.
 	 *
-	 * @param   array   $models   ?
+	 * @param   array   $models   the array of Model instances
 	 * @param   string  $relation ?
 	 * @return array
 	 */
@@ -49,9 +49,9 @@ class HasMany extends HasOneOrMany
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param   array       $models   ?
-	 * @param   Collection  $results  ?
-	 * @param   string      $relation ?
+	 * @param   array       $models   array of model instances
+	 * @param   Collection  $results  Collection of results (Relation Instances)
+	 * @param   string      $relation relation name
 	 * @return array
 	 */
 	public function match(array $models, Collection $results, $relation)

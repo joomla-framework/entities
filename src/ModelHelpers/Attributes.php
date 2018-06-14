@@ -293,14 +293,14 @@ trait Attributes
 	/**
 	 * Fill the model with an array of attributes.
 	 *
-	 * @param   array $attributesRaw model's attributes
+	 * @param   array $attributes model's attributes
 	 *
 	 * @return $this
 	 *
 	 */
-	public function setAttributes(array $attributesRaw)
+	public function setAttributes(array $attributes)
 	{
-		foreach ($attributesRaw as $key => $value)
+		foreach ($attributes as $key => $value)
 		{
 			$this->setAttribute($key, $value);
 		}
@@ -311,15 +311,15 @@ trait Attributes
 	/**
 	 * Set the array of model attributes. No checking is done.
 	 *
-	 * @param   array    $attributes model's attributes
-	 * @param   boolean  $sync       true if the data has been persisted
+	 * @param   array    $attributesRaw model's attributes
+	 * @param   boolean  $sync          true if the data has been persisted
 	 *
 	 * @internal
 	 * @return $this
 	 */
-	public function setAttributesRaw(array $attributes, $sync = false)
+	public function setAttributesRaw(array $attributesRaw, $sync = false)
 	{
-		$this->attributesRaw = $attributes;
+		$this->attributesRaw = $attributesRaw;
 
 		if ($sync)
 		{
@@ -344,7 +344,7 @@ trait Attributes
 
 		$attributesRaw = $this->getAttributesRaw();
 
-		$attributes = array();
+		$attributes = [];
 
 		foreach ($attributesRaw as $key => $value)
 		{
@@ -514,7 +514,7 @@ trait Attributes
 	 */
 	public function getDirty()
 	{
-		$dirty = array();
+		$dirty = [];
 
 		foreach ($this->getAttributesRaw() as $key => $value)
 		{
@@ -617,7 +617,7 @@ trait Attributes
 	protected function getJsonAttributeAsArray($key)
 	{
 		return isset($this->attributesRaw[$key]) ?
-			$this->fromJson($this->attributesRaw[$key]) : array();
+			$this->fromJson($this->attributesRaw[$key]) : [];
 	}
 
 	/**
@@ -740,7 +740,7 @@ trait Attributes
 	 */
 	public function getDates()
 	{
-		$defaults = array();
+		$defaults = [];
 
 		if ($date = $this->getColumnAlias('createdAt'))
 		{
@@ -787,7 +787,7 @@ trait Attributes
 	 * @param   array|string|null  $attributes attributes, optional
 	 * @return boolean
 	 */
-	protected function hasChanges($changes, $attributes = array())
+	protected function hasChanges($changes, $attributes = [])
 	{
 		/** If no specific attributes were provided, we will just see if the dirty array
 		 * already contains any attributes. If it does we will just return that this
@@ -907,7 +907,7 @@ trait Attributes
 	{
 		$mutatedAttributes = static::getMutatorMethods($class);
 
-		$cache = array();
+		$cache = [];
 
 		foreach ($mutatedAttributes as $mutatedAttribute)
 		{
@@ -928,7 +928,7 @@ trait Attributes
 
 		preg_match_all('/(?<=^|;)get([^;]+?)Attribute(;|$)/', implode(';', get_class_methods($class)), $matches);
 
-		$result = array();
+		$result = [];
 
 		foreach ($matches[1] as $match)
 		{
