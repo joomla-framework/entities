@@ -4,7 +4,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Tests\Helpers;
+namespace Joomla\Entity\Tests;
 
 use Joomla\Database\DatabaseDriver;
 use PHPUnit\DbUnit\Database\DefaultConnection;
