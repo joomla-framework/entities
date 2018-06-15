@@ -16,6 +16,7 @@ use Joomla\Entity\Tests\Models\UserProfile;
 use Joomla\Entity\Model;
 
 /**
+ * @todo add columns to tests with selection where possible
  *
  * @since  1.0
  */

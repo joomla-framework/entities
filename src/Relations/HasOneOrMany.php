@@ -167,6 +167,8 @@ abstract class HasOneOrMany extends Relation
 	 */
 	public function findOrNew($id, $columns = ['*'])
 	{
+		$columns = $this->convertAliasedToRaw($columns);
+
 		if (is_null($instance = $this->find($id, $columns)))
 		{
 			$instance = $this->related->newInstance($this->getDb());
@@ -180,19 +182,17 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Get the first related model record matching the attributes or instantiate it.
 	 *
-	 * @todo we need to use the raw attributes in queries
-	 * @todo, in order to be able to use the aliased attributes
-	 * @todo, shall we implement a wrapper for necesarry query metods in the Model?
-	 *
-	 * @param   array  $attributesRaw Model raw attributes
-	 * @param   array  $values        new attributes values to be set
+	 * @param   array  $attributes Model attributes
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function firstOrNew(array $attributesRaw, array $values = [])
+	public function firstOrNew(array $attributes, array $values = [])
 	{
-		if (is_null($instance = $this->where($attributesRaw)->first()))
+		$attributes = $this->convertAliasedToRaw($attributes);
+
+		if (is_null($instance = $this->where($attributes)->first()))
 		{
-			$instance = $this->related->newInstance($this->getDb(), $attributesRaw + $values);
+			$instance = $this->related->newInstance($this->getDb(), $attributes + $values);
 
 			$this->setForeignAttributesForCreate($instance);
 		}
@@ -203,15 +203,17 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Get the first related record matching the attributes or create it.
 	 *
-	 * @param   array  $attributesRaw Model raw attributes
-	 * @param   array  $values        new attributes values to be set
+	 * @param   array  $attributes Model  attributes
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function firstOrCreate(array $attributesRaw, array $values = [])
+	public function firstOrCreate(array $attributes, array $values = [])
 	{
-		if (is_null($instance = $this->where($attributesRaw)->first()))
+		$attributes = $this->convertAliasedToRaw($attributes);
+
+		if (is_null($instance = $this->where($attributes)->first()))
 		{
-			$instance = $this->create($attributesRaw + $values);
+			$instance = $this->create($attributes + $values);
 		}
 
 		return $instance;
@@ -220,15 +222,15 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Create or update a related record matching the attributes, and fill it with values.
 	 *
-	 * @param   array  $attributesRaw Model raw attributes
-	 * @param   array  $values        new attributes values to be set
+	 * @param   array  $attributes Model attributes (can be aliased)
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function updateOrCreate(array $attributesRaw, array $values = [])
+	public function updateOrCreate(array $attributes, array $values = [])
 	{
-		$instance = $this->firstOrNew($attributesRaw);
+		$instance = $this->firstOrNew($attributes);
 
-		$instance->setAttributes(array_combine($attributesRaw, $values));
+		$instance->setAttributes(array_combine($attributes, $values));
 
 		$instance->save();
 

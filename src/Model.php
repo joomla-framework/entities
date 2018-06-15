@@ -9,6 +9,7 @@
 namespace Joomla\Entity;
 
 use ArrayAccess;
+use Joomla\Entity\Helpers\ArrayHelper;
 use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
@@ -19,7 +20,7 @@ use Joomla\String\Normalise;
 /**
  * Base Entity class for items
  *
- * @method static find() find(mixed $id, array $columns = ['*'])
+ * @method find() find(mixed $id, array $columns = ['*'])
  *
  * @package Joomla\Entity
  * @since 1.0
@@ -403,6 +404,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			return $this->$method(...$parameters);
 		}
 
+		foreach ($parameters as &$param)
+		{
+			/** @todo this is not nice, implement this in all query methods or
+			 * implement wrappers for all query methods in the Model to avoid
+			 * calling the model from the Query every time.
+			 */
+			if (is_array($param) && is_string($param[0]))
+			{
+				$param = $this->convertAliasedToRaw($param);
+			}
+		}
+
 		return $this->newQuery()->$method(...$parameters);
 	}
 
@@ -638,6 +651,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	protected function incrementOrDecrement($column, $amount, $lazy, $method)
 	{
+		$column = $this->getColumnAlias($column);
 
 		$amount = $method == 'increment' ? $amount : $amount * -1;
 
@@ -701,6 +715,39 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 		// Set the column alias internally
 		$this->columnAlias[$column] = $columnAlias;
+	}
+
+
+	/**
+	 * Method to convert an array of  columns to their aliased version if it exists.
+	 * UnAliased version can be used by the developers when using the model,
+	 * but it will not be recognised by the database.
+	 * To be used internally everywhere we interact with the Query.
+	 *
+	 * @param   array $array array of column names or attributes
+	 *
+	 * @return array
+	 */
+	protected function convertAliasedToRaw($array)
+	{
+		$aliased = [];
+
+		if (ArrayHelper::isAssoc($array))
+		{
+			foreach ($array as $key => $value)
+			{
+				$aliased[$this->getColumnAlias($key)] = $value;
+			}
+		}
+		else
+		{
+			foreach ($array as $column)
+			{
+				$aliased[] = $this->getColumnAlias($column);
+			}
+		}
+
+		return $aliased;
 	}
 
 	/**

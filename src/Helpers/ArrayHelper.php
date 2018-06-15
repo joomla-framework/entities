@@ -55,4 +55,17 @@ class ArrayHelper
 
 		return $array;
 	}
+
+
+	/**
+	 * Method to check whether an array is associative or sequential
+	 *
+	 * @param   array $arr array: associative os sequential
+	 *
+	 * @return boolean
+	 */
+	public static function isAssoc($arr)
+	{
+		return array_keys($arr) !== range(0, count($arr) - 1);
+	}
 }
