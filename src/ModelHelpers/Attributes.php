@@ -337,6 +337,35 @@ trait Attributes
 	 */
 	public function getAttributes()
 	{
+		$attributesRaw = $this->getAttributesRaw();
+
+		$attributes = [];
+
+		foreach ($attributesRaw as $key => $value)
+		{
+			/** We need to convert the raw attributes to the ones exposed by
+			 * the column aliases. At this point no mutated attributes will be
+			 * in the $attributes array.
+			 */
+			$attributes[$this->getColumnAlias($key)] = $value;
+		}
+
+		$attributes = $this->addMutatedAttributes(
+			$attributes, $mutatedAttributes = $this->getMutatorMethods()
+		);
+
+		return $attributes;
+	}
+
+	/**
+	 * Get all of the current processed attributes on the model.
+	 * Everything is ready to be serialised.
+	 * processed = dates, cast, mutations
+	 *
+	 * @return array
+	 */
+	public function getAttributesAsArray()
+	{
 		/** If an attribute is a date, we will cast it to a string after converting it
 		 * to a DateTime / Carbon instance. This is so we will get some consistent
 		 * formatting while accessing attributes vs. JSONing a model.
@@ -680,10 +709,10 @@ trait Attributes
 		/** Finally, we will just assume this date is in the format used by default on
 		 * the database connection and use that format to create the Carbon object
 		 * that is returned back out to the developers after we convert it here.
-		 * @TODO ask George, do we need this str_replace?, seems that our dateFormat doesn't need adjustments
 		 */
+
 		return Carbon::createFromFormat(
-			str_replace('.v', '.u', $this->getDateFormat()), $value
+			$this->getDateFormat(), $value
 		);
 	}
 

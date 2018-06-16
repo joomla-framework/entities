@@ -101,6 +101,29 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 		unset($this->items[$offset]);
 	}
 
+
+	/** Method to convert the Collection to array format.
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array_map(
+			function ($value)
+			{
+				if ($value instanceof Model || $value instanceof Collection)
+				{
+					return $value->toArray();
+				}
+				else
+				{
+					// We suppose that the value is a serializable data type
+					return $value;
+				}
+
+			},
+			$this->items
+		);
+	}
 	/**
 	 * Convert the object into something JSON serializable.
 	 *
@@ -108,13 +131,7 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 */
 	public function jsonSerialize()
 	{
-		return array_map(
-			function ($value)
-			{
-				return $value->jsonSerialize();
-			},
-			$this->items
-		);
+		return json_encode($this->toArray());
 	}
 
 	/**

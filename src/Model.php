@@ -107,15 +107,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * @param   DatabaseDriver $db database driver
-	 * @return void
-	 */
-	public function setDb($db)
-	{
-		$this->db = $db;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getTable()
@@ -399,15 +390,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function __call($method, $parameters)
 	{
-		if (in_array($method, ['increment', 'decrement']))
-		{
-			return $this->$method(...$parameters);
-		}
-
 		foreach ($parameters as &$param)
 		{
-			/** @todo this is not nice, implement this in all query methods or
-			 * implement wrappers for all query methods in the Model to avoid
+			/** @todo this quite hacky, alternative is to implement this in all query methods
+			 * or implement wrappers for all query methods in the Model to avoid
 			 * calling the model from the Query every time.
 			 */
 			if (is_array($param) && is_string($param[0]))
@@ -454,9 +440,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 		$model->exists = $exists;
 
-		$model->setDb(
-			$this->getDb()
-		);
+		$model->db = $this->getDb();
 
 		return $model;
 	}
@@ -565,7 +549,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		/** @TODO how serialised dos need to be?, will the relation be needed as an array?
 		 * Will this take into account the future Hidden attributes?
 		 */
-		 return array_merge($this->getAttributes(), $this->getRelations());
+		 return array_merge($this->getAttributesAsArray(), $this->getRelationsAsArray());
 	}
 
 	/**
@@ -622,7 +606,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   boolean    $lazy   lazy increment if true
 	 * @return integer
 	 */
-	protected function increment($column, $amount = 1, $lazy = false)
+	public function increment($column, $amount = 1, $lazy = false)
 	{
 		return $this->incrementOrDecrement($column, $amount, $lazy, 'increment');
 	}
@@ -635,7 +619,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   boolean    $lazy   lazy increment if true
 	 * @return integer
 	 */
-	protected function decrement($column, $amount = 1, $lazy = false)
+	public function decrement($column, $amount = 1, $lazy = false)
 	{
 		return $this->incrementOrDecrement($column, $amount, $lazy, 'decrement');
 	}

@@ -97,6 +97,51 @@ trait Relations
 	}
 
 	/**
+	 * Get all the loaded relations for the instance.
+	 * Relations are serialised (array format).
+	 *
+	 * @return array
+	 */
+	public function getRelationsAsArray()
+	{
+		$relations = [];
+
+		foreach ($this->getRelations() as $key => $value)
+		{
+			/** First, we try need to check for the instance to be converted
+			 * to be of a supported type, Model or Collection. Then, we go ahead
+			 * and convert it to array.
+			 */
+			if ($value instanceof Model || $value instanceof Collection)
+			{
+				$relation = $value->toArray();
+			}
+
+			/** If the value is null, we'll still go ahead and set it in this list of
+			 * attributes since null is used to represent empty relationships if
+			 * if it a has one or belongs to type relationships on the models.
+			 */
+			elseif (is_null($value))
+			{
+				$relation = $value;
+			}
+
+			/** If the relation value has been set, we will set it on this attributes
+			 * list for returning. If its not a Model, Collection or null, we'll not set
+			 * the value on the array because it is some type of invalid value.
+			 */
+			if (isset($relation) || is_null($value))
+			{
+				$relations[$key] = $relation;
+			}
+
+			unset($relation);
+		}
+
+		return $relations;
+	}
+
+	/**
 	 * Get a specified relation.
 	 *
 	 * @param   string  $relation relation name

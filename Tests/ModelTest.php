@@ -209,19 +209,52 @@ class ModelTest extends SqliteCase
 
 	/**
 	 * @covers Model::toArray()
+	 * @covers Model::getRelationsAsArray()
 	 * @covers Model::jsonSerialize()
 	 * @return void
 	 */
 	public function testToArray()
 	{
 		/**
-		 * @todo add cases:
-		 * - simple Model
-		 * - model with relation
-		 * optional:
+		 * @improvement add cases (optional):
 		 * - model with nested relations
 		 */
-		$this->assertTrue(true);
+
+		$model = new Banner(self::$driver);
+		$banner = $model->find(4, ['id', 'createdAt']);
+
+		$expected = ['id' => '4', 'created' => '2011-01-01 00:00:01'];
+		$this->assertEquals(
+			$expected,
+			$banner->toArray()
+		);
+
+		$userModel = new User(self::$driver);
+		$user = $userModel->find(42, ['id']);
+		$userArray = $user->toArray();
+
+		$expected = [
+			"id" => 42,
+			"sentMessages" => [
+				0 => [
+					"message_id" => 1,
+					"subject" => "message1",
+					"user_id_from" => "42"
+				]
+			]
+		];
+
+		$this->assertEquals(
+			$expected,
+			$userArray
+		);
+
+		$relationsArray = $user->getRelationsAsArray();
+
+		$this->assertEquals(
+			$expected["sentMessages"],
+			$relationsArray["sentMessages"]
+		);
 	}
 
 	/**
@@ -322,9 +355,9 @@ class ModelTest extends SqliteCase
 	}
 
 	/**
-	 * NOT dependent on the DatabaseDriver
 	 *
 	 * @covers Model::$with()
+	 * @covers Query::createSelectWithConstraint()
 	 * @return void
 	 */
 	public function testEagerLoad()
@@ -341,6 +374,17 @@ class ModelTest extends SqliteCase
 		$this->assertInstanceOf(
 			Model::class,
 			$user->getRelations()['receivedMessages']->first()
+		);
+
+		$user = $userModel->find(42, ['id']);
+
+		$message = $user->sentMessages->first();
+
+		$messageModel = new Message(self::$driver);
+		$messageCheck = $messageModel->find(1, ['message_id', 'subject']);
+
+		$this->assertTrue(
+			$message->is($messageCheck)
 		);
 	}
 

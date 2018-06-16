@@ -339,8 +339,16 @@ class Query
 	 */
 	public function getModels($columns = ['*'])
 	{
-		$this->query->select($columns)
-			->from($this->model->getTable());
+		/** We want to avoid to apply the SELECT * instruction if
+		 * the developer already specified a subset of columns to be selected.
+		 * @todo add this behaviour everywhere
+		 */
+		if (! (count($this->query->select) > 0 && $columns == ['*']))
+		{
+			$this->query->select($columns);
+		}
+
+		$this->query->from($this->model->getTable());
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
@@ -382,12 +390,18 @@ class Query
 			{
 				$name = $constraints;
 
-				// TODO do we want createSelectWithConstraint? e.g to not load the whole related Model object
-				$constraints = function ()
+				if (StringHelper::contains($name, ':'))
 				{
+					list($name, $constraints) = $this->createSelectWithConstraint($name);
+				}
+				else
+				{
+					$constraints = function ()
+					{
 
-					// Empty callback
-				};
+						// Empty callback
+					};
+				}
 			}
 
 			/** We need to separate out any nested includes. Which allows the developers
@@ -400,6 +414,22 @@ class Query
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Create a constraint to select the given columns for the relation.
+	 *
+	 * @param   string  $name relation with constrains as string
+	 * @return array
+	 */
+	protected function createSelectWithConstraint($name)
+	{
+		$relation = explode(':', $name)[0];
+		$constrains = explode(':', $name)[1];
+
+		return [$relation, function ($query) use ($constrains) {
+			$query->select(explode(',', $constrains));
+		}];
 	}
 
 	/**

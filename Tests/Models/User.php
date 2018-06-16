@@ -38,9 +38,10 @@ class User extends Model
 	 * The relations to eager load on every query.
 	 *
 	 * @var array
+	 * @todo add to docs: primary key and foreign key are mandatory!!!
 	 */
 	protected $with = array(
-		'sentMessages'
+		'sentMessages:message_id,subject,user_id_from'
 	);
 
 	/**

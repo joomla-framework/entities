@@ -37,9 +37,6 @@ class Banner extends Model
 		'publish_down',
 		'reset',
 		'created',
-		'language',
-		'created_by',
-		'created_by_alias',
 		'modified'
 	);
 

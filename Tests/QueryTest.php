@@ -66,4 +66,8 @@ class QueryTest extends SqliteCase
 		);
 
 	}
+
+	/**
+	 * @todo add test for Query::get.
+	 */
 }
