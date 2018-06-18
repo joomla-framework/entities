@@ -9,6 +9,7 @@
 namespace Joomla\Entity;
 
 use ArrayAccess;
+use BadMethodCallException;
 use Joomla\Entity\Helpers\ArrayHelper;
 use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
@@ -81,14 +82,25 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	protected $with = [];
 
 	/**
+	 * The methods that should be returned from the Query.
+	 *
+	 * @var array
+	 */
+	protected $passThrough = array(
+		'find', 'findLast', 'first'
+	);
+
+	/**
 	 * Create a new Joomla entity model instance.
 	 *
 	 * @param   DatabaseDriver $db         database driver instance
-	 * @param   array          $attributes -> preloads any attributed for the model
+	 * @param   array          $attributes pre loads any attributed for the model (user friendly format)
 	 */
 	public function __construct(DatabaseDriver $db = null, array $attributes = [])
 	{
 		$this->db = $db;
+
+		$this->setAttributesRaw($attributes);
 
 		$this->setAttributes($attributes);
 
@@ -390,6 +402,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function __call($method, $parameters)
 	{
+		if (!in_array($method, $this->passThrough))
+		{
+			throw new BadMethodCallException(
+				sprintf(
+					'Method %s does not exist or is not exposed from \Joomla\Entity\Query.',
+					$method
+				)
+			);
+		}
+
 		foreach ($parameters as &$param)
 		{
 			/** @todo this quite hacky, alternative is to implement this in all query methods

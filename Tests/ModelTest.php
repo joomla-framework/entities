@@ -7,8 +7,6 @@
 namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Query;
-use Joomla\Entity\Relations\Relation;
-use Joomla\Entity\Tests\SqliteCase;
 use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\Message;
 use Joomla\Entity\Tests\Models\User;
@@ -28,14 +26,12 @@ class ModelTest extends SqliteCase
 	 */
 	public function testInsert()
 	{
-		$user = new User(self::$driver);
+		$attributes = [
+			'email' => "test@test.com",
+			'params' => ['test' => 'val']
+			];
 
-		$user->email = "test@test.com";
-
-		$params = [];
-		$params['test'] = 'val';
-
-		$user->params = $params;
+		$user = new User(self::$driver, $attributes);
 
 		$user->save();
 

@@ -127,7 +127,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a set mutator is not defined for this key, we throw an exception.
 		 */
-		if (! array_key_exists($key, $this->attributesRaw))
+		if (! array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
 		{
 			throw AttributeNotFoundException::make($this, $key, 'set');
 		}
@@ -230,7 +230,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a get mutator is not defined for this key, we throw an exception.
 		 */
-		if (! array_key_exists($key, $this->attributesRaw))
+		if (! array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
 		{
 			throw AttributeNotFoundException::make($this, $key, 'get');
 		}
