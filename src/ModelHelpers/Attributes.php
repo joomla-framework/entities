@@ -8,6 +8,7 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+use Joomla\Entity\Exceptions\AttributeNotFoundException;
 use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -85,6 +86,8 @@ trait Attributes
 	 *
 	 * @param   string  $key   model's attribute name
 	 * @param   mixed   $value model's attribute value
+	 *
+	 * @internal
 	 * @return $this
 	 */
 	public function setAttributeRaw($key, $value)
@@ -100,6 +103,8 @@ trait Attributes
 	 * @param   string  $key   attribute name
 	 * @param   mixed   $value model's attribute value
 	 * @return $this
+	 *
+	 * @throws AttributeNotFoundException
 	 */
 	public function setAttribute($key, $value)
 	{
@@ -117,6 +122,14 @@ trait Attributes
 			$method = 'set' . Normalise::toCamelCase($key) . 'Attribute';
 
 			return $this->{$method}($value);
+		}
+
+		/** If the aliased attribute does not exist as a column in the table and
+		 * if a set mutator is not defined for this key, we throw an exception.
+		 */
+		if (! array_key_exists($key, $this->attributesRaw))
+		{
+			throw AttributeNotFoundException::make($this, $key, 'set');
 		}
 
 		/** If an attribute is listed as a "date", we'll convert it from a DateTime
@@ -152,7 +165,10 @@ trait Attributes
 	 * Get an attribute from the model. (including mutations)
 	 *
 	 * @param   string  $key attribute name
+	 *
 	 * @return mixed
+	 *
+	 * @throws AttributeNotFoundException
 	 */
 	public function getAttribute($key)
 	{
@@ -211,6 +227,14 @@ trait Attributes
 			return $this->mutateAttribute($key, $value);
 		}
 
+		/** If the aliased attribute does not exist as a column in the table and
+		 * if a get mutator is not defined for this key, we throw an exception.
+		 */
+		if (! array_key_exists($key, $this->attributesRaw))
+		{
+			throw AttributeNotFoundException::make($this, $key, 'get');
+		}
+
 		/** If the attribute exists within the cast array, we will convert it to
 		 * an appropriate native PHP type dependant upon the associated value
 		 * given with the key in the pair.
@@ -237,7 +261,10 @@ trait Attributes
 	 * Get a relation.
 	 *
 	 * @param   string  $key relation name
+	 *
 	 * @return mixed
+	 *
+	 * @throws AttributeNotFoundException
 	 */
 	public function getRelationValue($key)
 	{
@@ -253,11 +280,18 @@ trait Attributes
 		/** If the "attribute" exists as a method on the model, we will just assume
 		 * it is a relation and will load and return results from the query
 		 * and hydrate the related model on the "relations" array.
+		 *
+		 * If we get at this point and the relation does not exist, implies that
+		 * the attribute itself does not exist, therefore we throw an exception.
 		 */
 
 		if (method_exists($this, $key))
 		{
 			return $this->getRelationFromMethod($key);
+		}
+		else
+		{
+			throw AttributeNotFoundException::make($this, $key, 'get');
 		}
 	}
 
@@ -598,6 +632,7 @@ trait Attributes
 	public function fromJson($value, $asObject = false)
 	{
 		return json_decode($value, ! $asObject);
+
 	}
 
 	/**

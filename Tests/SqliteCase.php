@@ -57,5 +57,12 @@ abstract class SqliteCase extends AbstractDatabaseTestCase
 		{
 			static::$driver = null;
 		}
+
+		static::$dataSets = array(
+			'banners'       => __DIR__ . '/Stubs/banners.csv',
+			'messages'      => __DIR__ . '/Stubs/messages.csv',
+			'users'         => __DIR__ . '/Stubs/users.csv',
+			'user_profiles' => __DIR__ . '/Stubs/user_profiles.csv'
+		);
 	}
 }

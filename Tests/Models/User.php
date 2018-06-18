@@ -30,9 +30,20 @@ class User extends Model
 	 *
 	 * @var array
 	 */
-	protected $casts = array(
+	protected $casts = [
 		'params' => 'array'
-	);
+	];
+
+	/**
+	 * The attributes that should be mutated to dates. Already aliased!
+	 *
+	 * @var array
+	 */
+	protected $dates = [
+		'registerDate',
+		'lastvisitDate',
+		'lastResetTime'
+	];
 
 	/**
 	 * The relations to eager load on every query.
@@ -69,5 +80,27 @@ class User extends Model
 	public function receivedMessages()
 	{
 		return $this->hasMany('Joomla\Entity\Tests\Models\Message', 'user_id_to');
+	}
+
+
+	/**
+	 * Test get mutator
+	 * @return boolean
+	 */
+	public function getNewAccountAttribute()
+	{
+		return $this->registerDate == $this->lastvisitDate;
+	}
+
+	/**
+	 * Test set mutator
+	 *
+	 * @param   integer $value test value
+	 * @return void
+	 */
+	public function setResetAttribute($value)
+	{
+		$this->resetCount = $value;
+		$this->lastResetTime = '0000-00-00 00:00:01';
 	}
 }

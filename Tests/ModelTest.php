@@ -20,23 +20,6 @@ use Joomla\Entity\Model;
  */
 class ModelTest extends SqliteCase
 {
-
-	/**
-	 * This method is called before the first test of this test class is run.
-	 * @return void
-	 */
-	public static function setUpBeforeClass()
-	{
-		static::$dataSets = array(
-			'banners'       => __DIR__ . '/Stubs/banners.csv',
-			'messages'      => __DIR__ . '/Stubs/messages.csv',
-			'users'         => __DIR__ . '/Stubs/users.csv',
-			'user_profiles' => __DIR__ . '/Stubs/user_profiles.csv'
-			);
-
-		parent::setUpBeforeClass();
-	}
-
 	/**
 	 * @covers \Joomla\Entity\Model::save()
 	 * @covers \Joomla\Entity\Model::performInsert()
