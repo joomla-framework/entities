@@ -31,6 +31,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	use ModelHelpers\Attributes;
 	use ModelHelpers\Timestamps;
 	use ModelHelpers\Relations;
+	use ModelHelpers\Serialization;
 
 	/**
 	 * The connection name for the model.
@@ -561,48 +562,15 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
+	 * Method used for serialization!
+	 *
 	 * Convert the model instance to an array.
 	 *
 	 * @return array
 	 */
 	public function toArray()
 	{
-
-		/** @TODO how serialised dos need to be?, will the relation be needed as an array?
-		 * Will this take into account the future Hidden attributes?
-		 */
 		 return array_merge($this->getAttributesAsArray(), $this->getRelationsAsArray());
-	}
-
-	/**
-	 * Convert the model instance to JSON.
-	 *
-	 * @param   int  $options json_encode Bitmask
-	 *
-	 * @return string
-	 *
-	 * @throws JsonEncodingException
-	 */
-	public function toJson($options = 0)
-	{
-		$json = json_encode($this->jsonSerialize(), $options);
-
-		if (JSON_ERROR_NONE !== json_last_error())
-		{
-			throw JsonEncodingException::forModel($this, json_last_error_msg());
-		}
-
-		return $json;
-	}
-
-	/**
-	 * Convert the object into something JSON serializable.
-	 *
-	 * @return array
-	 */
-	public function jsonSerialize()
-	{
-		return $this->toArray();
 	}
 
 	/**

@@ -392,50 +392,6 @@ trait Attributes
 	}
 
 	/**
-	 * Get all of the current processed attributes on the model.
-	 * Everything is ready to be serialised.
-	 * processed = dates, cast, mutations
-	 *
-	 * @return array
-	 */
-	public function getAttributesAsArray()
-	{
-		/** If an attribute is a date, we will cast it to a string after converting it
-		 * to a DateTime / Carbon instance. This is so we will get some consistent
-		 * formatting while accessing attributes vs. JSONing a model.
-		 */
-
-		$attributesRaw = $this->getAttributesRaw();
-
-		$attributes = [];
-
-		foreach ($attributesRaw as $key => $value)
-		{
-			/** First, we need to convert the raw attributes to the ones exposed by
-			 * the column aliases. At this point no mutated attributes will be
-			 * in the $attributes array.
-			 */
-			$attributes[$this->getColumnAlias($key)] = $value;
-		}
-
-		$attributes = $this->addDateAttributes($attributes);
-
-		$attributes = $this->addMutatedAttributes(
-			$attributes, $mutatedAttributes = $this->getMutatorMethods()
-		);
-
-		/** Next we will handle any casts that have been setup for this model and cast
-		 * the values to their appropriate type. If the attribute has a mutator we
-		 * will not perform the cast on those attributes to avoid any confusion.
-		 */
-		$attributes = $this->addCastAttributes(
-			$attributes, $mutatedAttributes
-		);
-
-		return $attributes;
-	}
-
-	/**
 	 * Add the date attributes to the attributes array.
 	 * $attributes need to be already aliased!
 	 *
@@ -784,17 +740,6 @@ trait Attributes
 	protected function asTimestamp($value)
 	{
 		return $this->asDateTime($value)->getTimestamp();
-	}
-
-	/**
-	 * Prepare a date for array / JSON serialization.
-	 *
-	 * @param   \DateTimeInterface  $date date
-	 * @return string
-	 */
-	protected function serializeDate(DateTimeInterface $date)
-	{
-		return $date->format($this->getDateFormat());
 	}
 
 	/**

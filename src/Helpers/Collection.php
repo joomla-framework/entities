@@ -9,6 +9,7 @@
 namespace Joomla\Entity\Helpers;
 
 use ArrayAccess;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use JsonSerializable;
 use IteratorAggregate;
 use ArrayIterator;
@@ -131,7 +132,28 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 */
 	public function jsonSerialize()
 	{
-		return json_encode($this->toArray());
+		return $this->toArray();
+	}
+
+	/**
+	 * Convert the collection instance to JSON.
+	 *
+	 * @param   int  $options json_encode Bitmask
+	 *
+	 * @return string
+	 *
+	 * @throws JsonEncodingException
+	 */
+	public function toJson($options = 0)
+	{
+		$json = json_encode($this->jsonSerialize(), $options);
+
+		if (JSON_ERROR_NONE !== json_last_error())
+		{
+			throw JsonEncodingException::forModel($this, json_last_error_msg());
+		}
+
+		return $json;
 	}
 
 	/**

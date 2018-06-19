@@ -188,8 +188,6 @@ class ModelTest extends SqliteCase
 
 	/**
 	 * @covers Model::toArray()
-	 * @covers Model::getRelationsAsArray()
-	 * @covers Model::jsonSerialize()
 	 * @return void
 	 */
 	public function testToArray()
@@ -233,6 +231,32 @@ class ModelTest extends SqliteCase
 		$this->assertEquals(
 			$expected["sentMessages"],
 			$relationsArray["sentMessages"]
+		);
+	}
+
+	/**
+	 * @covers Model::jsonSerialize()
+	 * @return void
+	 */
+	public function testJsonSerialize()
+	{
+		$model = new User(self::$driver);
+		$user = $model->find(42, ['id', 'username', 'password']);
+
+		$json = '{"id":42,"username":"admin","sentMessages":[{"message_id":1,"subject":"message1","user_id_from":"42"}]}';
+
+		$this->assertEquals(
+			$json,
+			$user->toJson()
+		);
+
+		$user->addHidden('sentMessages');
+
+		$json = '{"id":42,"username":"admin"}';
+
+		$this->assertEquals(
+			$json,
+			$user->toJson()
 		);
 	}
 
