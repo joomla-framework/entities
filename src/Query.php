@@ -343,7 +343,7 @@ class Query
 		 * the developer already specified a subset of columns to be selected.
 		 * @todo add this behaviour everywhere
 		 */
-		if (! (count($this->query->select) > 0 && $columns == ['*']))
+		if (is_null($this->query->select) || !(count($this->query->select) > 0 && $columns == ['*']))
 		{
 			$this->query->select($columns);
 		}
