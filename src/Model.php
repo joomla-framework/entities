@@ -564,18 +564,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
-	 * Method used for serialization!
-	 *
-	 * Convert the model instance to an array.
-	 *
-	 * @return array
-	 */
-	public function toArray()
-	{
-		 return array_merge($this->getAttributesAsArray(), $this->getRelationsAsArray());
-	}
-
-	/**
 	 * Determine if two models have the same ID, belong to the same table and use the same DatabaseDriver.
 	 *
 	 * @param   Model|null  $model model to be compared with

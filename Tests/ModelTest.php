@@ -144,22 +144,6 @@ class ModelTest extends SqliteCase
 	}
 
 	/**
-	 * @covers \Joomla\Entity\Model::hasMany()
-	 * @covers \Joomla\Entity\Model::$with
-	 * @return void
-	 */
-	public function testOneToManyEager()
-	{
-		$userModel = new User(self::$driver);
-
-		$user = $userModel->find(42);
-
-		$sentMessages = $user->getRelations()['sentMessages'];
-
-		$this->assertCount(1, $sentMessages);
-	}
-
-	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
 	 * @covers Model::getPrimaryKey()
@@ -184,80 +168,6 @@ class ModelTest extends SqliteCase
 		$user->setAttribute('id', 42);
 
 		$this->assertEquals(42, $user->getPrimaryKeyValue());
-	}
-
-	/**
-	 * @covers Model::toArray()
-	 * @return void
-	 */
-	public function testToArray()
-	{
-		/**
-		 * @improvement add cases (optional):
-		 * - model with nested relations
-		 */
-
-		$model = new Banner(self::$driver);
-		$banner = $model->find(4, ['id', 'createdAt']);
-
-		$expected = ['id' => '4', 'created' => '2011-01-01 00:00:01'];
-		$this->assertEquals(
-			$expected,
-			$banner->toArray()
-		);
-
-		$userModel = new User(self::$driver);
-		$user = $userModel->find(42, ['id']);
-		$userArray = $user->toArray();
-
-		$expected = [
-			"id" => 42,
-			"sentMessages" => [
-				0 => [
-					"message_id" => 1,
-					"subject" => "message1",
-					"user_id_from" => "42"
-				]
-			]
-		];
-
-		$this->assertEquals(
-			$expected,
-			$userArray
-		);
-
-		$relationsArray = $user->getRelationsAsArray();
-
-		$this->assertEquals(
-			$expected["sentMessages"],
-			$relationsArray["sentMessages"]
-		);
-	}
-
-	/**
-	 * @covers Model::jsonSerialize()
-	 * @return void
-	 */
-	public function testJsonSerialize()
-	{
-		$model = new User(self::$driver);
-		$user = $model->find(42, ['id', 'username', 'password']);
-
-		$json = '{"id":42,"username":"admin","sentMessages":[{"message_id":1,"subject":"message1","user_id_from":"42"}]}';
-
-		$this->assertEquals(
-			$json,
-			$user->toJson()
-		);
-
-		$user->addHidden('sentMessages');
-
-		$json = '{"id":42,"username":"admin"}';
-
-		$this->assertEquals(
-			$json,
-			$user->toJson()
-		);
 	}
 
 	/**
@@ -354,63 +264,6 @@ class ModelTest extends SqliteCase
 		$this->assertInstanceOf(
 			Query::class,
 			$query
-		);
-	}
-
-	/**
-	 *
-	 * @covers Model::$with()
-	 * @covers Query::createSelectWithConstraint()
-	 * @return void
-	 */
-	public function testEagerLoad()
-	{
-		$userModel = new User(self::$driver);
-
-		$user = $userModel->with('receivedMessages')->find(42);
-
-		$this->assertArrayHasKey(
-			'receivedMessages',
-			$user->getRelations()
-		);
-
-		$this->assertInstanceOf(
-			Model::class,
-			$user->getRelations()['receivedMessages']->first()
-		);
-
-		$user = $userModel->find(42, ['id']);
-
-		$message = $user->sentMessages->first();
-
-		$messageModel = new Message(self::$driver);
-		$messageCheck = $messageModel->find(1, ['message_id', 'subject']);
-
-		$this->assertTrue(
-			$message->is($messageCheck)
-		);
-	}
-
-	/**
-	 * @covers \Joomla\Entity\Model::load()
-	 * @return void
-	 */
-	public function testLoadRelations()
-	{
-		$userModel = new User(self::$driver);
-
-		$user = $userModel->find(42);
-
-		$this->assertArrayNotHasKey(
-			'receivedMessages',
-			$user->getRelations()
-		);
-
-		$user->load('receivedMessages');
-
-		$this->assertArrayHasKey(
-			'receivedMessages',
-			$user->getRelations()
 		);
 	}
 }

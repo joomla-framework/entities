@@ -108,6 +108,18 @@ trait Serialization
 	/**
 	 * Method used for serialization!
 	 *
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array_merge($this->getAttributesAsArray(), $this->getRelationsAsArray());
+	}
+
+	/**
+	 * Method used for serialization!
+	 *
 	 * Get all of the current processed attributes on the model.
 	 * Everything is ready to be serialised.
 	 * processed = dates, cast, mutations
