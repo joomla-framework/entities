@@ -221,9 +221,9 @@ trait Attributes
 		 * it returns as the value, which is useful for transforming values on
 		 * retrieval from the model to a form that is more useful for usage.
 		 */
-		if ($this->hasGetMutator($key))
+		if ($this->hasGetMutator($key) && array_key_exists($key, $this->attributesRaw))
 		{
-			return $this->mutateAttribute($key, $value);
+			return $this->mutateAttribute($key, $this->attributesRaw[$key]);
 		}
 
 		/** If the aliased attribute does not exist as a column in the table and
