@@ -88,9 +88,6 @@ class AttributesTest extends SqliteCase
 			1,
 			$relationAttribute->first()->message_id
 		);
-
-		$this->expectException(AttributeNotFoundException::class);
-		$user->getAttribute("notExistent");
 	}
 
 	/**
@@ -111,9 +108,6 @@ class AttributesTest extends SqliteCase
 
 		$castAttribute = $user->getAttributeValue('params');
 
-		$this->expectException(AttributeNotFoundException::class);
-		$user->getAttributeValue('sentMessages');
-
 		$this->assertEquals(
 			42,
 			$simpleAttribute
@@ -132,6 +126,20 @@ class AttributesTest extends SqliteCase
 			['test' => 'Object'],
 			$castAttribute
 		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testAttributeNotFoundException()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$this->expectException(AttributeNotFoundException::class);
+		$user->getAttributeValue('sentMessages');
+		$user->getAttribute("notExistent");
 	}
 
 	/**
