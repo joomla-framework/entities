@@ -180,14 +180,15 @@ trait Attributes
 		/** First we check if the key has a column alias,
 		 * if no column alias is found, the same value is returned
 		 */
-		$key = $this->getColumnAlias($key);
+		$aliasKey = $this->getColumnAlias($key);
 
 		/** If the attribute exists in the attribute array or has a "get" mutator we will
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
 		 * are asking for a relation's value. This covers both types of values.
 		 */
-		if (array_key_exists($key, $this->attributesRaw) || $this->hasGetMutator($key))
+		if (array_key_exists($aliasKey, $this->attributesRaw) || $this->hasGetMutator($aliasKey))
 		{
+			// Pass in the original key so we don't get the alias of an alias
 			return $this->getAttributeValue($key);
 		}
 
@@ -195,12 +196,12 @@ trait Attributes
 		 * since we don't want to treat any of those methods as relations because
 		 * they are all intended as helper methods and none of these are relations.
 		 */
-		if (method_exists(self::class, $key))
+		if (method_exists(self::class, $aliasKey))
 		{
 			return null;
 		}
 
-		return $this->getRelationValue($key);
+		return $this->getRelationValue($aliasKey);
 	}
 
 	/**
@@ -216,8 +217,6 @@ trait Attributes
 		 */
 		$key = $this->getColumnAlias($key);
 
-		$value = $this->attributesRaw[$key];
-
 		/** If the attribute has a get mutator, we will call that then return what
 		 * it returns as the value, which is useful for transforming values on
 		 * retrieval from the model to a form that is more useful for usage.
@@ -230,10 +229,12 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a get mutator is not defined for this key, we throw an exception.
 		 */
-		if (! array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
+		if (!array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
 		{
 			throw AttributeNotFoundException::make($this, $key, 'get');
 		}
+
+		$value = $this->attributesRaw[$key];
 
 		/** If the attribute exists within the cast array, we will convert it to
 		 * an appropriate native PHP type dependant upon the associated value
