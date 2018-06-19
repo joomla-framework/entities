@@ -129,9 +129,24 @@ class AttributesTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\ModelHelpers\Attributes::getAttribute()
 	 * @return void
 	 */
-	public function testAttributeNotFoundException()
+	public function testExceptionForGetAttribute()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$this->expectException(AttributeNotFoundException::class);
+		$user->getAttribute("notExistent");
+	}
+
+	/**
+	 * @covers \Joomla\Entity\ModelHelpers\Attributes::getAttributeValue()
+	 * @return void
+	 */
+	public function testExceptionForGetAttributeValue()
 	{
 		$userModel = new User(self::$driver);
 
@@ -139,7 +154,6 @@ class AttributesTest extends SqliteCase
 
 		$this->expectException(AttributeNotFoundException::class);
 		$user->getAttributeValue('sentMessages');
-		$user->getAttribute("notExistent");
 	}
 
 	/**
