@@ -212,26 +212,24 @@ trait Attributes
 	 */
 	public function getAttributeValue($key)
 	{
-		/** First we check if the key has a column alias,
+		/**
+		 * First we check if the key has a column alias,
 		 * if no column alias is found, the same value is returned
 		 */
 		$key = $this->getColumnAlias($key);
 
-		/** If the attribute has a get mutator, there are two possible cases:
+		/**
+		 * If the attribute has a get mutator, there are two possible cases:
 		 * 1. The mutator is designed for an existing attribute,
 		 * case in which we have to have the column in the attriubtesRaw
 		 * 2. The mutator returns a completely new attribute,
 		 * case in which there is no $value to be passes to the mutator
 		 */
-
 		if ($this->hasGetMutator($key))
 		{
-			if (array_key_exists($key, $this->attributesRaw))
-			{
-				return $this->mutateAttribute($key, $this->attributesRaw[$key]);
-			}
+			$mutatorValue = array_key_exists($key, $this->attributesRaw) ? $this->attributesRaw[$key] : null;
 
-			return $this->mutateAttribute($key, null);
+			return $this->mutateAttribute($key, $mutatorValue);
 		}
 
 		/** If the aliased attribute does not exist as a column in the table and
