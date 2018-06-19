@@ -9,6 +9,7 @@
 namespace Joomla\Entity\ModelHelpers;
 
 use DateTimeInterface;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Model;
 
@@ -47,9 +48,9 @@ trait Serialization
 	}
 
 	/**
-	 * Adds a hidden attribute of array of attributes to the current instance.
+	 * Adds a hidden attribute or array of attributes to the current instance.
 	 *
-	 * @param   string/array $value = atribute(s) to be made hidden for serialization
+	 * @param   string/array $value = attribute(s) to be made hidden for serialization
 	 *
 	 * @return void
 	 */
@@ -62,6 +63,29 @@ trait Serialization
 		else
 		{
 			$this->hidden[] = $value;
+		}
+	}
+
+	/**
+	 * Removes a hidden attribute or array of attributes to the current instance.
+	 *
+	 * @param   string/array $value = attribute(s) to be made hidden for serialization
+	 *
+	 * @return void
+	 */
+	public function removeHidden($value)
+	{
+		if (!is_array($value))
+		{
+			$value = [$value];
+		}
+
+		foreach ($value as $key)
+		{
+			if (!array_key_exists($key, $this->originalHidden))
+			{
+				unset($this->hidden[$key]);
+			}
 		}
 	}
 

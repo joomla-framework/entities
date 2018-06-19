@@ -105,6 +105,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
 		$this->setAttributes($attributes);
 
+		$this->originalHidden = $this->hidden;
+
 		if (!isset($this->table))
 		{
 			$this->setDefaultTable();
