@@ -8,6 +8,7 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+use Joomla\Entity\Query;
 use \Joomla\Entity\Relations\HasOne;
 use \Joomla\Entity\Model;
 use \Joomla\Entity\Relations\HasMany;
@@ -26,19 +27,19 @@ trait Relations
 	 *
 	 * @var array
 	 */
-	protected $relations = array();
+	protected $relations = [];
 
 	/**
 	 * The relations that should be touched on save.
 	 *
 	 * @var array
 	 */
-	protected $touches = array();
+	protected $touches = [];
 
 	/**
 	 * Determine if the model touches a given relation.
 	 *
-	 * @param   string  $relation ?
+	 * @param   string  $relation relation name
 	 * @return boolean
 	 */
 	public function touches($relation)
@@ -76,7 +77,7 @@ trait Relations
 	/**
 	 * Create a new model instance for a related model.
 	 *
-	 * @param   string  $class ?
+	 * @param   string  $class Model class name
 	 * @return mixed
 	 */
 	protected function newRelatedInstance($class)
@@ -97,7 +98,7 @@ trait Relations
 	/**
 	 * Get a specified relation.
 	 *
-	 * @param   string  $relation ?
+	 * @param   string  $relation relation name
 	 * @return mixed
 	 */
 	public function getRelation($relation)
@@ -108,7 +109,7 @@ trait Relations
 	/**
 	 * Determine if the given relation is loaded.
 	 *
-	 * @param   string  $key ?
+	 * @param   string  $key relation name
 	 * @return boolean
 	 */
 	public function relationLoaded($key)
@@ -119,26 +120,13 @@ trait Relations
 	/**
 	 * Set the specific relation in the model.
 	 *
-	 * @param   string  $relation ?
-	 * @param   mixed   $value    ?
+	 * @param   string $relation relation name
+	 * @param   mixed  $value    Relation instance
 	 * @return $this
 	 */
 	public function setRelation($relation, $value)
 	{
 		$this->relations[$relation] = $value;
-
-		return $this;
-	}
-
-	/**
-	 * Set the entire relations array on the model.
-	 *
-	 * @param   array  $relations ?
-	 * @return $this
-	 */
-	public function setRelations(array $relations)
-	{
-		$this->relations = $relations;
 
 		return $this;
 	}
@@ -154,24 +142,11 @@ trait Relations
 	}
 
 	/**
-	 * Set the relations that are touched on save.
-	 *
-	 * @param   array  $touches ?
-	 * @return $this
-	 */
-	public function setTouchedRelations(array $touches)
-	{
-		$this->touches = $touches;
-
-		return $this;
-	}
-
-	/**
 	 * Define a one-to-one relation.
 	 *
-	 * @param   string  $related    ?
-	 * @param   string  $foreignKey ?
-	 * @param   string  $localKey   ?
+	 * @param   string  $related    related Model
+	 * @param   string  $foreignKey foreign key name in current mode
+	 * @param   string  $localKey   local primary key name
 	 * @return \Joomla\Entity\Relations\HasOne
 	 */
 	public function hasOne($related, $foreignKey = null, $localKey = null)
@@ -188,10 +163,10 @@ trait Relations
 	/**
 	 * Instantiate a new HasOne relation.
 	 *
-	 * @param   \Joomla\Entity\Query $query      ?
-	 * @param   \Joomla\Entity\Model $parent     ?
-	 * @param   string               $foreignKey ?
-	 * @param   string               $localKey   ?
+	 * @param   Query   $query      just a query instance
+	 * @param   Model   $parent     $this model instance
+	 * @param   string  $foreignKey foreign key name in current mode
+	 * @param   string  $localKey   local primary key name
 	 * @return HasOne
 	 */
 	protected function newHasOne($query, $parent, $foreignKey, $localKey)
@@ -202,9 +177,9 @@ trait Relations
 	/**
 	 * Define a one-to-many relation.
 	 *
-	 * @param   string  $related    ?
-	 * @param   string  $foreignKey ?
-	 * @param   string  $localKey   ?
+	 * @param   string  $related    related Model
+	 * @param   string  $foreignKey foreign key name in current mode
+	 * @param   string  $localKey   local primary key name
 	 * @return \Joomla\Entity\Relations\HasMany
 	 */
 	public function hasMany($related, $foreignKey = null, $localKey = null)
@@ -221,10 +196,10 @@ trait Relations
 	/**
 	 * Instantiate a new HasMany relation.
 	 *
-	 * @param   \Joomla\Entity\Query $query      ?
-	 * @param   \Joomla\Entity\Model $parent     ?
-	 * @param   string               $foreignKey ?
-	 * @param   string               $localKey   ?
+	 * @param   Query   $query      just a query instance
+	 * @param   Model   $parent     $this model instance
+	 * @param   string  $foreignKey foreign key name in current mode
+	 * @param   string  $localKey   local primary key name
 	 * @return \Joomla\Entity\Relations\HasMany
 	 */
 	protected function newHasMany($query, $parent, $foreignKey, $localKey)

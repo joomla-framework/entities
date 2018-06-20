@@ -39,6 +39,6 @@ class StringHelper extends \Joomla\String\StringHelper
 	 */
 	public static function startWith($str, $search)
 	{
-		return (parent::strpos($str, $search) == 0);
+		return (parent::strpos($str, $search) === 0);
 	}
 }

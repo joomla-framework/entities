@@ -4,7 +4,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Tests\Helpers;
+namespace Joomla\Entity\Tests;
 
 use Joomla\Database\DatabaseFactory;
 use Joomla\Database\Sqlite\SqliteDriver;
@@ -45,7 +45,7 @@ abstract class SqliteCase extends AbstractDatabaseTestCase
 
 			// Get the PDO instance for an SQLite memory database and load the test schema into it.
 			static::$driver->connect();
-			static::$driver->getConnection()->exec(file_get_contents(dirname(__DIR__) . '/Stubs/ddl.sql'));
+			static::$driver->getConnection()->exec(file_get_contents(__DIR__ . '/Stubs/ddl.sql'));
 		}
 		catch (\RuntimeException $e)
 		{
@@ -57,5 +57,12 @@ abstract class SqliteCase extends AbstractDatabaseTestCase
 		{
 			static::$driver = null;
 		}
+
+		static::$dataSets = array(
+			'banners'       => __DIR__ . '/Stubs/banners.csv',
+			'messages'      => __DIR__ . '/Stubs/messages.csv',
+			'users'         => __DIR__ . '/Stubs/users.csv',
+			'user_profiles' => __DIR__ . '/Stubs/user_profiles.csv'
+		);
 	}
 }

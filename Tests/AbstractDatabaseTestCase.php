@@ -4,7 +4,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Tests\Helpers;
+namespace Joomla\Entity\Tests;
 
 use Joomla\Database\DatabaseDriver;
 use PHPUnit\DbUnit\Database\DefaultConnection;
@@ -16,6 +16,8 @@ use PHPUnit\DbUnit\TestCase;
 
 /**
  * Base test case for the database package
+ *
+ * @since  1.0
  */
 abstract class AbstractDatabaseTestCase extends TestCase
 {
@@ -83,7 +85,6 @@ abstract class AbstractDatabaseTestCase extends TestCase
 		foreach (static::$dataSets as $table => $csv)
 		{
 			$dataSet->addTable($table, $csv);
-
 		}
 
 		return $dataSet;

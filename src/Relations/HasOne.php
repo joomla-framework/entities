@@ -32,8 +32,8 @@ class HasOne extends HasOneOrMany
 	/**
 	 * Initialize the relation on a set of models.
 	 *
-	 * @param   array   $models   ?
-	 * @param   string  $relation ?
+	 * @param   array   $models   the array of Model instances
+	 * @param   string  $relation relation name
 	 * @return array
 	 */
 	public function initRelation(array $models, $relation)
@@ -49,9 +49,9 @@ class HasOne extends HasOneOrMany
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param   array        $models   ?
-	 * @param   Collection   $results  ?
-	 * @param   string       $relation ?
+	 * @param   array        $models   the array of Model instances
+	 * @param   Collection   $results  Collection of results (Relation Instances)
+	 * @param   string       $relation relation name
 	 * @return array
 	 */
 	public function match(array $models, Collection $results, $relation)
@@ -62,13 +62,13 @@ class HasOne extends HasOneOrMany
 	/**
 	 * Make a new related instance for the given model.
 	 *
-	 * @param   Model  $parent ?
+	 * @param   Model  $parent parent Model instance
 	 * @return Model
 	 */
 	public function newRelatedInstanceFor($parent)
 	{
 		return $this->related->newInstance($parent->getDb())->setAttribute(
-			$this->getForeignKeyName(), $parent->{$this->localKey}
+			$this->getForeignKey(), $parent->{$this->localKey}
 		);
 	}
 }

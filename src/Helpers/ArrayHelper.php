@@ -45,7 +45,7 @@ class ArrayHelper
 			 */
 			if (! isset($array[$key]) || ! is_array($array[$key]))
 			{
-				$array[$key] = array();
+				$array[$key] = [];
 			}
 
 			$array = &$array[$key];
@@ -54,5 +54,18 @@ class ArrayHelper
 		$array[array_shift($keys)] = $value;
 
 		return $array;
+	}
+
+
+	/**
+	 * Method to check whether an array is associative or sequential
+	 *
+	 * @param   array $arr array: associative os sequential
+	 *
+	 * @return boolean
+	 */
+	public static function isAssoc($arr)
+	{
+		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 }

@@ -34,19 +34,12 @@ abstract class HasOneOrMany extends Relation
 	protected $localKey;
 
 	/**
-	 * The count of self joins.
-	 *
-	 * @var integer
-	 */
-	protected static $selfJoinCount = 0;
-
-	/**
 	 * Create a new has one or many relation instance.
 	 *
-	 * @param   Query   $query      ?
-	 * @param   Model   $parent     ?
-	 * @param   string  $foreignKey ?
-	 * @param   string  $localKey   ?
+	 * @param   Query   $query      Query instance
+	 * @param   Model   $parent     parent Model instance
+	 * @param   string  $foreignKey foreign key name
+	 * @param   string  $localKey   current instance primary key name
 	 */
 	public function __construct(Query $query, Model $parent, $foreignKey, $localKey)
 	{
@@ -65,16 +58,16 @@ abstract class HasOneOrMany extends Relation
 	{
 		if (static::$constraints)
 		{
-			$this->query->where($this->foreignKey . ' = ' . $this->getParentKey());
+			$this->query->where($this->foreignKey . ' = ' . $this->getParentKeyValue());
 
-			$this->query->whereNotNull($this->foreignKey);
+			$this->query->where($this->foreignKey . ' NOT NULL');
 		}
 	}
 
 	/**
 	 * Set the constraints for an eager load of the relation.
 	 *
-	 * @param   array  $models ?
+	 * @param   array  $models array of model instances to add the eager constraints
 	 * @return void
 	 */
 	public function addEagerConstraints(array $models)
@@ -87,9 +80,9 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Match the eagerly loaded results to their single parents.
 	 *
-	 * @param   array       $models   ?
-	 * @param   Collection  $results  ?
-	 * @param   string      $relation ?
+	 * @param   array       $models   array of model instances
+	 * @param   Collection  $results  Collection of results (Relation Instances)
+	 * @param   string      $relation relation name
 	 * @return array
 	 */
 	public function matchOne(array $models, Collection $results, $relation)
@@ -100,9 +93,9 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Match the eagerly loaded results to their many parents.
 	 *
-	 * @param   array       $models   ?
-	 * @param   Collection  $results  ?
-	 * @param   string      $relation ?
+	 * @param   array       $models   array of model instances
+	 * @param   Collection  $results  Collection of results (Relation Instances)
+	 * @param   string      $relation relation name
 	 * @return array
 	 */
 	public function matchMany(array $models, Collection $results, $relation)
@@ -113,10 +106,10 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Match the eagerly loaded results to their many parents.
 	 *
-	 * @param   array       $models   ?
-	 * @param   Collection  $results  ?
-	 * @param   string      $relation ?
-	 * @param   string      $type     ?
+	 * @param   array       $models   array of model instances
+	 * @param   Collection  $results  Collection of results (Relation Instances)
+	 * @param   string      $relation relation name
+	 * @param   string      $type     'one' or 'many'
 	 * @return array
 	 */
 	protected function matchOneOrMany(array $models, Collection $results, $relation, $type)
@@ -141,22 +134,22 @@ abstract class HasOneOrMany extends Relation
 	}
 
 	/**
-	 * Build model dictionary keyed by the relation's foreign key.
+	 * Build model dictionary keyed by the relation's foreign key value.
 	 *
-	 * @param   Collection  $results ?
+	 * @param   Collection  $results Collection of results (Relation Instances)
 	 * @return array
 	 */
 	protected function buildDictionary(Collection $results)
 	{
-		$foreign = $this->getForeignKeyName();
+		$foreign = $this->getForeignKey();
 
-		$dictionary = array();
+		$dictionary = [];
 
 		foreach ($results as $key => $value)
 		{
 			if (! isset($dictionary[$value->{$foreign}]))
 			{
-				$dictionary[$value->{$foreign}] = array();
+				$dictionary[$value->{$foreign}] = [];
 			}
 
 			$dictionary[$value->{$foreign}][] = $value;
@@ -168,12 +161,14 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Find a model by its primary key or return new instance of the related model.
 	 *
-	 * @param   mixed  $id      ?
-	 * @param   array  $columns ?
+	 * @param   mixed  $id      primary key value
+	 * @param   array  $columns column names
 	 * @return Collection|Model
 	 */
-	public function findOrNew($id, $columns = array('*'))
+	public function findOrNew($id, $columns = ['*'])
 	{
+		$columns = $this->convertAliasedToRaw($columns);
+
 		if (is_null($instance = $this->find($id, $columns)))
 		{
 			$instance = $this->related->newInstance($this->getDb());
@@ -187,12 +182,14 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Get the first related model record matching the attributes or instantiate it.
 	 *
-	 * @param   array  $attributes ?
-	 * @param   array  $values     ?
+	 * @param   array  $attributes Model attributes
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function firstOrNew(array $attributes, array $values = array())
+	public function firstOrNew(array $attributes, array $values = [])
 	{
+		$attributes = $this->convertAliasedToRaw($attributes);
+
 		if (is_null($instance = $this->where($attributes)->first()))
 		{
 			$instance = $this->related->newInstance($this->getDb(), $attributes + $values);
@@ -206,12 +203,14 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Get the first related record matching the attributes or create it.
 	 *
-	 * @param   array  $attributes ?
-	 * @param   array  $values     ?
+	 * @param   array  $attributes Model  attributes
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function firstOrCreate(array $attributes, array $values = array())
+	public function firstOrCreate(array $attributes, array $values = [])
 	{
+		$attributes = $this->convertAliasedToRaw($attributes);
+
 		if (is_null($instance = $this->where($attributes)->first()))
 		{
 			$instance = $this->create($attributes + $values);
@@ -223,11 +222,11 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Create or update a related record matching the attributes, and fill it with values.
 	 *
-	 * @param   array  $attributes ?
-	 * @param   array  $values     ?
+	 * @param   array  $attributes Model attributes (can be aliased)
+	 * @param   array  $values     new attributes values to be set
 	 * @return Model
 	 */
-	public function updateOrCreate(array $attributes, array $values = array())
+	public function updateOrCreate(array $attributes, array $values = [])
 	{
 		$instance = $this->firstOrNew($attributes);
 
@@ -241,7 +240,7 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Attach a model instance to the parent model.
 	 *
-	 * @param   Model  $model ?
+	 * @param   Model  $model Model to be saved with the attached relation foreign key
 	 * @return Model|false
 	 */
 	public function save(Model $model)
@@ -254,7 +253,7 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Attach a collection of models to the parent instance.
 	 *
-	 * @param   \Traversable|array  $models ?
+	 * @param   \Traversable|array  $models Model instances to be saved with attached foreign key
 	 * @return \Traversable|array
 	 */
 	public function saveMany($models)
@@ -270,10 +269,10 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Create a new instance of the related model.
 	 *
-	 * @param   array  $attributes attributes
+	 * @param   array  $attributes attributes (can be aliased)
 	 * @return Model
 	 */
-	public function create($attributes = array())
+	public function create($attributes = [])
 	{
 		$instance = $this->related->newInstance($this->getDb(), $attributes);
 
@@ -287,7 +286,7 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Create a Collection of new instances of the related model.
 	 *
-	 * @param   array  $records ?
+	 * @param   array  $records array of array of attributes
 	 * @return Collection
 	 */
 	public function createMany(array $records)
@@ -305,18 +304,18 @@ abstract class HasOneOrMany extends Relation
 	/**
 	 * Set the foreign ID for creating a related model.
 	 *
-	 * @param   Model  $model ?
+	 * @param   Model  $model Model to attached the relation foreign key
 	 * @return void
 	 */
 	protected function setForeignAttributesForCreate(Model $model)
 	{
-		$model->setAttribute($this->getForeignKeyName(), $this->getParentKey());
+		$model->setAttribute($this->getForeignKey(), $this->getParentKeyValue());
 	}
 
 	/**
 	 * Perform an update on all the related models.
 	 *
-	 * @param   array  $attributes ?
+	 * @param   array  $attributes attributes array (can be aliased)
 	 * @return integer
 	 */
 	public function updateRelated(array $attributes)
@@ -334,7 +333,7 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return mixed
 	 */
-	public function getParentKey()
+	public function getParentKeyValue()
 	{
 		return $this->parent->getAttribute($this->localKey);
 	}
@@ -344,9 +343,9 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return string
 	 */
-	public function getFullParentKeyName()
+	public function getQualifiedParentKey()
 	{
-		return $this->parent->getFullAttributeName($this->localKey);
+		return $this->parent->qualifyColumn($this->localKey);
 	}
 
 	/**
@@ -354,7 +353,7 @@ abstract class HasOneOrMany extends Relation
 	 *
 	 * @return string
 	 */
-	public function getForeignKeyName()
+	public function getForeignKey()
 	{
 		$segments = explode('.', $this->foreignKey);
 

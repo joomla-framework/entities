@@ -53,7 +53,7 @@ abstract class Relation
 	 *
 	 * @var array
 	 */
-	public static $morphMap = array();
+	public static $morphMap = [];
 
 	/**
 	 * Create a new relation instance.
@@ -105,7 +105,7 @@ abstract class Relation
 	/**
 	 * Set the constraints for an eager load of the relation.
 	 *
-	 * @param   array  $models ?
+	 * @param   array  $models eager load the relation on the specified models
 	 * @return void
 	 */
 	abstract public function addEagerConstraints(array $models);
@@ -113,8 +113,8 @@ abstract class Relation
 	/**
 	 * Initialize the relation on a set of models.
 	 *
-	 * @param   array   $models   ?
-	 * @param   string  $relation ?
+	 * @param   array   $models   the array of Model instances
+	 * @param   string  $relation relation name
 	 * @return array
 	 */
 	abstract public function initRelation(array $models, $relation);
@@ -122,9 +122,9 @@ abstract class Relation
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param   array       $models   ?
-	 * @param   Collection  $results  ?
-	 * @param   string      $relation ?
+	 * @param   array       $models   array of model instances
+	 * @param   Collection  $results  Collection of results (Relation Instances)
+	 * @param   string      $relation relation name
 	 * @return array
 	 */
 	abstract public function match(array $models, Collection $results, $relation);
@@ -152,7 +152,7 @@ abstract class Relation
 	 * @param   array  $columns columns to be selected
 	 * @return Collection
 	 */
-	public function get($columns = array('*'))
+	public function get($columns = ['*'])
 	{
 		return $this->query->get($columns);
 	}
@@ -182,9 +182,9 @@ abstract class Relation
 	 *
 	 * @return string
 	 */
-	public function getFullParentKey()
+	public function getQualifiedParentKey()
 	{
-		return $this->parent->getFullPrimaryKey();
+		return $this->parent->getQualifiedPrimaryKey();
 	}
 
 	/**
@@ -198,15 +198,16 @@ abstract class Relation
 	}
 
 	/**
-	 * Get all of the primary keys for an array of models.
+	 * Get all of the keys for an array of models.
+	 * The default key is the primary key
 	 *
-	 * @param   array   $models ?
-	 * @param   string  $key    ?
+	 * @param   array   $models the array of Model instances
+	 * @param   string  $key    the key name
 	 * @return array
 	 */
 	protected function getKeys(array $models, $key = null)
 	{
-		$keys = array();
+		$keys = [];
 
 		foreach ($models as $model)
 		{

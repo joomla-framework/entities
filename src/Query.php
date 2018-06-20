@@ -50,7 +50,7 @@ class Query
 	 *
 	 * @var array
 	 */
-	protected $eagerLoad = array();
+	protected $eagerLoad = [];
 
 	/**
 	 * The methods that should be returned from query builder.
@@ -58,7 +58,7 @@ class Query
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'select', 'where', 'from', 'having', 'join', 'order', 'setLimit'
+		'select', 'where', 'whereIn', 'from', 'having', 'join', 'order', 'setLimit'
 	);
 
 	/**
@@ -78,13 +78,12 @@ class Query
 	/**
 	 * Inserts a single instance of a model.
 	 *
-	 *
 	 * @return boolean
 	 */
 	public function insert()
 	{
-		$fields = array();
-		$values = array();
+		$fields = [];
+		$values = [];
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getAttributesRaw() as $k => $v)
@@ -124,7 +123,7 @@ class Query
 	 */
 	public function update()
 	{
-		$fields = array();
+		$fields = [];
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getDirty() as $k => $v)
@@ -186,9 +185,12 @@ class Query
 	 *
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
+	 *
+	 * @todo columns must be raw at this point, do we want them to be unaliased here,
+	 * @todo so that the dev can use the aliased columns?
 	 * @return Model|boolean
 	 */
-	public function find($id, $columns = array('*'))
+	public function find($id, $columns = ['*'])
 	{
 		$this->whereKey($id);
 
@@ -206,10 +208,12 @@ class Query
 	 * Find last inserted.
 	 *
 	 * @param   array  $columns columns to be selected in query
+	 *
 	 * @return Model|boolean
+	 *
 	 * @throws \BadMethodCallException
 	 */
-	public function findLast($columns = array('*'))
+	public function findLast($columns = ['*'])
 	{
 		if (!($this->query instanceof LimitableInterface))
 		{
@@ -230,6 +234,17 @@ class Query
 	}
 
 	/**
+	 * Execute the query and get the first result.
+	 *
+	 * @param   array  $columns columns to be selected
+	 * @return Model|object|static|null
+	 */
+	public function first($columns = ['*'])
+	{
+		return $this->setLimit(1)->get($columns)->first();
+	}
+
+	/**
 	 * Add a where clause on the primary key to the query.
 	 *
 	 * @param   mixed $id primary key
@@ -237,20 +252,14 @@ class Query
 	 */
 	public function whereKey($id)
 	{
-		$this->query->where($this->model->getPrimaryKey() . ' = ' . $id);
+		if (is_array($id))
+		{
+			$this->whereIn($this->model->getQualifiedPrimaryKey(), $id);
 
-		return $this;
-	}
+			return $this;
+		}
 
-	/**
-	 * Add a where clause on a columnt to not be null.
-	 *
-	 * @param   mixed $column column
-	 * @return $this
-	 */
-	public function whereNotNull($column)
-	{
-		$this->query->where($column . ' NOT NULL');
+		$this->query->where($this->model->getQualifiedPrimaryKey() . ' = ' . $id);
 
 		return $this;
 	}
@@ -277,7 +286,7 @@ class Query
 	/**
 	 * Dynamically handle calls into the query instance.
 	 *
-	 * @param   string  $method     method called dinamically
+	 * @param   string  $method     method called dynamically
 	 * @param   array   $parameters parameters to be passed to the dynamic called method
 	 * @return mixed
 	 */
@@ -307,10 +316,10 @@ class Query
 	 * @param   array  $columns columns to be selected in query
 	 * @return Collection
 	 */
-	public function get($columns = array('*'))
+	public function get($columns = ['*'])
 	{
 		/** If we actually found models we will also eager load any relations that
-		 * have been specified as needing to be eager loaded
+		 * have been specified as needed to be eager loaded
 		 */
 		$models = $this->getModels($columns);
 
@@ -328,10 +337,18 @@ class Query
 	 * @param   array  $columns columns to be selected in query
 	 * @return Model[]
 	 */
-	public function getModels($columns = array('*'))
+	public function getModels($columns = ['*'])
 	{
-		$this->query->select($columns)
-			->from($this->model->getTable());
+		/** We want to avoid to apply the SELECT * instruction if
+		 * the developer already specified a subset of columns to be selected.
+		 * @todo add this behaviour everywhere
+		 */
+		if (is_null($this->query->select) || $columns != ['*'])
+		{
+			$this->query->select($columns);
+		}
+
+		$this->query->from($this->model->getTable());
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
@@ -361,7 +378,7 @@ class Query
 	 */
 	protected function parseWithRelations(array $relations)
 	{
-		$results = array();
+		$results = [];
 
 		foreach ($relations as $name => $constraints)
 		{
@@ -373,12 +390,18 @@ class Query
 			{
 				$name = $constraints;
 
-				// TODO do we want createSelectWithConstraint? e.g to not load the whole related Model object
-				$constraints = function ()
+				if (StringHelper::contains($name, ':'))
 				{
+					list($name, $constraints) = $this->createSelectWithConstraint($name);
+				}
+				else
+				{
+					$constraints = function ()
+					{
 
-					// Empty callback
-				};
+						// Empty callback
+					};
+				}
 			}
 
 			/** We need to separate out any nested includes. Which allows the developers
@@ -394,6 +417,22 @@ class Query
 	}
 
 	/**
+	 * Create a constraint to select the given columns for the relation.
+	 *
+	 * @param   string  $name relation with constrains as string
+	 * @return array
+	 */
+	protected function createSelectWithConstraint($name)
+	{
+		$relation = explode(':', $name)[0];
+		$constrains = explode(':', $name)[1];
+
+		return [$relation, function ($query) use ($constrains) {
+			$query->select(explode(',', $constrains));
+		}];
+	}
+
+	/**
 	 * Parse the nested relations in a relation.
 	 *
 	 * @param   string  $name    relation name
@@ -402,7 +441,7 @@ class Query
 	 */
 	protected function addNestedWiths($name, $results)
 	{
-		$progress = array();
+		$progress = [];
 
 		/** If the relation has already been set on the result array, we will not set it
 		 * again, since that would override any constraints that were already placed
@@ -428,7 +467,7 @@ class Query
 	/**
 	 * Eager load the relations for the models.
 	 *
-	 * @param   array  $models eager load the realtion on the specified models
+	 * @param   array  $models eager load the relation on the specified models
 	 * @return array
 	 */
 	public function eagerLoadRelations(array $models)
@@ -451,9 +490,9 @@ class Query
 	/**
 	 * Eagerly load the relation on a set of models.
 	 *
-	 * @param   array     $models      ?
-	 * @param   string    $name        ?
-	 * @param   Closure   $constraints ?
+	 * @param   array     $models      eager load the relation on the specified models
+	 * @param   string    $name        relation name
+	 * @param   Closure   $constraints relation constraints
 	 * @return array
 	 */
 	protected function eagerLoadRelation(array $models, $name, Closure $constraints)
@@ -527,7 +566,7 @@ class Query
 	 */
 	protected function relationsNestedUnder($relation)
 	{
-		$nested = array();
+		$nested = [];
 
 		/** We are basically looking for any relations that are nested deeper than
 		 * the given top-level relation. We will just check for any relations
@@ -554,31 +593,5 @@ class Query
 	protected function isNestedUnder($relation, $name)
 	{
 		return StringHelper::contains($name, '.') && StringHelper::startWith($name, $relation . '.');
-	}
-
-	/**
-	 * Execute the query and get the first result.
-	 *
-	 * @param   array  $columns columns to be selected
-	 * @return Model|object|static|null
-	 */
-	public function first($columns = array('*'))
-	{
-		return $this->setLimit(1)->get($columns)->first();
-	}
-
-
-	/**
-	 * Add a WHERE IN statement to the query
-	 *
-	 * @param   string $keyName   key name for the where clause
-	 * @param   array  $keyValues array of values to be matched
-	 * @return void
-	 */
-	public function whereIn($keyName, $keyValues)
-	{
-		$this->query->where(
-			$keyName . ' IN (' . implode(', ', $keyValues) . ')'
-		);
 	}
 }

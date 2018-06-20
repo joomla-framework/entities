@@ -9,6 +9,7 @@
 namespace Joomla\Entity\Helpers;
 
 use ArrayAccess;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use JsonSerializable;
 use IteratorAggregate;
 use ArrayIterator;
@@ -27,14 +28,14 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 *
 	 * @var Model[]
 	 */
-	protected $items = array();
+	protected $items = [];
 
 	/**
 	 * Create a new collection.
 	 *
 	 * @param   Model[]  $items array of Models
 	 */
-	public function __construct($items = array())
+	public function __construct($items = [])
 	{
 		$this->items = $items;
 	}
@@ -101,6 +102,29 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 		unset($this->items[$offset]);
 	}
 
+
+	/** Method to convert the Collection to array format.
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array_map(
+			function ($value)
+			{
+				if ($value instanceof Model || $value instanceof Collection)
+				{
+					return $value->toArray();
+				}
+				else
+				{
+					// We suppose that the value is a serializable data type
+					return $value;
+				}
+
+			},
+			$this->items
+		);
+	}
 	/**
 	 * Convert the object into something JSON serializable.
 	 *
@@ -108,13 +132,28 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 */
 	public function jsonSerialize()
 	{
-		return array_map(
-			function ($value)
-			{
-				return $value->jsonSerialize();
-			},
-			$this->items
-		);
+		return $this->toArray();
+	}
+
+	/**
+	 * Convert the collection instance to JSON.
+	 *
+	 * @param   int  $options json_encode Bitmask
+	 *
+	 * @return string
+	 *
+	 * @throws JsonEncodingException
+	 */
+	public function toJson($options = 0)
+	{
+		$json = json_encode($this->jsonSerialize(), $options);
+
+		if (JSON_ERROR_NONE !== json_last_error())
+		{
+			throw JsonEncodingException::forModel($this, json_last_error_msg());
+		}
+
+		return $json;
 	}
 
 	/**
@@ -160,7 +199,7 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	 * @param   mixed  $default default value to be returned when key not found
 	 * @return mixed
 	 */
-	public function find($key, $default = null)
+	public function find($key, $default = false)
 	{
 		if ($key instanceof Model)
 		{

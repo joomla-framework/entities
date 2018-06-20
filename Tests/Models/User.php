@@ -30,17 +30,38 @@ class User extends Model
 	 *
 	 * @var array
 	 */
-	protected $casts = array(
+	protected $casts = [
 		'params' => 'array'
-	);
+	];
+
+	/**
+	 * The attributes that should be mutated to dates. Already aliased!
+	 *
+	 * @var array
+	 */
+	protected $dates = [
+		'registerDate',
+		'lastvisitDate',
+		'lastResetTime'
+	];
+
+	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var array
+	 */
+	protected $hidden = [
+		'password'
+	];
 
 	/**
 	 * The relations to eager load on every query.
 	 *
 	 * @var array
+	 * @todo add to docs: primary key and foreign key are mandatory!!!
 	 */
 	protected $with = array(
-		'sentMessages'
+		'sentMessages:message_id,subject,user_id_from'
 	);
 
 	/**
@@ -68,5 +89,27 @@ class User extends Model
 	public function receivedMessages()
 	{
 		return $this->hasMany('Joomla\Entity\Tests\Models\Message', 'user_id_to');
+	}
+
+
+	/**
+	 * Test get mutator
+	 * @return boolean
+	 */
+	public function getNewAccountAttribute()
+	{
+		return $this->registerDate == $this->lastvisitDate;
+	}
+
+	/**
+	 * Test set mutator
+	 *
+	 * @param   integer $value test value
+	 * @return void
+	 */
+	public function setResetAttribute($value)
+	{
+		$this->resetCount = $value;
+		$this->lastResetTime = '0000-00-00 00:00:01';
 	}
 }
