@@ -293,6 +293,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		$query = $this->newQuery();
 
+		// First we update the timestamps on the model if needed.
+		if ($this->usesTimestamps())
+		{
+			$this->updateTimestamps();
+		}
+
 		/** If the model already exists in the database we can just update our record
 		 * that is already in this database using the current IDs in this "where"
 		 * clause to only update this model. Otherwise, we'll just insert them.

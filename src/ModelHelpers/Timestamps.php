@@ -50,12 +50,12 @@ trait Timestamps
 	{
 		$time = $this->freshTimestamp();
 
-		if (! $this->isDirty('updatedAt'))
+		if ($this->getColumnAlias('updatedAt') && ! $this->isDirty('updatedAt'))
 		{
 			$this->updatedAt = $time;
 		}
 
-		if (! $this->exists && ! $this->isDirty('createdAt'))
+		if (! $this->exists && $this->getColumnAlias('createdAt') && ! $this->isDirty('createdAt'))
 		{
 			$this->createdAt = $time;
 		}

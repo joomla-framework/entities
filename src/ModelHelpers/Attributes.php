@@ -73,6 +73,7 @@ trait Attributes
 	 * Array with alias for "special" columns such as ordering, hits etc etc
 	 *
 	 * @var    array
+	 * @todo add docs for this (createdAt, updatedAt)
 	 */
 	protected $columnAlias = [
 		'createdAt' => null,
