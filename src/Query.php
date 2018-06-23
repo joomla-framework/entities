@@ -95,7 +95,6 @@ class Query
 				$fields[] = $this->db->quoteName($k);
 				$values[] = $this->db->quote($v);
 			}
-
 		}
 
 		// Create the base insert statement.

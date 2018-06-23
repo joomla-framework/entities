@@ -334,7 +334,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Perform a model insert operation.
 	 *
-	 * @param   Query  $query instance of query
+	 * @param   Query    $query   instance of query
 	 * @param   boolean  $nulls   True to insert null fields or false to ignore them.
 	 * @return boolean
 	 */
@@ -358,7 +358,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Perform a model insert operation.
 	 *
-	 * @param   Query  $query istance of query
+	 * @param   Query    $query   istance of query
 	 * @param   boolean  $nulls   True to update null fields or false to ignore them.
 	 * @return boolean
 	 */
