@@ -34,6 +34,13 @@ trait Attributes
 	protected $attributesRaw = [];
 
 	/**
+	 * The model's attribute keys that can be nulls.
+	 *
+	 * @var array
+	 */
+	protected $nullables = [];
+
+	/**
 	 * The model's original attributes.
 	 *
 	 * @var array
@@ -1060,5 +1067,18 @@ trait Attributes
 	{
 		return strncmp($cast, 'date:', 5) === 0 ||
 			strncmp($cast, 'datetime:', 9) === 0;
+	}
+
+
+	/**
+	 * @param   string $key attribute name to be check if nullable
+	 *
+	 * @return boolean
+	 */
+	public function isNullable($key)
+	{
+		$key = $this->getColumnAlias($key);
+
+		return array_key_exists($key, $this->nullables);
 	}
 }

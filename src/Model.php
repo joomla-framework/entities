@@ -287,9 +287,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Save the model to the database.
 	 *
+	 * @param   boolean  $nulls   True to insert or update null fields or false to ignore them.
+	 *
 	 * @return boolean
 	 */
-	public function save()
+	public function save($nulls = false)
 	{
 		$query = $this->newQuery();
 
@@ -306,7 +308,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		if ($this->exists)
 		{
 			$saved = $this->isDirty() ?
-				$this->performUpdate($query) : true;
+				$this->performUpdate($query, $nulls) : true;
 		}
 
 		/** If the model is brand new, we'll insert it into our database and set the
@@ -315,7 +317,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		 */
 		else
 		{
-			$saved = $this->performInsert($query);
+			$saved = $this->performInsert($query, $nulls);
 		}
 
 		/** If the model is successfully saved, we need to sync the original array
@@ -333,16 +335,17 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Perform a model insert operation.
 	 *
 	 * @param   Query  $query instance of query
+	 * @param   boolean  $nulls   True to insert null fields or false to ignore them.
 	 * @return boolean
 	 */
-	protected function performInsert(Query $query)
+	protected function performInsert(Query $query, $nulls = false)
 	{
 		if (empty($this->attributesRaw))
 		{
 			 return true;
 		}
 
-		$success = $query->insert();
+		$success = $query->insert($nulls);
 
 		if ($success)
 		{
@@ -356,16 +359,17 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Perform a model insert operation.
 	 *
 	 * @param   Query  $query istance of query
+	 * @param   boolean  $nulls   True to update null fields or false to ignore them.
 	 * @return boolean
 	 */
-	protected function performUpdate($query)
+	protected function performUpdate($query, $nulls = false)
 	{
 		if (empty($this->attributesRaw))
 		{
 			 return true;
 		}
 
-		$success = $query->update();
+		$success = $query->update($nulls);
 
 		return $success;
 	}

@@ -78,9 +78,10 @@ class Query
 	/**
 	 * Inserts a single instance of a model.
 	 *
+	 * @param   boolean  $nulls   True to insert null fields or false to ignore them.
 	 * @return boolean
 	 */
-	public function insert()
+	public function insert($nulls = false)
 	{
 		$fields = [];
 		$values = [];
@@ -88,9 +89,13 @@ class Query
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getAttributesRaw() as $k => $v)
 		{
-			// Prepare and sanitize the fields and values for the database query.
-			$fields[] = $this->db->quoteName($k);
-			$values[] = $this->db->quote($v);
+			if ($nulls || $v !== null || $this->model->isNullable($k))
+			{
+				// Prepare and sanitize the fields and values for the database query.
+				$fields[] = $this->db->quoteName($k);
+				$values[] = $this->db->quote($v);
+			}
+
 		}
 
 		// Create the base insert statement.
@@ -119,22 +124,26 @@ class Query
 	/**
 	 * Updates a single instance of a model.
 	 *
+	 * @param   boolean  $nulls   True to update null fields or false to ignore them.
 	 * @return boolean
 	 */
-	public function update()
+	public function update($nulls)
 	{
 		$fields = [];
 
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getDirty() as $k => $v)
 		{
-			if ($v == null)
+			if ($nulls || $v !== null || $this->model->isNullable($k))
 			{
-				$v = 'NULL';
-			}
+				if ($v == null)
+				{
+					$v = 'NULL';
+				}
 
-			// Prepare and sanitize the fields and values for the database query.
-			$fields[] = $this->db->quoteName($k) . '=' . $this->db->quote($v);
+				// Prepare and sanitize the fields and values for the database query.
+				$fields[] = $this->db->quoteName($k) . '=' . $this->db->quote($v);
+			}
 		}
 
 		if (empty($fields))
