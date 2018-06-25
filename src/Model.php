@@ -101,9 +101,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		$this->db = $db;
 
-		$this->setAttributesRaw($attributes);
+		$this->setAttributes($attributes, false);
 
-		$this->setAttributes($attributes);
+		$this->syncOriginal();
 
 		$this->originalHidden = $this->hidden;
 
@@ -743,7 +743,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   array|string  $relations relations that should be eager loaded
 	 * @return $this
 	 */
-	public function load($relations)
+	public function eagerLoad($relations)
 	{
 		$query = $this->newQuery()->with(
 			is_string($relations) ? func_get_args() : $relations
@@ -764,7 +764,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		$relations = is_string($relations) ? func_get_args() : $relations;
 
-		return $this->load(
+		return $this->eagerLoad(
 			array_filter($relations,
 				function ($relation)
 				{

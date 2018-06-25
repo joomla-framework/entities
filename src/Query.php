@@ -360,7 +360,38 @@ class Query
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
+		$this->resetQuery();
+
 		return $this->hydrate($items)->all();
+	}
+
+	/**
+	 * Function to get the raw attributes for a raw in the table.
+	 *
+	 * @param   mixed  $id      primary key, if there is no key, then this is used for a new item, therefore select last
+	 * @param   array  $columns columns to be selected in query
+	 *
+	 * @internal
+	 * @return mixed
+	 */
+	public function selectRaw($id, $columns = ['*'])
+	{
+		if ($id)
+		{
+			$this->whereKey($id);
+		}
+		else
+		{
+			$this->query->order('id DESC')
+				->setLimit(1);
+		}
+
+		$this->query->from($this->model->getTable())
+			->select($columns);
+
+		$rawAttributes = $this->db->setQuery($this->query)->loadAssoc();
+
+		return $rawAttributes;
 	}
 
 	/**
@@ -601,5 +632,17 @@ class Query
 	protected function isNestedUnder($relation, $name)
 	{
 		return StringHelper::contains($name, '.') && StringHelper::startWith($name, $relation . '.');
+	}
+
+
+	/**
+	 * Function to reset the DatabaseQuery instance
+	 * Needed in order to reuse the Model and Query instances
+	 *
+	 * @return void
+	 */
+	protected function resetQuery()
+	{
+		$this->query = $this->db->getQuery(true);
 	}
 }

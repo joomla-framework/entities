@@ -108,13 +108,15 @@ trait Attributes
 	/**
 	 * Set a given attribute on the model.
 	 *
-	 * @param   string  $key   attribute name
-	 * @param   mixed   $value model's attribute value
+	 * @param   string  $key          attribute name
+	 * @param   mixed   $value        model's attribute value
+	 * @param   boolean $throwErrors  false only when used in constructor
+	 *
 	 * @return $this
 	 *
 	 * @throws AttributeNotFoundException
 	 */
-	public function setAttribute($key, $value)
+	public function setAttribute($key, $value, $throwErrors = true)
 	{
 		/** First we check if the key has a column alias,
 		 * if no column alias is found, the same value is returned
@@ -135,7 +137,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a set mutator is not defined for this key, we throw an exception.
 		 */
-		if (! array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
+		if ($throwErrors && !array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
 		{
 			throw AttributeNotFoundException::make($this, $key, 'set');
 		}
@@ -342,16 +344,17 @@ trait Attributes
 	/**
 	 * Fill the model with an array of attributes.
 	 *
-	 * @param   array $attributes model's attributes
+	 * @param   array   $attributes   model's attributes
+	 * @param   boolean $throwErrors  false only when used in constructor
 	 *
 	 * @return $this
 	 *
 	 */
-	public function setAttributes(array $attributes)
+	public function setAttributes(array $attributes, $throwErrors = true)
 	{
 		foreach ($attributes as $key => $value)
 		{
-			$this->setAttribute($key, $value);
+			$this->setAttribute($key, $value, $throwErrors);
 		}
 
 		return $this;
@@ -422,9 +425,12 @@ trait Attributes
 				continue;
 			}
 
-			$attributes[$key] = $this->serializeDate(
-				$this->asDateTime($attributes[$key])
-			);
+			if ($attributes[$key] != "0000-00-00 00:00:00")
+			{
+				$date  = $this->asDateTime($attributes[$key]);
+
+				$attributes[$key] = $this->serializeDate($date);
+			}
 		}
 
 		return $attributes;
@@ -492,7 +498,14 @@ trait Attributes
 			 */
 			if ($attributes[$key] && ($value === 'date' || $value === 'datetime'))
 			{
-				$attributes[$key] = $this->serializeDate($attributes[$key]);
+				if ($attributes[$key]->date ==  "-0001-11-30 00:00:00.000000")
+				{
+					$attributes[$key] = "0000-00-00 00:00:00";
+				}
+				else
+				{
+					$attributes[$key] = $this->serializeDate($attributes[$key]);
+				}
 			}
 
 			if ($attributes[$key] && $this->isCustomDateTimeCast($value))
@@ -741,7 +754,11 @@ trait Attributes
 	 */
 	public function fromDateTime($value)
 	{
-		return empty($value) ? $value : $this->asDateTime($value)->format(
+		if ($value == '0000-00-00 00:00:00')
+		{
+			return $value;
+		}
+		return (!$value) ? $value: $this->asDateTime($value)->format(
 			$this->getDateFormat()
 		);
 	}
