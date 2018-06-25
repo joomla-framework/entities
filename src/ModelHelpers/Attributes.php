@@ -425,7 +425,7 @@ trait Attributes
 				continue;
 			}
 
-			if ($attributes[$key] != "0000-00-00 00:00:00")
+			if ($attributes[$key] != $this->db->getNullDate())
 			{
 				$date  = $this->asDateTime($attributes[$key]);
 
@@ -498,9 +498,9 @@ trait Attributes
 			 */
 			if ($attributes[$key] && ($value === 'date' || $value === 'datetime'))
 			{
-				if ($attributes[$key]->date ==  "-0001-11-30 00:00:00.000000")
+				if ((int) $attributes[$key]->date <= 0)
 				{
-					$attributes[$key] = "0000-00-00 00:00:00";
+					$attributes[$key] = $this->db->getNullDate();
 				}
 				else
 				{
@@ -754,11 +754,12 @@ trait Attributes
 	 */
 	public function fromDateTime($value)
 	{
-		if ($value == '0000-00-00 00:00:00')
+		if ($value == $this->db->getNullDate())
 		{
 			return $value;
 		}
-		return (!$value) ? $value: $this->asDateTime($value)->format(
+
+		return (!$value) ? $value : $this->asDateTime($value)->format(
 			$this->getDateFormat()
 		);
 	}
@@ -771,6 +772,11 @@ trait Attributes
 	 */
 	protected function asTimestamp($value)
 	{
+		if ($value == $this->db->getNullDate())
+		{
+			return -1;
+		}
+
 		return $this->asDateTime($value)->getTimestamp();
 	}
 

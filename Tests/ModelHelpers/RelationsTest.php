@@ -67,7 +67,7 @@ class RelationsTest extends SqliteCase
 			$user->getRelations()
 		);
 
-		$user->load('receivedMessages');
+		$user->eagerLoad('receivedMessages');
 
 		$this->assertArrayHasKey(
 			'receivedMessages',
