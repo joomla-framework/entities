@@ -92,14 +92,29 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	);
 
 	/**
+	 * The cache of the columns attributes for each table.
+	 *
+	 * @var array
+	 */
+	public static $fieldsCache = [];
+
+	/**
 	 * Create a new Joomla entity model instance.
 	 *
-	 * @param   DatabaseDriver $db         database driver instance
-	 * @param   array          $attributes pre loads any attributed for the model (user friendly format)
+	 * @param   DatabaseDriver $db          database driver instance
+	 * @param   array          $attributes  pre loads any attributed for the model (user friendly format)
+	 * @param   boolean        $loadFields  true if model is preloaded with table columns (null values)
+
 	 */
-	public function __construct(DatabaseDriver $db = null, array $attributes = [])
+	public function __construct(DatabaseDriver $db = null, array $attributes = [], $loadFields = false)
 	{
 		$this->db = $db;
+
+		if ($loadFields)
+		{
+			$fields = $this->getFields($db);
+			$this->setAttributes($fields, false);
+		}
 
 		$this->setAttributes($attributes, false);
 
@@ -772,5 +787,62 @@ abstract class Model implements ArrayAccess, JsonSerializable
 				}
 			)
 		);
+	}
+
+	/**
+	 * Get the columns from database table.
+	 *
+	 * @param   DatabaseDriver  $db      database driver instance
+	 * @param   boolean         $reload  flag to reload cache
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 *
+	 * @throws  \UnexpectedValueException
+	 */
+	protected function getFields($db, $reload = false)
+	{
+		// Lookup the fields for this table only once.
+		if (!isset(static::$fieldsCache[$this->getTable()]) || $reload)
+		{
+			$fields = $db->getTableColumns($this->getTable());
+
+			if (empty($fields))
+			{
+				throw new \UnexpectedValueException(sprintf('No columns found for %s table', $this->getTable()));
+			}
+
+			$fields = array_map(
+				function ($field)
+				{
+					return null;
+				},
+				$fields
+			);
+
+			static::$fieldsCache[$this->getTable()] = $fields;
+		}
+
+		return static::$fieldsCache[$this->getTable()];
+	}
+
+	/**
+	 * Reset function
+	 * Will not throw an error if the column does not exist during reset, but it will be thrown when saving the model.
+	 *
+	 * @param   array          $attributes  pre loads any attributed for the model (user friendly format)
+	 * @param   boolean        $loadFields  true if model is preloaded with table columns (null values)
+	 *
+	 * @return void
+	 */
+	public function reset($attributes = [], $loadFields = false)
+	{
+		$this->exists = false;
+
+		if ($loadFields)
+		{
+			$this->setAttributesRaw($this->getFields($this->getDb()));
+		}
+
+		$this->setAttributes($attributes, false);
 	}
 }
