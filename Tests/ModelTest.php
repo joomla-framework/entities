@@ -144,6 +144,24 @@ class ModelTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\Model::belongsTo()
+	 * @return void
+	 */
+	public function testBelongsTo()
+	{
+		$model = new UserProfile(self::$driver);
+
+		$profile = $model->find(42);
+
+		$user = $profile->user;
+
+		$this->assertEquals(
+			42,
+			$user->id
+		);
+	}
+
+	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
 	 * @covers Model::getPrimaryKey()
