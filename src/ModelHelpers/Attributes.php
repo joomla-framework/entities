@@ -34,6 +34,13 @@ trait Attributes
 	protected $attributesRaw = [];
 
 	/**
+	 * The database column names.
+	 *
+	 * @var array
+	 */
+	protected $fields = [];
+
+	/**
 	 * The model's attribute keys that can be nulls.
 	 *
 	 * @var array
@@ -110,13 +117,12 @@ trait Attributes
 	 *
 	 * @param   string  $key          attribute name
 	 * @param   mixed   $value        model's attribute value
-	 * @param   boolean $throwErrors  false only when used in constructor
 	 *
 	 * @return $this
 	 *
 	 * @throws AttributeNotFoundException
 	 */
-	public function setAttribute($key, $value, $throwErrors = true)
+	public function setAttribute($key, $value)
 	{
 		/** First we check if the key has a column alias,
 		 * if no column alias is found, the same value is returned
@@ -137,7 +143,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a set mutator is not defined for this key, we throw an exception.
 		 */
-		if ($throwErrors && !array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
+		if (!in_array($key, $this->fields))
 		{
 			throw AttributeNotFoundException::make($this, $key, 'set');
 		}
@@ -190,13 +196,13 @@ trait Attributes
 		/** First we check if the key has a column alias,
 		 * if no column alias is found, the same value is returned
 		 */
-		$aliasKey = $this->getColumnAlias($key);
+		$key = $this->getColumnAlias($key);
 
 		/** If the attribute exists in the attribute array or has a "get" mutator we will
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
 		 * are asking for a relation's value. This covers both types of values.
 		 */
-		if (array_key_exists($aliasKey, $this->attributesRaw) || $this->hasGetMutator($aliasKey))
+		if (in_array($key, $this->fields) || $this->hasGetMutator($key))
 		{
 			// Pass in the original key so we don't get the alias of an alias
 			return $this->getAttributeValue($key);
@@ -206,12 +212,12 @@ trait Attributes
 		 * since we don't want to treat any of those methods as relations because
 		 * they are all intended as helper methods and none of these are relations.
 		 */
-		if (method_exists(self::class, $aliasKey))
+		if (method_exists(self::class, $key))
 		{
 			return null;
 		}
 
-		return $this->getRelationValue($aliasKey);
+		return $this->getRelationValue($key);
 	}
 
 	/**
@@ -245,7 +251,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a get mutator is not defined for this key, we throw an exception.
 		 */
-		if (!array_key_exists($key, $this->attributesRaw) && $key != $this->getPrimaryKey())
+		if (!in_array($key, $this->fields))
 		{
 			throw AttributeNotFoundException::make($this, $key, 'get');
 		}
@@ -345,16 +351,15 @@ trait Attributes
 	 * Fill the model with an array of attributes.
 	 *
 	 * @param   array   $attributes   model's attributes
-	 * @param   boolean $throwErrors  false only when used in constructor
 	 *
 	 * @return $this
 	 *
 	 */
-	public function setAttributes(array $attributes, $throwErrors = true)
+	public function setAttributes(array $attributes)
 	{
 		foreach ($attributes as $key => $value)
 		{
-			$this->setAttribute($key, $value, $throwErrors);
+			$this->setAttribute($key, $value);
 		}
 
 		return $this;
@@ -425,7 +430,7 @@ trait Attributes
 				continue;
 			}
 
-			if ($attributes[$key] != $this->db->getNullDate())
+			if ($attributes[$key] !== $this->db->getNullDate())
 			{
 				$date  = $this->asDateTime($attributes[$key]);
 
@@ -754,7 +759,7 @@ trait Attributes
 	 */
 	public function fromDateTime($value)
 	{
-		if ($value == $this->db->getNullDate())
+		if ($value === $this->db->getNullDate())
 		{
 			return $value;
 		}
@@ -772,7 +777,7 @@ trait Attributes
 	 */
 	protected function asTimestamp($value)
 	{
-		if ($value == $this->db->getNullDate())
+		if ($value === $this->db->getNullDate())
 		{
 			return -1;
 		}
@@ -1103,5 +1108,15 @@ trait Attributes
 		$key = $this->getColumnAlias($key);
 
 		return array_key_exists($key, $this->nullables);
+	}
+
+	/**
+	 * Getter for the fields property
+	 *
+	 * @return array
+	 */
+	public function getFields(): array
+	{
+		return $this->fields;
 	}
 }

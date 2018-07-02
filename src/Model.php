@@ -103,22 +103,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @param   DatabaseDriver $db          database driver instance
 	 * @param   array          $attributes  pre loads any attributed for the model (user friendly format)
-	 * @param   boolean        $loadFields  true if model is preloaded with table columns (null values)
 
 	 */
-	public function __construct(DatabaseDriver $db = null, array $attributes = [], $loadFields = false)
+	public function __construct(DatabaseDriver $db = null, array $attributes = [])
 	{
 		$this->db = $db;
-
-		if ($loadFields)
-		{
-			$fields = $this->getFields($db);
-			$this->setAttributes($fields, false);
-		}
-
-		$this->setAttributes($attributes, false);
-
-		$this->syncOriginal();
 
 		$this->originalHidden = $this->hidden;
 
@@ -126,6 +115,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		{
 			$this->setDefaultTable();
 		}
+
+		$this->fields = $this->getFields();
+
+		$this->setAttributes($attributes);
 	}
 
 	/**
@@ -792,19 +785,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Get the columns from database table.
 	 *
-	 * @param   DatabaseDriver  $db      database driver instance
 	 * @param   boolean         $reload  flag to reload cache
 	 *
 	 * @return  mixed  An array of the field names, or false if an error occurs.
 	 *
 	 * @throws  \UnexpectedValueException
 	 */
-	protected function getFields($db, $reload = false)
+	protected function getFields($reload = false)
 	{
 		// Lookup the fields for this table only once.
 		if (!isset(static::$fieldsCache[$this->getTable()]) || $reload)
 		{
-			$fields = $db->getTableColumns($this->getTable());
+			$fields = $this->db->getTableColumns($this->getTable());
 
 			if (empty($fields))
 			{
@@ -819,7 +811,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 				$fields
 			);
 
-			static::$fieldsCache[$this->getTable()] = $fields;
+			static::$fieldsCache[$this->getTable()] = array_keys($fields);
 		}
 
 		return static::$fieldsCache[$this->getTable()];
@@ -830,18 +822,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Will not throw an error if the column does not exist during reset, but it will be thrown when saving the model.
 	 *
 	 * @param   array          $attributes  pre loads any attributed for the model (user friendly format)
-	 * @param   boolean        $loadFields  true if model is preloaded with table columns (null values)
 	 *
 	 * @return void
 	 */
-	public function reset($attributes = [], $loadFields = false)
+	public function reset($attributes = [])
 	{
 		$this->exists = false;
 
-		if ($loadFields)
-		{
-			$this->setAttributesRaw($this->getFields($this->getDb()));
-		}
+		$this->setAttributesRaw([]);
 
 		$this->setAttributes($attributes, false);
 	}
