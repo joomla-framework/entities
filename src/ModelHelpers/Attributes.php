@@ -143,7 +143,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a set mutator is not defined for this key, we throw an exception.
 		 */
-		if (!in_array($key, $this->fields))
+		if (!$this->hasField($key))
 		{
 			throw AttributeNotFoundException::make($this, $key, 'set');
 		}
@@ -202,7 +202,7 @@ trait Attributes
 		 * get the attribute's value. Otherwise, we will proceed as if the developers
 		 * are asking for a relation's value. This covers both types of values.
 		 */
-		if (in_array($key, $this->fields) || $this->hasGetMutator($key))
+		if ($this->hasField($key) || $this->hasGetMutator($key))
 		{
 			// Pass in the original key so we don't get the alias of an alias
 			return $this->getAttributeValue($key);
@@ -251,7 +251,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a get mutator is not defined for this key, we throw an exception.
 		 */
-		if (!in_array($key, $this->fields))
+		if (!$this->hasField($key))
 		{
 			throw AttributeNotFoundException::make($this, $key, 'get');
 		}
@@ -1115,8 +1115,20 @@ trait Attributes
 	 *
 	 * @return array
 	 */
-	public function getFields(): array
+	public function getFields()
 	{
 		return $this->fields;
+	}
+
+	/**
+	 * Check if the field exist in the model
+	 *
+	 * @param   string  $key key to be checked
+	 *
+	 * @return boolean
+	 */
+	public function hasField($key)
+	{
+		return in_array($key, $this->fields);
 	}
 }
