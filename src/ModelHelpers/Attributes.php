@@ -1130,6 +1130,7 @@ trait Attributes
 	public function hasField($key)
 	{
 		$key = $this->getColumnAlias($key);
+
 		return in_array($key, $this->fields);
 	}
 }
