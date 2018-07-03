@@ -105,7 +105,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   array          $attributes  pre loads any attributed for the model (user friendly format)
 
 	 */
-	public function __construct(DatabaseDriver $db = null, array $attributes = [])
+	public function __construct(DatabaseDriver $db, array $attributes = [])
 	{
 		$this->db = $db;
 
