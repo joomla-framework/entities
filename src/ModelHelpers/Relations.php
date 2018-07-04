@@ -8,15 +8,14 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
-use Joomla\String\Inflector;
 use Joomla\Entity\Query;
-use \Joomla\Entity\Model;
-use \Joomla\Entity\Helpers\Collection;
-use \Joomla\Entity\Relations\HasOne;
-use \Joomla\Entity\Relations\HasMany;
-use \Joomla\Entity\Relations\BelongsTo;
+use Joomla\Entity\Model;
+use Joomla\Entity\Helpers\Collection;
+use Joomla\Entity\Relations\HasOne;
+use Joomla\Entity\Relations\HasMany;
+use Joomla\Entity\Relations\BelongsTo;
+use Joomla\String\Inflector;
 use Joomla\String\Normalise;
-
 
 /**
  * Trait Relations
