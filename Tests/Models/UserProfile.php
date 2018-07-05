@@ -39,6 +39,6 @@ class UserProfile extends Model
 	 */
 	public function user()
 	{
-		return $this->belongsTo('Joomla\Entity\Tests\Models\User');
+		return $this->belongsTo('Joomla\Entity\Tests\Models\User', 'user');
 	}
 }

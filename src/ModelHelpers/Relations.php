@@ -214,14 +214,13 @@ trait Relations
 	 * Define an inverse one-to-one or many relation.
 	 *
 	 * @param   string  $related    related Model
+	 * @param   string  $relation   relation name, must be the same as the caller function
 	 * @param   string  $foreignKey foreign key name in current mode
 	 * @param   string  $ownerKey   the associated key on the parent model.
 	 * @return \Joomla\Entity\Relations\BelongsTo
 	 */
-	public function belongsTo($related, $foreignKey = null, $ownerKey = null)
+	public function belongsTo($related, $relation, $foreignKey = null, $ownerKey = null)
 	{
-		$relation = $this->getRelationFromCallerFunction();
-
 		$instance = $this->newRelatedInstance($related);
 
 		$foreignKey = $foreignKey ?: Normalise::toUnderscoreSeparated($relation) . '_' . $instance->getPrimaryKey();
@@ -246,17 +245,5 @@ trait Relations
 	protected function newBelongsTo(Query $query, Model $child, $foreignKey, $ownerKey, $relation)
 	{
 		return new BelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
-	}
-
-	/**
-	 * Get the relation name from the caller function
-	 *
-	 * @return string
-	 */
-	protected function getRelationFromCallerFunction()
-	{
-		list($one, $two, $caller) = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-
-		return $caller['function'];
 	}
 }
