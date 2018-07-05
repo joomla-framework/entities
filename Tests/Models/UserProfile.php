@@ -10,6 +10,7 @@
 namespace Joomla\Entity\Tests\Models;
 
 use Joomla\Entity\Model;
+use Joomla\Entity\Relations\Relation;
 
 /**
  * Class User
@@ -31,4 +32,13 @@ class UserProfile extends Model
 	 * @var string
 	 */
 	protected $primaryKey = 'user_id';
+
+	/**
+	 * Get the profile for the current user.
+	 * @return Relation
+	 */
+	public function user()
+	{
+		return $this->belongsTo('Joomla\Entity\Tests\Models\User', 'user');
+	}
 }
