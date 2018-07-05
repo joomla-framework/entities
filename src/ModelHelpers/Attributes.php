@@ -34,13 +34,6 @@ trait Attributes
 	protected $attributesRaw = [];
 
 	/**
-	 * The database column names.
-	 *
-	 * @var array
-	 */
-	protected $fields = [];
-
-	/**
 	 * The model's attribute keys that can be nulls.
 	 *
 	 * @var array
@@ -453,20 +446,25 @@ trait Attributes
 	{
 		foreach ($mutatedAttributes as $key)
 		{
-			/** We want to spin through all the mutated attributes for this model and call
-			 * the mutator for the attribute. We cache off every mutated attributes so
-			 * we don't have to constantly check on attributes that actually change.
+			/** @todo having the possibility to load the object partially will break the mutators
+			 * when serialising the Model. Maybe we should remove it if we do not need it.
+			 * Mutators can access properties which are normally loaded. Users Should check if the
+			 * field is loaded before using it.
 			 */
-			if (! array_key_exists($key, $attributes))
+			try
 			{
-				continue;
+				if (!array_key_exists($key, $attributes))
+				{
+					$attributes[$key] = $this->mutateAttribute($key, null);
+				}
+				else
+				{
+					$attributes[$key] = $this->mutateAttribute($key, $attributes[$key]);
+				}
 			}
-
-			/** Next, we will call the mutator for this attribute so that we can get these
-			 * mutated attribute's actual values. After we finish mutating each of the
-			 * attributes we will return this final array of the mutated attributes.
-			 */
-			$attributes[$key] = $this->mutateAttribute($key, $attributes[$key]);
+			catch (\Exception $e)
+			{
+			}
 		}
 
 		return $attributes;
@@ -1111,16 +1109,6 @@ trait Attributes
 	}
 
 	/**
-	 * Getter for the fields property
-	 *
-	 * @return array
-	 */
-	public function getFields()
-	{
-		return $this->fields;
-	}
-
-	/**
 	 * Check if the field exist in the model
 	 *
 	 * @param   string  $key key to be checked
@@ -1131,6 +1119,6 @@ trait Attributes
 	{
 		$key = $this->getColumnAlias($key);
 
-		return in_array($key, $this->fields);
+		return in_array($key, $this->getDefaultFields());
 	}
 }

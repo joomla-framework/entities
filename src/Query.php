@@ -98,7 +98,7 @@ class Query
 		}
 
 		// Create the base insert statement.
-		$this->query->insert($this->db->quoteName($this->model->getTable()))
+		$this->query->insert($this->db->quoteName($this->model->getTableName()))
 			->columns($fields)
 			->values(implode(',', $values));
 
@@ -151,7 +151,7 @@ class Query
 		}
 
 		$this->query = $this->db->getQuery(true);
-		$this->query->update($this->model->getTable())
+		$this->query->update($this->model->getTableName())
 			->set($fields)
 			->where($this->getWherePrimaryKey());
 
@@ -168,7 +168,7 @@ class Query
 	 */
 	public function delete()
 	{
-		$this->query->delete($this->model->getTable())->where($this->getWherePrimaryKey());
+		$this->query->delete($this->model->getTableName())->where($this->getWherePrimaryKey());
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
@@ -356,7 +356,7 @@ class Query
 			$this->query->select($columns);
 		}
 
-		$this->query->from($this->model->getTable());
+		$this->query->from($this->model->getTableName());
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
@@ -366,7 +366,7 @@ class Query
 	}
 
 	/**
-	 * Function to get the raw attributes for a raw in the table.
+	 * Function to get the raw attributes for a row in the table.
 	 *
 	 * @param   mixed  $id      primary key, if there is no key, then this is used for a new item, therefore select last
 	 * @param   array  $columns columns to be selected in query
@@ -386,7 +386,7 @@ class Query
 				->setLimit(1);
 		}
 
-		$this->query->from($this->model->getTable())
+		$this->query->from($this->model->getTableName())
 			->select($columns);
 
 		$rawAttributes = $this->db->setQuery($this->query)->loadAssoc();

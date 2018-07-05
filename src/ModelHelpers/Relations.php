@@ -157,7 +157,7 @@ trait Relations
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return $this->newHasOne($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return $this->newHasOne($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**
@@ -190,7 +190,7 @@ trait Relations
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return $this->newHasMany($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return $this->newHasMany($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**

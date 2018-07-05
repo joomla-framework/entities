@@ -116,8 +116,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			$this->setDefaultTable();
 		}
 
-		$this->fields = $this->getFields();
-
 		$this->setAttributes($attributes);
 	}
 
@@ -132,7 +130,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * @return string
 	 */
-	public function getTable()
+	public function getTableName()
 	{
 		return $this->table;
 	}
@@ -210,7 +208,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			return $column;
 		}
 
-		return $this->getTable() . '.' . $column;
+		return $this->getTableName() . '.' . $column;
 	}
 
 	/**
@@ -591,7 +589,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	{
 		return ! is_null($model) &&
 			$this->getPrimaryKeyValue() === $model->getPrimaryKeyValue() &&
-			$this->getTable() === $model->getTable() &&
+			$this->getTableName() === $model->getTableName() &&
 			$this->getDb() === $model->getDb();
 	}
 
@@ -791,16 +789,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @throws  \UnexpectedValueException
 	 */
-	protected function getFields($reload = false)
+	public function getDefaultFields($reload = false)
 	{
 		// Lookup the fields for this table only once.
-		if (!isset(static::$fieldsCache[$this->getTable()]) || $reload)
+		if (!isset(static::$fieldsCache[$this->getTableName()]) || $reload)
 		{
-			$fields = $this->db->getTableColumns($this->getTable());
+			$fields = $this->db->getTableColumns($this->getTableName());
 
 			if (empty($fields))
 			{
-				throw new \UnexpectedValueException(sprintf('No columns found for %s table', $this->getTable()));
+				throw new \UnexpectedValueException(sprintf('No columns found for %s table', $this->getTableName()));
 			}
 
 			$fields = array_map(
@@ -811,10 +809,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
 				$fields
 			);
 
-			static::$fieldsCache[$this->getTable()] = array_keys($fields);
+			static::$fieldsCache[$this->getTableName()] = array_keys($fields);
 		}
 
-		return static::$fieldsCache[$this->getTable()];
+		return static::$fieldsCache[$this->getTableName()];
 	}
 
 	/**
@@ -825,12 +823,15 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @return void
 	 */
-	public function reset($attributes = [])
+	public function reset(array $attributes = [])
 	{
 		$this->exists = false;
 
-		$this->setAttributesRaw([]);
+		$this->attributesRaw = [];
 
-		$this->setAttributes($attributes, false);
+		if ($attributes)
+		{
+			$this->setAttributes($attributes);
+		}
 	}
 }
