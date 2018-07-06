@@ -256,7 +256,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			 return false;
 		}
 
-		return $this->setAttributes($attributes)->save();
+		return $this->setAttributes($attributes)->persist();
 	}
 
 	/**
@@ -297,7 +297,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 *
 	 * @return boolean
 	 */
-	public function save($nulls = false)
+	public function persist($nulls = false)
 	{
 		$query = $this->newQuery();
 
@@ -649,7 +649,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			return $this->update();
 		}
 
-		return $this->save();
+		return $this->persist();
 	}
 
 	/**

@@ -38,7 +38,7 @@ trait Timestamps
 
 		$this->updateTimestamps();
 
-		return $this->save();
+		return $this->persist();
 	}
 
 	/**

@@ -232,7 +232,7 @@ abstract class HasOneOrMany extends Relation
 
 		$instance->setAttributes(array_combine($attributes, $values));
 
-		$instance->save();
+		$instance->persist();
 
 		return $instance;
 	}
@@ -247,7 +247,7 @@ abstract class HasOneOrMany extends Relation
 	{
 		$this->setForeignAttributesForCreate($model);
 
-		return $model->save() ? $model : false;
+		return $model->persist() ? $model : false;
 	}
 
 	/**
@@ -278,7 +278,7 @@ abstract class HasOneOrMany extends Relation
 
 		$this->setForeignAttributesForCreate($instance);
 
-		$instance->save();
+		$instance->persist();
 
 		return $instance;
 	}

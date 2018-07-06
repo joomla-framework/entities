@@ -19,7 +19,7 @@ use Joomla\Entity\Model;
 class ModelTest extends SqliteCase
 {
 	/**
-	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::persist()
 	 * @covers \Joomla\Entity\Model::performInsert()
 	 * @covers \Joomla\Entity\Query::insert()
 	 * @return void
@@ -33,7 +33,7 @@ class ModelTest extends SqliteCase
 
 		$user = new User(self::$driver, $attributes);
 
-		$user->save();
+		$user->persist();
 
 		$this->assertEquals(
 			101,
@@ -44,7 +44,7 @@ class ModelTest extends SqliteCase
 
 	/**
 	 * @covers \Joomla\Entity\Model::update()
-	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::persist()
 	 * @covers \Joomla\Entity\Model::performUpdate()
 	 * @covers \Joomla\Entity\Query::update()
 	 * @return void
