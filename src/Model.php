@@ -88,7 +88,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'find', 'findLast', 'first'
+		'find', 'findLast', 'first', 'exists'
 	);
 
 	/**
@@ -675,6 +675,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			$return = $column;
 		}
 
+		if ($return === '*')
+		{
+			return $return;
+		}
+
 		// Sanitize the name
 		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
 
@@ -709,8 +714,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @param   array $array array of column names or attributes
 	 *
 	 * @return array
+	 * @internal
 	 */
-	protected function convertAliasedToRaw($array)
+	public function convertAliasedToRaw($array)
 	{
 		$aliased = [];
 

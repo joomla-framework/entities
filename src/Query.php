@@ -194,8 +194,6 @@ class Query
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
 	 *
-	 * @todo columns must be raw at this point, do we want them to be unaliased here,
-	 * @todo so that the dev can use the aliased columns?
 	 * @return Model|boolean
 	 */
 	public function find($id, $columns = ['*'])
@@ -210,6 +208,20 @@ class Query
 		}
 
 		return $models->first();
+	}
+
+	/**
+	 * Function to check if row exist. Used to not load the entire row just for this check
+	 *
+	 * @param   mixed  $id  primary key value
+	 *
+	 * @return boolean
+	 */
+	public function exists($id)
+	{
+		$this->whereKey($id);
+
+		return $this->find($id, [$this->model->getPrimaryKey()]) !== false;
 	}
 
 	/**
@@ -231,7 +243,7 @@ class Query
 		$this->query->order('id DESC')
 			->setLimit(1);
 
-		$models = $this->get();
+		$models = $this->get($columns);
 
 		if ($models->isEmpty())
 		{
@@ -351,6 +363,8 @@ class Query
 		 * the developer already specified a subset of columns to be selected.
 		 * @todo add this behaviour everywhere
 		 */
+		$columns = $this->model->convertAliasedToRaw($columns);
+
 		if (is_null($this->query->select) || $columns != ['*'])
 		{
 			$this->query->select($columns);
