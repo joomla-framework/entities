@@ -8,6 +8,7 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Query;
 use Joomla\Entity\Model;
 use Joomla\Entity\Helpers\Collection;
@@ -155,7 +156,7 @@ trait Relations
 	{
 		$instance = $this->newRelatedInstance($related);
 
-		$foreignKey = $foreignKey ?: Inflector::singularize($this->table) . '_id';
+		$foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
@@ -188,7 +189,7 @@ trait Relations
 	{
 		$instance = $this->newRelatedInstance($related);
 
-		$foreignKey = $foreignKey ?: Inflector::singularize($this->table) . '_id';
+		$foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 

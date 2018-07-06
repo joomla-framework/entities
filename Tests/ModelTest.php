@@ -40,6 +40,19 @@ class ModelTest extends SqliteCase
 			$user->id
 		);
 
+		$attributes = [
+				'profile_key' => 'none',
+				'profile_value' => 0,
+				'ordering' => 0
+			];
+
+		$userProfile = new UserProfile(self::$driver, $attributes);
+
+		$user->profile()->save($userProfile);
+
+		$retirevedUserProfile = $user->find(101)->profile;
+
+		$this->assertTrue($userProfile->is($retirevedUserProfile));
 	}
 
 	/**

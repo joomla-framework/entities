@@ -117,6 +117,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		}
 
 		$this->setAttributes($attributes);
+
+		$this->casts[$this->primaryKey] = $this->primaryKeyType;
 	}
 
 	/**

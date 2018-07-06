@@ -34,6 +34,13 @@ class UserProfile extends Model
 	protected $primaryKey = 'user_id';
 
 	/**
+	 * Indicates if the IDs are auto-incrementing.
+	 *
+	 * @var boolean
+	 */
+	public $incrementing = false;
+
+	/**
 	 * Get the profile for the current user.
 	 * @return Relation
 	 */
