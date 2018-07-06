@@ -21,7 +21,13 @@ use Joomla\String\Normalise;
 /**
  * Base Entity class for items
  *
- * @method find() find(mixed $id, array $columns = ['*'])
+ * @method find()       find(mixed $id, array $columns = ['*'])
+ * @method findLast()   findLast(array $columns = ['*'])
+ * @method first()      first(array $columns = ['*'])
+ * @method exists()     exists(mixed $id)
+ * @method select()     select(array $columns)
+ * @method where()      where(array $conditions, string $glue = 'AND')
+ * @method get()        get(array $columns = ['*'])
  *
  * @package Joomla\Entity
  * @since 1.0
