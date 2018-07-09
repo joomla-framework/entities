@@ -877,7 +877,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			$this->reset();
 		}
 
-		$this->setAttributes($query->selectRaw($key));
+		if (!$attributes = $query->selectRaw($key))
+		{
+			return false;
+		}
+
+		$this->setAttributes($attributes);
 
 		$this->exists = true;
 

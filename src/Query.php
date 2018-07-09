@@ -135,7 +135,7 @@ class Query
 		{
 			if ($nulls || $v !== null || $this->model->isNullable($k))
 			{
-				if ($v == null)
+				if ($v === null)
 				{
 					$v = 'NULL';
 				}
