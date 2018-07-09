@@ -144,7 +144,7 @@ trait Attributes
 		/** If an attribute is listed as a "date", we'll convert it from a DateTime
 		 * instance into the database date format from the DatabaseDriver's date format.
 		 */
-		if ($value && $this->isDateAttribute($key))
+		if ($this->isDateAttribute($key))
 		{
 			$value = $this->fromDateTime($value);
 		}
@@ -762,7 +762,7 @@ trait Attributes
 			return $value;
 		}
 
-		return (!$value) ? $value : $this->asDateTime($value)->format(
+		return (!$value) ? $this->db->getNullDate() : $this->asDateTime($value)->format(
 			$this->getDateFormat()
 		);
 	}
