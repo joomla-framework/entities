@@ -689,7 +689,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		}
 
 		// Sanitize the name
-		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
+		$return = preg_replace('#[^`A-Z0-9_]#i', '', $return);
 
 		return $return;
 	}

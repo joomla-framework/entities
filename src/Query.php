@@ -480,6 +480,7 @@ class Query
 		$relation = explode(':', $name)[0];
 		$constrains = explode(':', $name)[1];
 
+		// TODO maybe use Column Aliases here in order to allow "as" in eager loaded relations
 		return [$relation, function ($query) use ($constrains) {
 			$query->select(explode(',', $constrains));
 		}];

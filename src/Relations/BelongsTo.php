@@ -99,7 +99,7 @@ class BelongsTo extends Relation
 
 		$keys = $this->getKeys($models, $this->foreignKey);
 
-		$keys = array_diff($keys, [null]);
+		$keys = array_diff($keys, [null, '*']);
 
 		if (count($keys) > 0)
 		{
