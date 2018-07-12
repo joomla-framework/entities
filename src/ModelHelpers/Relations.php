@@ -8,7 +8,7 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
-use Joomla\Entity\Query;
+use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Model;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Relations\HasOne;
@@ -155,11 +155,11 @@ trait Relations
 	{
 		$instance = $this->newRelatedInstance($related);
 
-		$foreignKey = $foreignKey ?: Inflector::singularize($this->table) . '_id';
+		$foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return new HasOne($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return new HasOne($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**
@@ -174,11 +174,11 @@ trait Relations
 	{
 		$instance = $this->newRelatedInstance($related);
 
-		$foreignKey = $foreignKey ?: Inflector::singularize($this->table) . '_id';
+		$foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return new HasMany($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return new HasMany($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**

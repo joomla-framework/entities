@@ -7,14 +7,13 @@
 namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Models\User;
-use PHPUnit\Framework\TestCase;
 use Joomla\Entity\Helpers\Collection;
 
 /**
  *
  * @since  1.0
  */
-class CollectionTest extends TestCase
+class CollectionTest extends SqliteCase
 {
 
 	/**
@@ -53,9 +52,9 @@ class CollectionTest extends TestCase
 	 */
 	public function testFind()
 	{
-		$user1 = new User(null, ['id' => 1, 'name' => 'user1']);
-		$user2 = new User(null, ['id' => 2, 'name' => 'user2']);
-		$user3 = new User(null, ['id' => 2, 'name' => 'user2']);
+		$user1 = new User(self::$driver, ['id' => 1, 'name' => 'user1']);
+		$user2 = new User(self::$driver, ['id' => 2, 'name' => 'user2']);
+		$user3 = new User(self::$driver, ['id' => 3, 'name' => 'user3']);
 
 		$collection = new Collection([$user1, $user2, $user3]);
 
@@ -82,9 +81,9 @@ class CollectionTest extends TestCase
 	 */
 	public function testFirst()
 	{
-		$user1 = new User(null, ['id' => 1, 'name' => 'user1']);
-		$user2 = new User(null, ['id' => 2, 'name' => 'user2']);
-		$user3 = new User(null, ['id' => 2, 'name' => 'user2']);
+		$user1 = new User(self::$driver, ['id' => 1, 'name' => 'user1']);
+		$user2 = new User(self::$driver, ['id' => 2, 'name' => 'user2']);
+		$user3 = new User(self::$driver, ['id' => 2, 'name' => 'user2']);
 
 		$collection = new Collection([$user1, $user2, $user3]);
 		$result = $collection->first();

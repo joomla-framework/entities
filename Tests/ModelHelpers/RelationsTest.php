@@ -53,7 +53,7 @@ class RelationsTest extends SqliteCase
 	}
 
 	/**
-	 * @covers \Joomla\Entity\Model::load()
+	 * @covers \Joomla\Entity\Model::eagerLoad()
 	 * @return void
 	 */
 	public function testLoadRelations()
@@ -67,7 +67,7 @@ class RelationsTest extends SqliteCase
 			$user->getRelations()
 		);
 
-		$user->load('receivedMessages');
+		$user->eagerLoad('receivedMessages');
 
 		$this->assertArrayHasKey(
 			'receivedMessages',

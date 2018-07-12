@@ -19,7 +19,7 @@ use Joomla\Entity\Model;
 class ModelTest extends SqliteCase
 {
 	/**
-	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::persist()
 	 * @covers \Joomla\Entity\Model::performInsert()
 	 * @covers \Joomla\Entity\Query::insert()
 	 * @return void
@@ -33,18 +33,31 @@ class ModelTest extends SqliteCase
 
 		$user = new User(self::$driver, $attributes);
 
-		$user->save();
+		$user->persist();
 
 		$this->assertEquals(
 			101,
 			$user->id
 		);
 
+		$attributes = [
+				'profile_key' => 'none',
+				'profile_value' => 0,
+				'ordering' => 0
+			];
+
+		$userProfile = new UserProfile(self::$driver, $attributes);
+
+		$user->profile()->save($userProfile);
+
+		$retirevedUserProfile = $user->find(101)->profile;
+
+		$this->assertTrue($userProfile->is($retirevedUserProfile));
 	}
 
 	/**
 	 * @covers \Joomla\Entity\Model::update()
-	 * @covers \Joomla\Entity\Model::save()
+	 * @covers \Joomla\Entity\Model::persist()
 	 * @covers \Joomla\Entity\Model::performUpdate()
 	 * @covers \Joomla\Entity\Query::update()
 	 * @return void
