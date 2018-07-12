@@ -9,7 +9,6 @@
 namespace Joomla\Entity\ModelHelpers;
 
 use Joomla\Entity\Helpers\StringHelper;
-use Joomla\Entity\Query;
 use Joomla\Entity\Model;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Relations\HasOne;
@@ -160,7 +159,7 @@ trait Relations
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return new HasOne($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return new HasOne($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**
@@ -179,7 +178,7 @@ trait Relations
 
 		$localKey = $localKey ?: $this->getPrimaryKey();
 
-		return new HasMany($instance->newQuery(), $this, $instance->getTable() . '.' . $foreignKey, $localKey);
+		return new HasMany($instance->newQuery(), $this, $instance->getTableName() . '.' . $foreignKey, $localKey);
 	}
 
 	/**
