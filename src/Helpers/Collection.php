@@ -9,6 +9,7 @@
 namespace Joomla\Entity\Helpers;
 
 use ArrayAccess;
+use Countable;
 use Joomla\Entity\Exceptions\JsonEncodingException;
 use JsonSerializable;
 use IteratorAggregate;
@@ -21,7 +22,7 @@ use Joomla\Entity\Model;
  * @package Joomla\Entity\Helpers
  * @since   1.0
  */
-class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
+class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
 	/**
 	 * The items contained in the collection.
@@ -226,5 +227,16 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable
 	public function add($item)
 	{
 		$this->items[] = $item;
+	}
+
+	/**
+	 * Count elements of the collection. The return value is cast to an integer.
+	 *
+	 * @return   integer  The custom count as an integer.
+	 *
+	 */
+	public function count()
+	{
+		return count($this->items);
 	}
 }
