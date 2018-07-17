@@ -28,6 +28,7 @@ use Joomla\String\Normalise;
  * @method select()     select(array $columns)
  * @method where()      where(array $conditions, string $glue = 'AND')
  * @method get()        get(array $columns = ['*'])
+ * @method count()      count()
  *
  * @package Joomla\Entity
  * @since 1.0
@@ -94,7 +95,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'find', 'findLast', 'first', 'exists', 'select', 'where', 'whereIn', 'get'
+		'count', 'exists', 'find', 'findLast', 'first', 'get', 'select', 'where', 'whereIn'
 	);
 
 	/**

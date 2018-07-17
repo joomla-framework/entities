@@ -380,6 +380,24 @@ class Query
 	}
 
 	/**
+	 * Count the number fo rows which satisfy the current instance query
+	 *
+	 * @return integer
+	 */
+	public function count()
+	{
+		$this->query->select('COUNT(*)');
+
+		$this->query->from($this->model->getTableName());
+
+		$count = $this->db->setQuery($this->query)->loadResult();
+
+		$this->resetQuery();
+
+		return (int) $count;
+	}
+
+	/**
 	 * Function to get the raw attributes for a row in the table.
 	 *
 	 * @param   mixed  $id      primary key, if there is no key, then this is used for a new item, therefore select last

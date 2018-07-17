@@ -68,6 +68,32 @@ class QueryTest extends SqliteCase
 	}
 
 	/**
-	 * @todo add test for Query::get.
+	 * @covers \Joomla\Entity\Query::get()
+	 * @return void
 	 */
+	public function testGet()
+	{
+		$model = new User(self::$driver);
+		$users = $model->get();
+
+		$this->assertCount(
+			5,
+			$users
+		);
+	}
+
+	/**
+	 * @covers \Joomla\Entity\Query::count()
+	 * @return void
+	 */
+	public function testCount()
+	{
+		$model = new User(self::$driver);
+		$count = $model->count();
+
+		$this->assertEquals(
+			5,
+			$count
+		);
+	}
 }
