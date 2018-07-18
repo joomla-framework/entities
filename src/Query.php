@@ -86,6 +86,13 @@ class Query
 		$fields = [];
 		$values = [];
 
+		$rawAttributes = $this->model->getAttributesRaw();
+
+		if ($this->model->getPrimaryKeyValue() == 0)
+		{
+			unset($rawAttributes[$this->model->getPrimaryKey()]);
+		}
+
 		// Iterate over the object variables to build the query fields and values.
 		foreach ($this->model->getAttributesRaw() as $k => $v)
 		{
