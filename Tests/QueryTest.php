@@ -96,4 +96,21 @@ class QueryTest extends SqliteCase
 			$count
 		);
 	}
+
+	/**
+	 * @covers \Joomla\Entity\Query::filter()
+	 * @return void
+	 */
+	public function testFilter()
+	{
+		$model = new User(self::$driver);
+		$model->filter('sentMessages', 'subject', '=', "'message1'");
+
+		$count = $model->count();
+
+		$this->assertEquals(
+			1,
+			$count
+		);
+	}
 }

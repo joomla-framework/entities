@@ -95,7 +95,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'count', 'exists', 'find', 'findLast', 'first', 'get', 'select', 'where', 'whereIn'
+		'count', 'exists', 'filter', 'find', 'findLast', 'first', 'get', 'select', 'where', 'whereIn'
 	);
 
 	/**

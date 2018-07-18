@@ -343,6 +343,16 @@ abstract class HasOneOrMany extends Relation
 	}
 
 	/**
+	 * Get the plain parent key.
+	 *
+	 * @return string
+	 */
+	public function getParentKey()
+	{
+		return $this->localKey;
+	}
+
+	/**
 	 * Get the fully qualified parent key name.
 	 *
 	 * @return string
@@ -362,5 +372,15 @@ abstract class HasOneOrMany extends Relation
 		$segments = explode('.', $this->foreignKey);
 
 		return end($segments);
+	}
+
+	/**
+	 * Get the qualified foreign key.
+	 *
+	 * @return string
+	 */
+	public function getQualifiedForeignKey()
+	{
+		return $this->foreignKey;
 	}
 }

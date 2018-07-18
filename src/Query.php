@@ -678,4 +678,32 @@ class Query
 	{
 		$this->query = $this->db->getQuery(true);
 	}
+
+	/**
+	 * Filter based on relation value using inner join.
+	 * For now, filter based on single relation value is possible.
+	 *
+	 * @param   string  $relation   relation name
+	 * @param   string  $attribute  foreign attribute
+	 * @param   string  $operator   condition operator
+	 * @param   mixed   $value      condition value
+	 * @return $this
+	 */
+	public function filter($relation, $attribute, $operator = '=', $value = '0')
+	{
+		$relation = $this->model->$relation();
+		$related = $relation->getRelated();
+
+		$foreignTable = $related->getTableName();
+		$foreignKey = $relation->getQualifiedForeignKey();
+		$parentKey = $this->model->getPrimaryKey();
+
+		$this->query->join("INNER", "$foreignTable ON $parentKey = $foreignKey");
+
+		$qualifiedAttribute = $related->qualifyColumn($attribute);
+
+		$this->query->where("$qualifiedAttribute $operator $value");
+
+		return $this;
+	}
 }
