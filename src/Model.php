@@ -29,6 +29,7 @@ use Joomla\String\Normalise;
  * @method where()      where(array $conditions, string $glue = 'AND')
  * @method get()        get(array $columns = ['*'])
  * @method count()      count()
+ * @method filter()     filter(string $relation, string $attribute, string $operator = '=', mixed $value = '0')
  *
  * @package Joomla\Entity
  * @since 1.0
@@ -53,6 +54,13 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var string
 	 */
 	protected $table;
+
+	/**
+	 * The model associated query. On each call to the database, the query is reset in the Query class.
+	 *
+	 * @var string
+	 */
+	protected $query;
 
 	/**
 	 * The primary key for the model.
@@ -134,6 +142,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		$this->syncOriginal();
 
 		$this->casts[$this->primaryKey] = $this->primaryKeyType;
+
+		$this->query = $this->newQuery();
 	}
 
 	/**
@@ -302,9 +312,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		 */
 		$this->touchOwners();
 
-		$query = $this->newQuery();
-
-		return $this->performDelete($query);
+		return $this->performDelete($this->query);
 	}
 
 	/**
@@ -316,8 +324,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function persist($nulls = false)
 	{
-		$query = $this->newQuery();
-
 		// First we update the timestamps on the model if needed.
 		if ($this->usesTimestamps())
 		{
@@ -331,7 +337,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		if ($this->exists)
 		{
 			$saved = $this->isDirty() ?
-				$this->performUpdate($query, $nulls) : true;
+				$this->performUpdate($this->query, $nulls) : true;
 		}
 
 		/** If the model is brand new, we'll insert it into our database and set the
@@ -340,7 +346,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		 */
 		else
 		{
-			$saved = $this->performInsert($query, $nulls);
+			$saved = $this->performInsert($this->query, $nulls);
 		}
 
 		/** If the model is successfully saved, we need to sync the original array
@@ -460,7 +466,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			}
 		}
 
-		return $this->newQuery()->$method(...$parameters);
+		return $this->query->$method(...$parameters);
 	}
 
 	/**
@@ -761,7 +767,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function with($relations)
 	{
-		return $this->newQuery()->with(
+		return $this->query->with(
 			is_string($relations) ? func_get_args() : $relations
 		);
 	}
@@ -774,7 +780,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function eagerLoad($relations)
 	{
-		$query = $this->newQuery()->with(
+		$query = $this->query->with(
 			is_string($relations) ? func_get_args() : $relations
 		);
 

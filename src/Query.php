@@ -94,7 +94,7 @@ class Query
 		}
 
 		// Iterate over the object variables to build the query fields and values.
-		foreach ($this->model->getAttributesRaw() as $k => $v)
+		foreach ($rawAttributes as $k => $v)
 		{
 			if ($nulls || $v !== null || $this->model->isNullable($k))
 			{
@@ -118,11 +118,13 @@ class Query
 			$key = $this->model->getPrimaryKey();
 
 			// Update the primary key if it exists.
-			if ($key && $id && is_string($key))
+			if ($key && $id)
 			{
 				$this->model->setPrimaryKeyValue($id);
 			}
 		}
+
+		$this->resetQuery();
 
 		return $success;
 	}
@@ -165,6 +167,8 @@ class Query
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
 
+		$this->resetQuery();
+
 		return $success;
 	}
 
@@ -179,6 +183,8 @@ class Query
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
+
+		$this->resetQuery();
 
 		return $success;
 	}
@@ -429,6 +435,8 @@ class Query
 			->select($columns);
 
 		$rawAttributes = $this->db->setQuery($this->query)->loadAssoc();
+
+		$this->resetQuery();
 
 		return $rawAttributes;
 	}
