@@ -699,12 +699,10 @@ class Query
 	 * For now, filter based on single relation value is possible.
 	 *
 	 * @param   string  $relation   relation name
-	 * @param   string  $attribute  foreign attribute
-	 * @param   string  $operator   condition operator
-	 * @param   mixed   $value      condition value
+	 * @param   mixed   $callback   callback function, ! all foreign attributes must have qualified names.
 	 * @return $this
 	 */
-	public function filter($relation, $attribute, $operator = '=', $value = '0')
+	public function filter($relation, Closure $callback)
 	{
 		$relation = $this->model->$relation();
 		$related = $relation->getRelated();
@@ -715,9 +713,7 @@ class Query
 
 		$this->query->join("INNER", "$foreignTable ON $parentKey = $foreignKey");
 
-		$qualifiedAttribute = $related->qualifyColumn($attribute);
-
-		$this->query->where("$qualifiedAttribute $operator $value");
+		$callback($this);
 
 		return $this;
 	}

@@ -104,7 +104,12 @@ class QueryTest extends SqliteCase
 	public function testFilter()
 	{
 		$model = new User(self::$driver);
-		$model->filter('sentMessages', 'subject', '=', "'message1'");
+		$model->filter('sentMessages',
+			function ($query)
+			{
+				$query->where(["subject = 'message1'"]);
+			}
+		);
 
 		$count = $model->count();
 

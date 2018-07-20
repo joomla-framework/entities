@@ -239,6 +239,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	}
 
 	/**
+	 * Qualify the given column name from a related model
+	 *
+	 * @param   string  $relation relation name
+	 * @param   string  $column   column name to by qualifies
+	 * @return string
+	 */
+	public function qualifyRelatedColumn($relation, $column)
+	{
+		return $this->$relation()->getRelated()->qualifyColumn($column);
+	}
+
+	/**
 	 * Dynamically retrieve attributes on the model.
 	 *
 	 * @param   string  $key model's attribute name
