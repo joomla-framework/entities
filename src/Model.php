@@ -26,7 +26,8 @@ use Joomla\String\Normalise;
  * @method first()      first(array $columns = ['*'])
  * @method exists()     exists(mixed $id)
  * @method select()     select(array $columns)
- * @method where()      where(array $conditions, string $glue = 'AND')
+ * @method where()      where($conditions, string $glue = 'AND')
+ * @method order()      order($columns)
  * @method get()        get(array $columns = ['*'])
  * @method count()      count()
  * @method filter()     filter(string $relation, string $attribute, string $operator = '=', mixed $value = '0')
@@ -54,6 +55,13 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var string
 	 */
 	protected $table;
+
+	/**
+	 * The table associated alias for the query.
+	 *
+	 * @var string
+	 */
+	protected $alias = 'a';
 
 	/**
 	 * The model associated query. On each call to the database, the query is reset in the Query class.
@@ -103,7 +111,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'count', 'exists', 'filter', 'find', 'findLast', 'first', 'get', 'select', 'where', 'whereIn'
+		'count', 'exists', 'filter', 'find', 'findLast', 'first', 'get', 'order', 'select', 'where', 'whereIn'
 	);
 
 	/**
@@ -854,5 +862,23 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		}
 
 		return static::$fieldsCache[$this->getTableName()];
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAlias()
+	{
+		return $this->alias;
+	}
+
+
+	/**
+	 * @param   string  $alias  table alias
+	 * @return void
+	 */
+	public function setAlias(string $alias)
+	{
+		$this->alias = $alias;
 	}
 }

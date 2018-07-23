@@ -383,7 +383,9 @@ class Query
 			$this->query->select($columns);
 		}
 
-		$this->query->from($this->model->getTableName());
+		$from = $this->model->getTableName();
+		$from = (is_null($this->query->join)) ?: $from . ' AS ' . $this->model->getAlias();
+		$this->query->from($from);
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
@@ -401,7 +403,9 @@ class Query
 	{
 		$this->query->select('COUNT(*)');
 
-		$this->query->from($this->model->getTableName());
+		$from = $this->model->getTableName();
+		$from = (is_null($this->query->join)) ?: $from . ' AS ' . $this->model->getAlias();
+		$this->query->from($from);
 
 		$count = $this->db->setQuery($this->query)->loadResult();
 
@@ -711,7 +715,7 @@ class Query
 		$foreignKey = $relation->getQualifiedForeignKey();
 		$parentKey = $this->model->getPrimaryKey();
 
-		$this->query->join("INNER", "$foreignTable ON $parentKey = $foreignKey");
+		$this->query->join("LEFT", "$foreignTable ON $parentKey = $foreignKey");
 
 		$callback($this);
 

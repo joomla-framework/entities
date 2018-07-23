@@ -107,7 +107,7 @@ class QueryTest extends SqliteCase
 		$model->filter('sentMessages',
 			function ($query)
 			{
-				$query->where(["subject = 'message1'"]);
+				$query->where("subject = 'message1'");
 			}
 		);
 
