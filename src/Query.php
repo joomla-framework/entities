@@ -378,13 +378,30 @@ class Query
 		 */
 		$columns = $this->model->convertAliasedToRaw($columns);
 
+		$from = $this->model->getTableName();
+
+		if (!is_null($this->model->getAlias()))
+		{
+			$from = $from . ' AS ' . $this->model->getAlias();
+
+			if (strpos($columns[0], $this->model->getAlias() . '.') !== 0)
+			{
+				$columns = array_map(
+					function ($column)
+					{
+						return $this->model->getAlias() . '.' . $column;
+					},
+					$columns
+				);
+			}
+
+		}
+
 		if (is_null($this->query->select) || $columns != ['*'])
 		{
 			$this->query->select($columns);
 		}
 
-		$from = $this->model->getTableName();
-		$from = (is_null($this->query->join)) ?: $from . ' AS ' . $this->model->getAlias();
 		$this->query->from($from);
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
@@ -404,7 +421,7 @@ class Query
 		$this->query->select('COUNT(*)');
 
 		$from = $this->model->getTableName();
-		$from = (is_null($this->query->join)) ?: $from . ' AS ' . $this->model->getAlias();
+		$from = (is_null($this->model->getAlias())) ? $from : $from . ' AS ' . $this->model->getAlias();
 		$this->query->from($from);
 
 		$count = $this->db->setQuery($this->query)->loadResult();
