@@ -227,12 +227,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 * Qualify the given column name by the model's table.
 	 * If table alias is specified, but does not contain the '#__' keyword,
 	 * we add it manually because it is needed for prefix replacement in the Query
+	 * If an alias is set for the table, we use the alias for qualifying.
 	 *
 	 * @param   string  $column column name to by qualifies
 	 * @return string
 	 */
 	public function qualifyColumn($column)
 	{
+		if ($this->getAlias())
+		{
+			return $this->getAlias() . '.' . $column;
+		}
+
 		if (StringHelper::contains($column, '.'))
 		{
 			if (!StringHelper::startWith($column, '#__'))
