@@ -261,7 +261,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	 */
 	public function qualifyRelatedColumn($relation, $column)
 	{
-		return $this->$relation()->getRelated()->qualifyColumn($column);
+		return $this->query->getRelation($relation)->getRelated()->qualifyColumn($column);
 	}
 
 	/**

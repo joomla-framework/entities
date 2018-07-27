@@ -180,4 +180,24 @@ class BelongsTo extends Relation
 	{
 		return $this->query->first();
 	}
+
+	/**
+	 * Get the qualified foreign key.
+	 *
+	 * @return string
+	 */
+	public function getQualifiedForeignKey()
+	{
+		return $this->parent->qualifyColumn($this->foreignKey);
+	}
+
+	/**
+	 * Get the fully qualified parent key name.
+	 *
+	 * @return string
+	 */
+	public function getQualifiedParentKey()
+	{
+		return $this->related->qualifyColumn($this->ownerKey);
+	}
 }

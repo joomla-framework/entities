@@ -244,7 +244,7 @@ trait Attributes
 		/** If the aliased attribute does not exist as a column in the table and
 		 * if a get mutator is not defined for this key, we throw an exception.
 		 */
-		if (!$this->hasField($key))
+		if (!$this->hasField($key) || !array_key_exists($key, $this->attributesRaw))
 		{
 			throw AttributeNotFoundException::make($this, $key, 'get');
 		}

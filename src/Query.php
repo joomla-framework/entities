@@ -716,7 +716,7 @@ class Query
 	}
 
 	/**
-	 * Filter based on relation value using inner join.
+	 * Filter based on relation value using left join.
 	 * For now, filter based on single relation value is possible.
 	 *
 	 * @param   string  $relation   relation name
@@ -730,7 +730,7 @@ class Query
 
 		$foreignTable = $related->getTableName();
 		$foreignKey = $relation->getQualifiedForeignKey();
-		$parentKey = $this->model->getPrimaryKey();
+		$parentKey = $relation->getQualifiedParentKey();
 
 		$this->query->join("LEFT", "$foreignTable ON $parentKey = $foreignKey");
 
