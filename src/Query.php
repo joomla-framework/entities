@@ -394,7 +394,6 @@ class Query
 					$columns
 				);
 			}
-
 		}
 
 		if (is_null($this->query->select) || $columns != ['*'])

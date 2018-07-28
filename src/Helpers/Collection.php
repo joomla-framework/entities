@@ -9,6 +9,7 @@
 namespace Joomla\Entity\Helpers;
 
 use ArrayAccess;
+use Closure;
 use Countable;
 use Joomla\Entity\Exceptions\JsonEncodingException;
 use JsonSerializable;
@@ -238,5 +239,22 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	public function count()
 	{
 		return count($this->items);
+	}
+
+	/**
+	 * Sort through each item with a callback.
+	 *
+	 * @param   Closure|null  $callback  callback function for sorting
+	 * @return static
+	 */
+	public function sort(Closure $callback = null)
+	{
+		$items = $this->items;
+
+		$callback
+			? usort($items, $callback)
+			: sort($items);
+
+		return new static($items);
 	}
 }

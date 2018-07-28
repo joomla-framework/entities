@@ -8,6 +8,7 @@ namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Helpers\Collection;
+use Joomla\Entity\Tests\Models\UserProfile;
 
 /**
  *
@@ -92,4 +93,42 @@ class CollectionTest extends SqliteCase
 			"Test first."
 		);
 	}
+
+	/**
+	 * @covers \Joomla\Entity\Helpers\Collection::sort()
+	 * @return void
+	 */
+	public function testSort()
+	{
+		$userProfileModel = new UserProfile(self::$driver);
+
+		$items = $userProfileModel->get();
+
+		$items = $items->sort(
+			function ($a, $b)
+			{
+				if ($a->user->name == $b->user->name)
+				{
+					return 0;
+				}
+
+				return ($a->user->name < $b->user->name) ? -1 : 1;
+			}
+		);
+
+		$ids = array_map(
+			function ($item)
+			{
+				return $item['user_id'];
+			},
+			$items->all()
+		);
+
+		$this->assertEquals(
+			[100, 44 ,43 ,42 ,99],
+			$ids
+		);
+	}
+
+
 }
