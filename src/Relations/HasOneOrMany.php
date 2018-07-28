@@ -75,6 +75,17 @@ abstract class HasOneOrMany extends Relation
 		$keys = $this->getKeys($models, $this->localKey);
 		$keys = array_diff($keys, [null, '*']);
 
+		if ($this->related->getPrimaryKeyType() == 'string')
+		{
+			$keys = array_map(
+				function ($key)
+				{
+					return $this->related->getDb()->quote($key);
+				},
+				$keys
+			);
+		}
+
 		if (count($keys) > 0)
 		{
 			$this->query->whereIn($this->foreignKey, $keys);
