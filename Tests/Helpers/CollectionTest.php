@@ -131,4 +131,29 @@ class CollectionTest extends SqliteCase
 	}
 
 
+	/**
+	 * @covers \Joomla\Entity\Helpers\Collection::sortByOrdering()
+	 * @return void
+	 */
+	public function testSortByOrdering()
+	{
+		$userProfileModel = new UserProfile(self::$driver);
+
+		$items = $userProfileModel->get();
+
+		$items = $items->sortByOrdering('user.name DESC');
+
+		$ids = array_map(
+			function ($item)
+			{
+				return $item['user_id'];
+			},
+			$items->all()
+		);
+
+		$this->assertEquals(
+			[99, 42, 43, 44, 100],
+			$ids
+		);
+	}
 }

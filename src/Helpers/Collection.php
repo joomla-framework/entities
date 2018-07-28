@@ -257,4 +257,38 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 
 		return new static($items);
 	}
+
+	/**
+	 * Sort through each item by an SQL ordering clause.
+	 *
+	 * @param   string  $ordering  SQL friendly ordering clause
+	 * @return static
+	 */
+	public function sortByOrdering($ordering)
+	{
+		$split = explode(' ', $ordering);
+		$asc = (count($split) > 1 && strtoupper($split[1] == 'DESC')) ? false : true;
+
+		$items = $this->items;
+
+		usort($items,
+			function ($a, $b) use ($split, $asc)
+			{
+				$valueA = $a->getAttributeNested($split[0]);
+				$valueB = $b->getAttributeNested($split[0]);
+
+				if ($valueA == $valueB)
+				{
+					return 0;
+				}
+
+				$return = ($valueA < $valueB) ? -1 : 1;
+				$return = ($asc) ? $return : -$return;
+
+				return $return;
+			}
+		);
+
+		return new static($items);
+	}
 }

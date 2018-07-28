@@ -1121,4 +1121,27 @@ trait Attributes
 
 		return in_array($key, $this->getDefaultFields());
 	}
+
+	/**
+	 * Get a nested attribute from the model.
+	 *
+	 * @param   string  $key attribute full name separated by . (SQL ordering friendly)
+	 *
+	 * @return mixed
+	 *
+	 * @throws AttributeNotFoundException
+	 */
+	public function getAttributeNested($key)
+	{
+		$path = explode('.', $key);
+
+		$current = $this;
+
+		foreach ($path as $key)
+		{
+			$current = $current->$key;
+		}
+
+		return $current;
+	}
 }
