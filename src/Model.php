@@ -10,6 +10,7 @@ namespace Joomla\Entity;
 
 use ArrayAccess;
 use BadMethodCallException;
+use Closure;
 use Joomla\Entity\Helpers\ArrayHelper;
 use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
@@ -30,7 +31,7 @@ use Joomla\String\Normalise;
  * @method order()      order($columns)
  * @method get()        get(array $columns = ['*'])
  * @method count()      count()
- * @method filter()     filter(string $relation, string $attribute, string $operator = '=', mixed $value = '0')
+ * @method filter()     filter(string $relation, Closure $callback)
  *
  * @package Joomla\Entity
  * @since 1.0
