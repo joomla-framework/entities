@@ -140,9 +140,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
 			$this->setDefaultTable();
 		}
 
-		/** Model needs a default value for the primari key,
+		/**
+		 * Model needs a default value for the primari key,
 		 * both for empty forms in Joomla CMS and filtering
 		 * (instantiating relations on empty instances)
+		 *
+		 * @todo this should be refactored in a better way later on
 		 */
 		$this->setAttribute($this->getPrimaryKey(), 0);
 
