@@ -80,7 +80,8 @@ class Query
 	 * Inserts a single instance of a model.
 	 *
 	 * @param   boolean  $nulls   True to insert null fields or false to ignore them.
-	 * @return boolean
+	 *
+	 * @return  boolean
 	 */
 	public function insert($nulls = false)
 	{
@@ -134,7 +135,8 @@ class Query
 	 * Updates a single instance of a model.
 	 *
 	 * @param   boolean  $nulls   True to update null fields or false to ignore them.
-	 * @return boolean
+	 *
+	 * @return  boolean
 	 */
 	public function update($nulls)
 	{
@@ -176,7 +178,7 @@ class Query
 	/**
 	 * Deletes a single instance of a model.
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	public function delete()
 	{
@@ -193,7 +195,7 @@ class Query
 	/**
 	 * Constructs the where clause based on the primary key
 	 *
-	 * @return string
+	 * @return  string
 	 */
 	protected function getWherePrimaryKey()
 	{
@@ -208,7 +210,7 @@ class Query
 	 * @param   mixed  $id      primary key
 	 * @param   array  $columns columns to be selected in query
 	 *
-	 * @return Model|boolean
+	 * @return  Model|boolean
 	 */
 	public function find($id, $columns = ['*'])
 	{
@@ -229,7 +231,7 @@ class Query
 	 *
 	 * @param   mixed  $id  primary key value
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	public function exists($id)
 	{
@@ -243,9 +245,9 @@ class Query
 	 *
 	 * @param   array  $columns columns to be selected in query
 	 *
-	 * @return Model|boolean
+	 * @return  Model|boolean
 	 *
-	 * @throws \BadMethodCallException
+	 * @throws  \BadMethodCallException
 	 */
 	public function findLast($columns = ['*'])
 	{
@@ -271,7 +273,8 @@ class Query
 	 * Execute the query and get the first result.
 	 *
 	 * @param   array  $columns columns to be selected
-	 * @return Model|object|static|null
+	 *
+	 * @return  Model|object|static|null
 	 */
 	public function first($columns = ['*'])
 	{
@@ -281,7 +284,8 @@ class Query
 	/**
 	 * Add a where clause on the primary key to the query.
 	 *
-	 * @param   mixed $id primary key
+	 * @param   mixed  $id  Primary key
+	 *
 	 * @return $this
 	 */
 	public function whereKey($id)
@@ -301,7 +305,8 @@ class Query
 	/**
 	 * Create a collection of models from plain arrays.
 	 *
-	 * @param   array $items array of results from the database query
+	 * @param   array  $items array of results from the database query
+	 *
 	 * @return Collection
 	 */
 	public function hydrate(array $items)
@@ -320,8 +325,9 @@ class Query
 	/**
 	 * Dynamically handle calls into the query instance.
 	 *
-	 * @param   string  $method     method called dynamically
-	 * @param   array   $parameters parameters to be passed to the dynamic called method
+	 * @param   string  $method      Method called dynamically
+	 * @param   array   $parameters  Parameters to be passed to the dynamic called method
+	 *
 	 * @return mixed
 	 */
 	public function __call($method, $parameters)
@@ -348,6 +354,7 @@ class Query
 	 * Finds all the Models with eager relations loaded
 	 *
 	 * @param   array  $columns columns to be selected in query
+	 *
 	 * @return Collection
 	 */
 	public function get($columns = ['*'])
@@ -369,11 +376,13 @@ class Query
 	 * Get the hydrated models without eager loading.
 	 *
 	 * @param   array  $columns columns to be selected in query
-	 * @return Model[]
+	 *
+	 * @return  Model[]
 	 */
 	public function getModels($columns = ['*'])
 	{
-		/** We want to avoid to apply the SELECT * instruction if
+		/**
+		 * We want to avoid to apply the SELECT * instruction if
 		 * the developer already specified a subset of columns to be selected.
 		 * @todo add this behaviour everywhere
 		 */
@@ -412,7 +421,7 @@ class Query
 	/**
 	 * Count the number fo rows which satisfy the current instance query
 	 *
-	 * @return integer
+	 * @return  integer
 	 */
 	public function count()
 	{
@@ -436,7 +445,7 @@ class Query
 	 * @param   array  $columns columns to be selected in query
 	 *
 	 * @internal
-	 * @return mixed
+	 * @return  mixed
 	 */
 	public function selectRaw($id, $columns = ['*'])
 	{
@@ -463,7 +472,8 @@ class Query
 	/**
 	 * Set the relations that should be eager loaded.
 	 *
-	 * @param   mixed  $relations relations that should be eager loaded
+	 * @param   mixed  $relations  Relations that should be eager loaded
+	 *
 	 * @return $this
 	 */
 	public function with($relations)
@@ -479,7 +489,8 @@ class Query
 	 * Parse a list of relations into individuals.
 	 *
 	 * @param   array  $relations relations that should be eager loaded
-	 * @return array
+	 *
+	 * @return  array
 	 */
 	protected function parseWithRelations(array $relations)
 	{
@@ -503,7 +514,6 @@ class Query
 				{
 					$constraints = function ()
 					{
-
 						// Empty callback
 					};
 				}
@@ -550,7 +560,8 @@ class Query
 	{
 		$progress = [];
 
-		/** If the relation has already been set on the result array, we will not set it
+		/**
+		 * If the relation has already been set on the result array, we will not set it
 		 * again, since that would override any constraints that were already placed
 		 * on the relations. We will only set the ones that are not specified.
 		 */
@@ -575,13 +586,15 @@ class Query
 	 * Eager load the relations for the models.
 	 *
 	 * @param   array  $models eager load the relation on the specified models
-	 * @return array
+	 *
+	 * @return  array
 	 */
 	public function eagerLoadRelations(array $models)
 	{
 		foreach ($this->eagerLoad as $name => $constraints)
 		{
-			/** For nested eager loads we'll skip loading them here and they will be set as an
+			/**
+			 * For nested eager loads we'll skip loading them here and they will be set as an
 			 * eager load on the query to retrieve the relation so that they will be eager
 			 * loaded on that query, because that is where they get hydrated as models.
 			 */
@@ -597,14 +610,16 @@ class Query
 	/**
 	 * Eagerly load the relation on a set of models.
 	 *
-	 * @param   array     $models      eager load the relation on the specified models
-	 * @param   string    $name        relation name
-	 * @param   Closure   $constraints relation constraints
+	 * @param   array    $models       Eager load the relation on the specified models
+	 * @param   string   $name         Relation name
+	 * @param   Closure  $constraints  Relation constraints
+	 *
 	 * @return array
 	 */
 	protected function eagerLoadRelation(array $models, $name, Closure $constraints)
 	{
-		/** First we will "back up" the existing where conditions on the query so we can
+		/**
+		 * First we will "back up" the existing where conditions on the query so we can
 		 * add our eager constraints. Then we will merge the wheres that were on the
 		 * query back to it in order that any where conditions might be specified.
 		 */
@@ -614,7 +629,8 @@ class Query
 
 		$constraints($relation);
 
-		/** Once we have the results, we just match those back up to their parent models
+		/**
+		 * Once we have the results, we just match those back up to their parent models
 		 * using the relation instance. Then we just return the finished arrays
 		 * of models which have been eagerly hydrated and are readied for return.
 		 */
@@ -628,7 +644,8 @@ class Query
 	 * Get the relation instance for the given relation name.
 	 *
 	 * @param   string  $name relation name
-	 * @return Relation
+	 *
+	 * @return  Relation
 	 */
 	public function getRelation($name)
 	{
@@ -653,7 +670,8 @@ class Query
 
 		$nested = $this->relationsNestedUnder($name);
 
-		/** If there are nested relations set on the query, we will put those onto
+		/**
+		 * If there are nested relations set on the query, we will put those onto
 		 * the query instances so that they can be handled after this relation
 		 * is loaded. In this way they will all trickle down as they are loaded.
 		 */
@@ -669,13 +687,15 @@ class Query
 	 * Get the deeply nested relations for a given top-level relation.
 	 *
 	 * @param   string  $relation relation to be checked for nester relations
-	 * @return array
+	 *
+	 * @return  array
 	 */
 	protected function relationsNestedUnder($relation)
 	{
 		$nested = [];
 
-		/** We are basically looking for any relations that are nested deeper than
+		/**
+		 * We are basically looking for any relations that are nested deeper than
 		 * the given top-level relation. We will just check for any relations
 		 * that start with the given top relations and adds them to our arrays.
 		 */
@@ -693,9 +713,10 @@ class Query
 	/**
 	 * Determine if the relation is nested.
 	 *
-	 * @param   string  $relation relation
-	 * @param   string  $name     name of relation that is to be checked to be nested
-	 * @return boolean
+	 * @param   string  $relation  Relation
+	 * @param   string  $name      Name of relation that is to be checked to be nested
+	 *
+	 * @return  boolean
 	 */
 	protected function isNestedUnder($relation, $name)
 	{
@@ -720,7 +741,8 @@ class Query
 	 *
 	 * @param   string  $relation   relation name
 	 * @param   mixed   $callback   callback function, ! all foreign attributes must have qualified names.
-	 * @return $this
+	 *
+	 * @return  $this
 	 */
 	public function filter($relation, Closure $callback)
 	{
