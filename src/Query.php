@@ -378,12 +378,10 @@ class Query
 		 */
 		$columns = $this->model->convertAliasedToRaw($columns);
 
-		$from = $this->model->getTableName();
+		$table = $this->model->getTableName();
 
 		if (!is_null($this->model->getAlias()))
 		{
-			$from = $from . ' AS ' . $this->model->getAlias();
-
 			if (strpos($columns[0], $this->model->getAlias() . '.') !== 0)
 			{
 				$columns = array_map(
@@ -401,7 +399,7 @@ class Query
 			$this->query->select($columns);
 		}
 
-		$this->query->from($from);
+		$this->query->from($this->db->quoteName($table, $this->model->getAlias()));
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
