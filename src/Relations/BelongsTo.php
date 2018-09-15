@@ -81,7 +81,7 @@ class BelongsTo extends Relation
 			 */
 			$table = $this->related->getTableName();
 
-			$this->query->where($table . '.' . $this->ownerKey . '=' . $this->child->{$this->foreignKey});
+			$this->query->where($this->ownerKey, $this->child->{$this->foreignKey});
 		}
 	}
 
