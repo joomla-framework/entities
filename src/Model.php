@@ -15,7 +15,6 @@ use Joomla\Entity\Helpers\ArrayHelper;
 use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\String\Inflector;
-use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\StringHelper;
 use Joomla\String\Normalise;
 
