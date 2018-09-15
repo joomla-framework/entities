@@ -139,7 +139,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 		}
 
 		/**
-		 * Model needs a default value for the primari key,
+		 * Model needs a default value for the primary key,
 		 * both for empty forms in Joomla CMS and filtering
 		 * (instantiating relations on empty instances)
 		 *
