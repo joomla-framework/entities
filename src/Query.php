@@ -533,6 +533,7 @@ class Query
 
 		// TODO maybe use Column Aliases here in order to allow "as" in eager loaded relations
 		return [$relation, function ($query) use ($constrains) {
+			/** @var  QueryInterface $query */
 			$query->select(explode(',', $constrains));
 		}];
 	}
@@ -722,6 +723,7 @@ class Query
 	 */
 	public function filter($relation, Closure $callback)
 	{
+		/** @var Relations\Relation $relation */
 		$relation = $this->model->$relation();
 		$related = $relation->getRelated();
 

@@ -243,4 +243,11 @@ abstract class Relation
 	{
 		$this->query = clone $this->query;
 	}
+
+	/**
+	 * Get the qualified foreign key.
+	 *
+	 * @return string
+	 */
+	abstract public function getQualifiedForeignKey();
 }
