@@ -19,8 +19,9 @@ use Joomla\Entity\Relations\Relation;
 use Closure;
 
 /**
- * Class Query
- * @since 1.0
+ * Base Query Class
+ *
+ * @since  1.0
  */
 class Query
 {

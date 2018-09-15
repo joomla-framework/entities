@@ -19,8 +19,8 @@ use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Relations\Relation;
 
 /**
- * Trait Attributes
- * @package Joomla\Entity\Helpers
+ * Attribute Trait
+ *
  * @since 1.0
  */
 trait Attributes

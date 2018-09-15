@@ -12,11 +12,10 @@ use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Model;
 use Joomla\Entity\Query;
 
-
 /**
- * Class BelongsTo
- * @package Joomla\Entity\Relations
- * @since   1.0
+ * Joomla Framework Belongs to relation
+ *
+ * @since  1.0
  */
 class BelongsTo extends Relation
 {

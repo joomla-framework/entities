@@ -13,9 +13,9 @@ use Joomla\Entity\Query;
 use Joomla\Entity\Helpers\Collection;
 
 /**
- * Class HasOneOrMany
- * @package Joomla\Entity\Relations
- * @since   1.0
+ * Joomla Framework Has one or many relation
+ *
+ * @since  1.0
  */
 abstract class HasOneOrMany extends Relation
 {

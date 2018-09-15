@@ -14,9 +14,9 @@ use Joomla\Entity\Query;
 use Joomla\Entity\Helpers\Collection;
 
 /**
- * Relation Abstract Class
- * @package Joomla\Entity\Relations
- * @since 1.0
+ * Joomla Framework Base relation class
+ *
+ * @since  1.0
  */
 abstract class Relation
 {

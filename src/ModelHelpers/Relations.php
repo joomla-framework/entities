@@ -18,8 +18,8 @@ use Joomla\String\Inflector;
 use Joomla\String\Normalise;
 
 /**
- * Trait Relations
- * @package Joomla\Entity\Helpers
+ * Relations Trait
+ *
  * @since 1.0
  */
 trait Relations

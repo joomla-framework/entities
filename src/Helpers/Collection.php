@@ -19,8 +19,8 @@ use Joomla\Entity\Model;
 
 
 /**
- * Class Collection
- * @package Joomla\Entity\Helpers
+ * Collection Helper class
+ *
  * @since   1.0
  */
 class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable

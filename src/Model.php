@@ -32,7 +32,6 @@ use Joomla\String\Normalise;
  * @method count()      count()
  * @method filter()     filter(string $relation, Closure $callback)
  *
- * @package Joomla\Entity
  * @since 1.0
  */
 abstract class Model implements ArrayAccess, JsonSerializable
