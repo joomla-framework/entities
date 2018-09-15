@@ -425,11 +425,8 @@ class Query
 	 */
 	public function count()
 	{
-		$this->query->select('COUNT(*)');
-
-		$from = $this->model->getTableName();
-		$from = (is_null($this->model->getAlias())) ? $from : $from . ' AS ' . $this->model->getAlias();
-		$this->query->from($from);
+		$this->query->select('COUNT(*)')
+			->from($this->db->quoteName($this->model->getTableName(), $this->model->getAlias()));
 
 		$count = $this->db->setQuery($this->query)->loadResult();
 
