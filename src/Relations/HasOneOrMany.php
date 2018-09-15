@@ -75,6 +75,17 @@ abstract class HasOneOrMany extends Relation
 		$keys = $this->getKeys($models, $this->localKey);
 		$keys = array_diff($keys, [null, '*']);
 
+		if ($this->related->getPrimaryKeyType() == 'string')
+		{
+			$keys = array_map(
+				function ($key)
+				{
+					return $this->related->getDb()->quote($key);
+				},
+				$keys
+			);
+		}
+
 		if (count($keys) > 0)
 		{
 			$this->query->whereIn($this->foreignKey, $keys);
@@ -343,6 +354,16 @@ abstract class HasOneOrMany extends Relation
 	}
 
 	/**
+	 * Get the plain parent key.
+	 *
+	 * @return string
+	 */
+	public function getParentKey()
+	{
+		return $this->localKey;
+	}
+
+	/**
 	 * Get the fully qualified parent key name.
 	 *
 	 * @return string
@@ -362,5 +383,15 @@ abstract class HasOneOrMany extends Relation
 		$segments = explode('.', $this->foreignKey);
 
 		return end($segments);
+	}
+
+	/**
+	 * Get the qualified foreign key.
+	 *
+	 * @return string
+	 */
+	public function getQualifiedForeignKey()
+	{
+		return $this->foreignKey;
 	}
 }

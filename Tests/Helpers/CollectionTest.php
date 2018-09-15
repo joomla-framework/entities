@@ -8,6 +8,7 @@ namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Helpers\Collection;
+use Joomla\Entity\Tests\Models\UserProfile;
 
 /**
  *
@@ -90,6 +91,69 @@ class CollectionTest extends SqliteCase
 
 		$this->assertTrue($result->is($user1),
 			"Test first."
+		);
+	}
+
+	/**
+	 * @covers \Joomla\Entity\Helpers\Collection::sort()
+	 * @return void
+	 */
+	public function testSort()
+	{
+		$userProfileModel = new UserProfile(self::$driver);
+
+		$items = $userProfileModel->get();
+
+		$items = $items->sort(
+			function ($a, $b)
+			{
+				if ($a->user->name == $b->user->name)
+				{
+					return 0;
+				}
+
+				return ($a->user->name < $b->user->name) ? -1 : 1;
+			}
+		);
+
+		$ids = array_map(
+			function ($item)
+			{
+				return $item['user_id'];
+			},
+			$items->all()
+		);
+
+		$this->assertEquals(
+			[100, 44 ,43 ,42 ,99],
+			$ids
+		);
+	}
+
+
+	/**
+	 * @covers \Joomla\Entity\Helpers\Collection::sortByOrdering()
+	 * @return void
+	 */
+	public function testSortByOrdering()
+	{
+		$userProfileModel = new UserProfile(self::$driver);
+
+		$items = $userProfileModel->get();
+
+		$items = $items->sortByOrdering('user.name DESC');
+
+		$ids = array_map(
+			function ($item)
+			{
+				return $item['user_id'];
+			},
+			$items->all()
+		);
+
+		$this->assertEquals(
+			[99, 42, 43, 44, 100],
+			$ids
 		);
 	}
 }

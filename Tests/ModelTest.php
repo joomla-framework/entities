@@ -8,7 +8,6 @@ namespace Joomla\Entity\Tests;
 
 use Joomla\Entity\Query;
 use Joomla\Entity\Tests\Models\Banner;
-use Joomla\Entity\Tests\Models\Message;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\Models\UserProfile;
 use Joomla\Entity\Model;

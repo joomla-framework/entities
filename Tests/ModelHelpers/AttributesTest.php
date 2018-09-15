@@ -129,6 +129,22 @@ class AttributesTest extends SqliteCase
 	}
 
 	/**
+	 * @covers \Joomla\Entity\ModelHelpers\Attributes::getAttributeNested()
+	 * @return void
+	 */
+	public function testGetNestedAttribute()
+	{
+		$userModel = new User(self::$driver);
+
+		$user = $userModel->find(42);
+
+		$this->assertEquals(
+			$user->getAttributeNested('profile.profile_key'),
+			$user->profile->profile_key
+		);
+	}
+
+	/**
 	 * @covers \Joomla\Entity\ModelHelpers\Attributes::getAttribute()
 	 * @return void
 	 */

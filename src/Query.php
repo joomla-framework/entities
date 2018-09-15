@@ -86,8 +86,15 @@ class Query
 		$fields = [];
 		$values = [];
 
+		$rawAttributes = $this->model->getAttributesRaw();
+
+		if ($this->model->getPrimaryKeyValue() == 0)
+		{
+			unset($rawAttributes[$this->model->getPrimaryKey()]);
+		}
+
 		// Iterate over the object variables to build the query fields and values.
-		foreach ($this->model->getAttributesRaw() as $k => $v)
+		foreach ($rawAttributes as $k => $v)
 		{
 			if ($nulls || $v !== null || $this->model->isNullable($k))
 			{
@@ -111,11 +118,13 @@ class Query
 			$key = $this->model->getPrimaryKey();
 
 			// Update the primary key if it exists.
-			if ($key && $id && is_string($key))
+			if ($key && $id)
 			{
 				$this->model->setPrimaryKeyValue($id);
 			}
 		}
+
+		$this->resetQuery();
 
 		return $success;
 	}
@@ -158,6 +167,8 @@ class Query
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
 
+		$this->resetQuery();
+
 		return $success;
 	}
 
@@ -172,6 +183,8 @@ class Query
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
+
+		$this->resetQuery();
 
 		return $success;
 	}
@@ -365,12 +378,30 @@ class Query
 		 */
 		$columns = $this->model->convertAliasedToRaw($columns);
 
+		$from = $this->model->getTableName();
+
+		if (!is_null($this->model->getAlias()))
+		{
+			$from = $from . ' AS ' . $this->model->getAlias();
+
+			if (strpos($columns[0], $this->model->getAlias() . '.') !== 0)
+			{
+				$columns = array_map(
+					function ($column)
+					{
+						return $this->model->getAlias() . '.' . $column;
+					},
+					$columns
+				);
+			}
+		}
+
 		if (is_null($this->query->select) || $columns != ['*'])
 		{
 			$this->query->select($columns);
 		}
 
-		$this->query->from($this->model->getTableName());
+		$this->query->from($from);
 
 		$items = $this->db->setQuery($this->query)->loadAssocList();
 
@@ -388,7 +419,9 @@ class Query
 	{
 		$this->query->select('COUNT(*)');
 
-		$this->query->from($this->model->getTableName());
+		$from = $this->model->getTableName();
+		$from = (is_null($this->model->getAlias())) ? $from : $from . ' AS ' . $this->model->getAlias();
+		$this->query->from($from);
 
 		$count = $this->db->setQuery($this->query)->loadResult();
 
@@ -422,6 +455,8 @@ class Query
 			->select($columns);
 
 		$rawAttributes = $this->db->setQuery($this->query)->loadAssoc();
+
+		$this->resetQuery();
 
 		return $rawAttributes;
 	}
@@ -677,5 +712,29 @@ class Query
 	protected function resetQuery()
 	{
 		$this->query = $this->db->getQuery(true);
+	}
+
+	/**
+	 * Filter based on relation value using left join.
+	 * For now, filter based on single relation value is possible.
+	 *
+	 * @param   string  $relation   relation name
+	 * @param   mixed   $callback   callback function, ! all foreign attributes must have qualified names.
+	 * @return $this
+	 */
+	public function filter($relation, Closure $callback)
+	{
+		$relation = $this->model->$relation();
+		$related = $relation->getRelated();
+
+		$foreignTable = $related->getTableName();
+		$foreignKey = $relation->getQualifiedForeignKey();
+		$parentKey = $relation->getQualifiedParentKey();
+
+		$this->query->join("LEFT", "$foreignTable ON $parentKey = $foreignKey");
+
+		$callback($this);
+
+		return $this;
 	}
 }
