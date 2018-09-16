@@ -755,38 +755,33 @@ class Query
 	 *
 	 * @param   string  $column    Column to filter on
 	 * @param   mixed   $value     Value for the column
-	 * @param   string  $dataType  The data value type
 	 * @param   string  $operator  The operator to use on the query
 	 * @param   string  $glue      The operator to use on the where clause
 	 *
 	 * @see     \Joomla\Database\ParameterType for the list of possible parameter types for the $dataType parameter
 	 * @return  static
 	 */
-	public function where(string $column, $value, $dataType = null, string $operator = '=', string $glue = 'AND')
+	public function where(string $column, $value, string $operator = '=', string $glue = 'AND')
 	{
 		$paramName = ':' . $column;
 
 		$this->query->where($column . ' ' . $operator . ' ' . $paramName, $glue);
 
-		if (is_null($dataType))
+		if ($this->getModel()->hasCast($column, ['int', 'integer']))
 		{
-			// If not explicitly defined try and get the cast type to set the parameter type
-			if ($this->getModel()->hasCast($column, ['int', 'integer']))
-			{
-				$dataType = ParameterType::INTEGER;
-			}
-			elseif ($this->getModel()->hasCast($column, ['bool', 'boolean']))
-			{
-				$dataType = ParameterType::BOOLEAN;
-			}
-			elseif ($this->getModel()->isNullable($column) && is_null($value))
-			{
-				$dataType = ParameterType::NULL;
-			}
-			else
-			{
-				$dataType = ParameterType::STRING;
-			}
+			$dataType = ParameterType::INTEGER;
+		}
+		elseif ($this->getModel()->hasCast($column, ['bool', 'boolean']))
+		{
+			$dataType = ParameterType::BOOLEAN;
+		}
+		elseif ($this->getModel()->isNullable($column) && is_null($value))
+		{
+			$dataType = ParameterType::NULL;
+		}
+		else
+		{
+			$dataType = ParameterType::STRING;
 		}
 
 		$this->query->bind($paramName, $value, $dataType);
