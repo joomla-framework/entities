@@ -9,6 +9,7 @@
 namespace Joomla\Entity;
 
 use BadMethodCallException;
+use Joomla\Database\ParameterType;
 use Joomla\Entity\Exceptions\RelationNotFoundException;
 use Joomla\Database\Query\LimitableInterface;
 use Joomla\Database\QueryInterface;
@@ -59,7 +60,7 @@ class Query
 	 * @var array
 	 */
 	protected $passThrough = array(
-		'select', 'where', 'whereIn', 'from', 'having', 'join', 'order', 'setLimit'
+		'select', 'whereIn', 'from', 'having', 'join', 'order', 'setLimit'
 	);
 
 	/**
@@ -162,10 +163,11 @@ class Query
 			return true;
 		}
 
+		$key         = $this->model->getPrimaryKey();
 		$this->query = $this->db->getQuery(true);
 		$this->query->update($this->model->getTableName())
-			->set($fields)
-			->where($this->getWherePrimaryKey());
+			->set($fields);
+		$this->where($key, $this->model->$key);
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
@@ -182,7 +184,9 @@ class Query
 	 */
 	public function delete()
 	{
-		$this->query->delete($this->model->getTableName())->where($this->getWherePrimaryKey());
+		$key = $this->model->getPrimaryKey();
+		$this->query->delete($this->model->getTableName());
+		$this->where($key, $this->model->$key);
 
 		// Set the query and execute the insert.
 		$success = $this->db->setQuery($this->query)->execute();
@@ -190,18 +194,6 @@ class Query
 		$this->resetQuery();
 
 		return $success;
-	}
-
-	/**
-	 * Constructs the where clause based on the primary key
-	 *
-	 * @return  string
-	 */
-	protected function getWherePrimaryKey()
-	{
-		$key = $this->model->getPrimaryKey();
-
-		return $this->db->quoteName($key) . '=' . $this->db->quote($this->model->$key);
 	}
 
 	/**
@@ -754,6 +746,59 @@ class Query
 		$this->query->join("LEFT", "$foreignTable ON $parentKey = $foreignKey");
 
 		$callback($this);
+
+		return $this;
+	}
+
+	/**
+	 * Filter by a column value.
+	 *
+	 * @param   string  $column    Column to filter on
+	 * @param   mixed   $value     Value for the column
+	 * @param   string  $operator  The operator to use on the query
+	 * @param   string  $glue      The operator to use on the where clause
+	 *
+	 * @see     \Joomla\Database\ParameterType for the list of possible parameter types for the $dataType parameter
+	 * @return  static
+	 */
+	public function where(string $column, $value, string $operator = '=', string $glue = 'AND')
+	{
+		$paramName = ':' . $column;
+
+		$this->query->where($column . ' ' . $operator . ' ' . $paramName, $glue);
+
+		if ($this->getModel()->hasCast($column, ['int', 'integer']))
+		{
+			$dataType = ParameterType::INTEGER;
+		}
+		elseif ($this->getModel()->hasCast($column, ['bool', 'boolean']))
+		{
+			$dataType = ParameterType::BOOLEAN;
+		}
+		elseif ($this->getModel()->isNullable($column) && is_null($value))
+		{
+			$dataType = ParameterType::NULL;
+		}
+		else
+		{
+			$dataType = ParameterType::STRING;
+		}
+
+		$this->query->bind($paramName, $value, $dataType);
+
+		return $this;
+	}
+
+	/**
+	 * Filter by ensuring the column value isn't null.
+	 *
+	 * @param   string  $column    Column to filter on
+	 *
+	 * @return  static
+	 */
+	public function whereNotNull($column)
+	{
+		$this->query->where($this->db->quoteName($column) . ' NOT NULL');
 
 		return $this;
 	}
