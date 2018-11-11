@@ -840,7 +840,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 	/**
 	 * Get the columns from database table.
 	 *
-	 * @param   boolean         $reload  flag to reload cache
+	 * @param   boolean  $reload  flag to reload cache
 	 *
 	 * @return  mixed  An array of the field names, or false if an error occurs.
 	 *

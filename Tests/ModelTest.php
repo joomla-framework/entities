@@ -10,7 +10,7 @@ use Joomla\Entity\Query;
 use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\Models\UserProfile;
-use Joomla\Entity\Model;
+use Joomla\Test\TestHelper;
 
 /**
  * @since  1.0
@@ -186,7 +186,48 @@ class ModelTest extends SqliteCase
 		$this->assertEquals('id', $userModel->getPrimaryKey());
 	}
 
-	/**
+    /**
+     * NOT dependent on the DatabaseDriver
+     *
+     * @covers \Joomla\Entity\Model::setPrimaryKeyValue()
+     * @return void
+     */
+    public function testSetPrimaryKeyValue()
+    {
+        $userModel = new User(self::$driver);
+        $userModel->setPrimaryKeyValue(3);
+
+        $this->assertEquals(3, TestHelper::getValue($userModel, 'attributesRaw')['id']);
+    }
+
+    /**
+     * NOT dependent on the DatabaseDriver
+     *
+     * @covers \Joomla\Entity\Model::getPrimaryKeyType()
+     * @return void
+     */
+    public function testGetPrimaryKeyType()
+    {
+        $userModel = new User(self::$driver);
+
+        $this->assertEquals('int', $userModel->getPrimaryKeyType());
+    }
+
+    /**
+     * NOT dependent on the DatabaseDriver
+     *
+     * @covers \Joomla\Entity\Model::setPrimaryKeyType()
+     * @return void
+     */
+    public function testSetPrimaryKeyType()
+    {
+        $userModel = new User(self::$driver);
+        $userModel->setPrimaryKeyType('array');
+
+        $this->assertEquals('array', TestHelper::getValue($userModel, 'primaryKeyType'));
+    }
+
+    /**
 	 * NOT dependent on the DatabaseDriver
 	 *
 	 * @covers \Joomla\Entity\Model::getPrimaryKeyValue()
