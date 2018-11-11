@@ -20,8 +20,8 @@ class RelationsTest extends SqliteCase
 {
 	/**
 	 *
-	 * @covers Model::$with()
-	 * @covers Query::createSelectWithConstraint()
+	 * @covers \Joomla\Entity\Model::with()
+	 * @covers \Joomla\Entity\Query::createSelectWithConstraint()
 	 * @return void
 	 */
 	public function testEagerLoad()
@@ -77,7 +77,7 @@ class RelationsTest extends SqliteCase
 
 	/**
 	 * @covers \Joomla\Entity\Model::hasMany()
-	 * @covers \Joomla\Entity\Model::$with
+	 * @covers \Joomla\Entity\Model::with
 	 * @return void
 	 */
 	public function testOneToManyEager()

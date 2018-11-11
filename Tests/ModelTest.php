@@ -176,7 +176,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::getPrimaryKey()
+	 * @covers \Joomla\Entity\Model::getPrimaryKey()
 	 * @return void
 	 */
 	public function testGetPrimaryKey()
@@ -189,7 +189,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::getPrimaryKeyValue()
+	 * @covers \Joomla\Entity\Model::getPrimaryKeyValue()
 	 * @return void
 	 */
 	public function testGetPrimaryKeyValue()
@@ -203,7 +203,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::is()
+	 * @covers \Joomla\Entity\Model::is()
 	 * @return void
 	 */
 	public function testIs()
@@ -219,7 +219,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::getColumnAlias()
+	 * @covers \Joomla\Entity\Model::getColumnAlias()
 	 * @return void
 	 */
 	public function testGetColumnAlias()
@@ -240,7 +240,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::getQualifiedPrimaryKey()
+	 * @covers \Joomla\Entity\Model::getQualifiedPrimaryKey()
 	 * @return void
 	 */
 	public function testGetQualifiedPrimaryKey()
@@ -256,7 +256,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::qualifyColumn()
+	 * @covers \Joomla\Entity\Model::qualifyColumn()
 	 * @return void
 	 */
 	public function testQualifyColumns()
@@ -282,7 +282,7 @@ class ModelTest extends SqliteCase
 	/**
 	 * NOT dependent on the DatabaseDriver
 	 *
-	 * @covers Model::newQuery()
+	 * @covers \Joomla\Entity\Model::newQuery()
 	 * @return void
 	 */
 	public function testNewQuery()

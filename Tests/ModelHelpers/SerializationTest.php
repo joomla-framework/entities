@@ -19,7 +19,7 @@ use Joomla\Entity\Model;
 class SerializationTest extends SqliteCase
 {
 	/**
-	 * @covers Model::toArray()
+	 * @covers \Joomla\Entity\ModelHelpers\Serialization::toArray()
 	 * @return void
 	 */
 	public function testToArray()
@@ -67,8 +67,8 @@ class SerializationTest extends SqliteCase
 	}
 
 	/**
-	 * @covers Model::jsonSerialize()
-	 * @covers Model::toJson()
+	 * @covers \Joomla\Entity\ModelHelpers\Serialization::jsonSerialize()
+	 * @covers \Joomla\Entity\ModelHelpers\Serialization::toJson()
 	 * @return void
 	 */
 	public function testJsonSerialize()
