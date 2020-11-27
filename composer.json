@@ -6,7 +6,7 @@
   "homepage": "https://github.com/joomla-framework/entities",
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": "~7.0",
+    "php": "~7.2",
     "joomla/database": "~2.0@dev",
     "joomla/string": "~2.0@dev",
     "doctrine/inflector": "~1.2",
