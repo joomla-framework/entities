@@ -1,38 +1,42 @@
 {
-  "name": "joomla/entities",
-  "type": "joomla-package",
-  "description": "Joomla Entity Project",
-  "keywords": ["joomla", "framework", "entity"],
-  "homepage": "https://github.com/joomla-framework/entities",
-  "license": "GPL-2.0-or-later",
-  "require": {
-    "php": "~7.2",
-    "joomla/database": "~2.0@dev",
-    "joomla/string": "~2.0@dev",
-    "doctrine/inflector": "~1.2",
-    "joomla/event": "~2.0@dev",
-    "nesbot/carbon": "~1.29"
-  },
-  "require-dev": {
-    "joomla/coding-standards": "~2.0@alpha",
-    "joomla/test": "~1.2",
-    "phpunit/phpunit": "~6.3",
-    "phpunit/dbunit": "~3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Joomla\\Entity\\": "src/"
+    "name": "joomla/entities",
+    "type": "joomla-package",
+    "description": "Joomla Entity Project",
+    "keywords": [
+        "joomla",
+        "framework",
+        "entity"
+    ],
+    "homepage": "https://github.com/joomla-framework/entities",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^7.2|^8.0",
+        "joomla/database": "~2.0@dev",
+        "joomla/string": "~2.0@dev",
+        "doctrine/inflector": "~1.2",
+        "joomla/event": "~2.0@dev",
+        "nesbot/carbon": "~1.29"
+    },
+    "require-dev": {
+        "joomla/coding-standards": "^3.0@dev",
+        "joomla/test": "~1.2",
+        "phpunit/phpunit": "^8.5|^9.0",
+        "phpunit/dbunit": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Joomla\\Entity\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Joomla\\Entity\\Tests\\": "Tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-2.0-dev": "2.0-dev"
+        }
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Joomla\\Entity\\Tests\\": "Tests/"
-    }
-  },
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-2.0-dev": "2.0-dev"
-    }
-  }
 }
