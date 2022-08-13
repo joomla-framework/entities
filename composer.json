@@ -10,16 +10,15 @@
     "homepage": "https://github.com/joomla-framework/entities",
     "license": "GPL-2.0-or-later",
     "require": {
-        "php": "^7.2|^8.0",
-        "joomla/database": "~2.0@dev",
-        "joomla/string": "~2.0@dev",
+        "php": "^7.2.5|~8.0.0|~8.1.0",
+        "joomla/database": "dev-php-8.2",
+        "joomla/string": "dev-php-8.2",
+        "joomla/event": "dev-php-8.2",
         "doctrine/inflector": "~1.2",
-        "joomla/event": "~2.0@dev",
         "nesbot/carbon": "~1.29"
     },
     "require-dev": {
-        "joomla/coding-standards": "^3.0@dev",
-        "joomla/test": "~1.2",
+        "joomla/test": "dev-php-8.2",
         "phpunit/phpunit": "^8.5|^9.0",
         "phpunit/dbunit": "~3.0"
     },
