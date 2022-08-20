@@ -79,6 +79,7 @@ abstract class AbstractDataSet implements IDataSet
      *
      * @return ITableIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->createIterator();

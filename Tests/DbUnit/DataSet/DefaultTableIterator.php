@@ -69,6 +69,7 @@ class DefaultTableIterator implements ITableIterator
      *
      * @return ITable
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return \current($this->tables);
@@ -79,6 +80,7 @@ class DefaultTableIterator implements ITableIterator
      *
      * @return string
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->current()->getTableMetaData()->getTableName();
@@ -113,6 +115,7 @@ class DefaultTableIterator implements ITableIterator
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->current() !== false;
