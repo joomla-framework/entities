@@ -4,11 +4,10 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\ModelHelpers\Tests;
+namespace Joomla\Entity\Tests\ModelHelpers;
 
 use Joomla\Entity\Exceptions\AttributeNotFoundException;
 use Joomla\Entity\Helpers\Collection;
-use Joomla\Entity\Relations\Relation;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\SqliteCase;
 use Joomla\Entity\Model;
@@ -23,7 +22,7 @@ class AttributesTest extends SqliteCase
 	 * This method is called before the first test of this test class is run.
 	 * @return void
 	 */
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		static::$dataSets = array(
 			'banners'       => __DIR__ . '/Stubs/banners.csv',

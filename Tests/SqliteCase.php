@@ -29,7 +29,7 @@ abstract class SqliteCase extends AbstractDatabaseTestCase
 	 *
 	 * @return  void
 	 */
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		// Make sure the driver is supported
 		if (!SqliteDriver::isSupported())

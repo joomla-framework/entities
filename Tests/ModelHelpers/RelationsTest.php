@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\ModelHelpers\Tests;
+namespace Joomla\Entity\Tests\ModelHelpers;
 
 use Joomla\Entity\Tests\Models\Message;
 use Joomla\Entity\Tests\Models\User;
