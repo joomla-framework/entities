@@ -78,7 +78,6 @@ class SerializationTest extends SqliteCase
 		$expected = json_encode([
 			"id" => 42,
 			"username" => "admin",
-			"password" => "password",
 			"sentMessages" => [
 				[
 					"message_id" => 1,
