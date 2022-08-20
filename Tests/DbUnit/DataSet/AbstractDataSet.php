@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet;
+namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
 /**
  * Implements the basic functionality of data sets.

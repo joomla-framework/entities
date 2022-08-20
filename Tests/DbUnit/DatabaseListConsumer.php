@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit;
+namespace Joomla\Entity\Tests\DbUnit;
 
 /**
  * An interface for classes that require a list of databases to operate.

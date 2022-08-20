@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Operation;
+namespace Joomla\Entity\Tests\DbUnit\Operation;
 
 /**
  * A class factory to easily return database operations.

@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database\Metadata;
+namespace Joomla\Entity\Tests\DbUnit\Database\Metadata;
 
 use PDO;
-use PHPUnit\DbUnit\RuntimeException;
+use Joomla\Entity\Tests\DbUnit\RuntimeException;
 use ReflectionClass;
 
 /**

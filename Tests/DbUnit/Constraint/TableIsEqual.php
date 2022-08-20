@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Constraint;
+namespace Joomla\Entity\Tests\DbUnit\Constraint;
 
-use PHPUnit\DbUnit\DataSet\ITable;
-use PHPUnit\DbUnit\InvalidArgumentException;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\InvalidArgumentException;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /**

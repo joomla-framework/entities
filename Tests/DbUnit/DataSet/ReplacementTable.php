@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet;
+namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
 /**
  * Allows for replacing arbitrary strings in your data sets with other values.

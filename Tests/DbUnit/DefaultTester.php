@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit;
+namespace Joomla\Entity\Tests\DbUnit;
 
-use PHPUnit\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
 
 /**
  * This is the default implementation of the database tester. It receives its

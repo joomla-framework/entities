@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit;
+namespace Joomla\Entity\Tests\DbUnit;
 
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\Operation\Factory;
-use PHPUnit\DbUnit\Operation\Operation;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\Operation\Factory;
+use Joomla\Entity\Tests\DbUnit\Operation\Operation;
 
 /**
  * Can be used as a foundation for new DatabaseTesters.

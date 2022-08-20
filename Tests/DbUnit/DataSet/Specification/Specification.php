@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet\Specification;
+namespace Joomla\Entity\Tests\DbUnit\DataSet\Specification;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 
 /**
  * Provides an interface for creating data sets from data set spec strings.

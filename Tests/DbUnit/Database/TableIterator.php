@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
-use PHPUnit\DbUnit\DataSet\ITable;
-use PHPUnit\DbUnit\DataSet\ITableIterator;
-use PHPUnit\DbUnit\DataSet\ITableMetadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITableIterator;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
 
 /**
  * Provides iterative access to tables from a database instance.

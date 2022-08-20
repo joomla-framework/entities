@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
 /**
  * Provides access to a database instance as a data set.

@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet\Specification;
+namespace Joomla\Entity\Tests\DbUnit\DataSet\Specification;
 
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DatabaseListConsumer;
-use PHPUnit\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\Database\DefaultConnection;
+use Joomla\Entity\Tests\DbUnit\DatabaseListConsumer;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 use ReflectionClass;
 
 /**

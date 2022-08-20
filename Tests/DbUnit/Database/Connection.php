@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
 use PDO;
-use PHPUnit\DbUnit\Database\Metadata\Metadata;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\Database\Metadata\Metadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
 
 /**
  * Provides a basic interface for communicating with a database.

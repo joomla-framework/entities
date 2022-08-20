@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Operation;
+namespace Joomla\Entity\Tests\DbUnit\Operation;
 
-use PHPUnit\DbUnit\DataSet\ITable;
-use PHPUnit\DbUnit\RuntimeException;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\RuntimeException;
 
 /**
  * Thrown for exceptions encountered with database operations. Provides

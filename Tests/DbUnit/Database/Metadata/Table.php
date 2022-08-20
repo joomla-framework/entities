@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database\Metadata;
+namespace Joomla\Entity\Tests\DbUnit\Database\Metadata;
 
-use PHPUnit\DbUnit\DataSet\DefaultTableMetadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\DefaultTableMetadata;
 
 /**
  * This class loads a table metadata object with database metadata.

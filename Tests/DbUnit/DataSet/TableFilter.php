@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet;
+namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
-use PHPUnit\DbUnit\InvalidArgumentException;
+use Joomla\Entity\Tests\DbUnit\InvalidArgumentException;
 
 /**
  * A table decorator that allows filtering out table columns from results.

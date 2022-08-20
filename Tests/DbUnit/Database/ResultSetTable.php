@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
 use PDO;
 use PDOStatement;
-use PHPUnit\DbUnit\DataSet\AbstractTable;
-use PHPUnit\DbUnit\DataSet\DefaultTableMetadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\AbstractTable;
+use Joomla\Entity\Tests\DbUnit\DataSet\DefaultTableMetadata;
 
 /**
  * Provides the functionality to represent a database result set as a DBUnit

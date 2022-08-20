@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet\Specification;
+namespace Joomla\Entity\Tests\DbUnit\DataSet\Specification;
 
-use PHPUnit\DbUnit\RuntimeException;
+use Joomla\Entity\Tests\DbUnit\RuntimeException;
 
 /**
  * Creates the appropriate DataSet Spec based on a given type.

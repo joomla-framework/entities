@@ -8,22 +8,22 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit;
+namespace Joomla\Entity\Tests\DbUnit;
 
 use PDO;
-use PHPUnit\DbUnit\Constraint\DataSetIsEqual;
-use PHPUnit\DbUnit\Constraint\TableIsEqual;
-use PHPUnit\DbUnit\Constraint\TableRowCount;
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DataSet\ArrayDataSet;
-use PHPUnit\DbUnit\DataSet\FlatXmlDataSet;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\DataSet\ITable;
-use PHPUnit\DbUnit\DataSet\MysqlXmlDataSet;
-use PHPUnit\DbUnit\DataSet\XmlDataSet;
-use PHPUnit\DbUnit\Operation\Factory;
-use PHPUnit\DbUnit\Operation\Operation;
+use Joomla\Entity\Tests\DbUnit\Constraint\DataSetIsEqual;
+use Joomla\Entity\Tests\DbUnit\Constraint\TableIsEqual;
+use Joomla\Entity\Tests\DbUnit\Constraint\TableRowCount;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\Database\DefaultConnection;
+use Joomla\Entity\Tests\DbUnit\DataSet\ArrayDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\FlatXmlDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\DataSet\MysqlXmlDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\XmlDataSet;
+use Joomla\Entity\Tests\DbUnit\Operation\Factory;
+use Joomla\Entity\Tests\DbUnit\Operation\Operation;
 
 trait TestCaseTrait
 {

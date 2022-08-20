@@ -23,7 +23,7 @@ class AttributesTest extends SqliteCase
 	 * This method is called before the first test of this test class is run.
 	 * @return void
 	 */
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		static::$dataSets = array(
 			'banners'       => __DIR__ . '/Stubs/banners.csv',

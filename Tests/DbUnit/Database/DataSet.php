@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
-use PHPUnit\DbUnit\DataSet\AbstractDataSet;
-use PHPUnit\DbUnit\DataSet\DefaultTableMetadata;
-use PHPUnit\DbUnit\DataSet\ITableMetadata;
-use PHPUnit\DbUnit\InvalidArgumentException;
-use PHPUnit\DbUnit\RuntimeException;
+use Joomla\Entity\Tests\DbUnit\DataSet\AbstractDataSet;
+use Joomla\Entity\Tests\DbUnit\DataSet\DefaultTableMetadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
+use Joomla\Entity\Tests\DbUnit\InvalidArgumentException;
+use Joomla\Entity\Tests\DbUnit\RuntimeException;
 
 /**
  * Provides access to a database instance as a data set.

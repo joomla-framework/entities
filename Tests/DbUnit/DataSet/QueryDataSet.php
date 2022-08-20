@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet;
+namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\Database\Table;
-use PHPUnit\DbUnit\Database\TableIterator;
-use PHPUnit\DbUnit\InvalidArgumentException;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\Database\Table;
+use Joomla\Entity\Tests\DbUnit\Database\TableIterator;
+use Joomla\Entity\Tests\DbUnit\InvalidArgumentException;
 
 /**
  * Provides access to a database instance as a data set.

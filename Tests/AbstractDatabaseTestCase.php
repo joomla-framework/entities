@@ -7,12 +7,12 @@
 namespace Joomla\Entity\Tests;
 
 use Joomla\Database\DatabaseDriver;
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DataSet\CsvDataSet;
-use PHPUnit\DbUnit\Operation\Composite;
-use PHPUnit\DbUnit\Operation\Factory;
-use PHPUnit\DbUnit\Operation\Operation;
-use PHPUnit\DbUnit\TestCase;
+use Joomla\Entity\Tests\DbUnit\Database\DefaultConnection;
+use Joomla\Entity\Tests\DbUnit\DataSet\CsvDataSet;
+use Joomla\Entity\Tests\DbUnit\Operation\Composite;
+use Joomla\Entity\Tests\DbUnit\Operation\Factory;
+use Joomla\Entity\Tests\DbUnit\Operation\Operation;
+use Joomla\Entity\Tests\DbUnit\TestCase;
 
 /**
  * Base test case for the database package
@@ -49,7 +49,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 *
 	 * @return  void
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		if (!static::$driver)
 		{
@@ -64,7 +64,7 @@ abstract class AbstractDatabaseTestCase extends TestCase
 	 *
 	 * @return  void
 	 */
-	public static function tearDownAfterClass()
+	public static function tearDownAfterClass(): void
 	{
 		if (static::$driver !== null)
 		{

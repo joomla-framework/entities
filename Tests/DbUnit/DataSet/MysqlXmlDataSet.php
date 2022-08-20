@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet;
+namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
-use PHPUnit\DbUnit\RuntimeException;
+use Joomla\Entity\Tests\DbUnit\RuntimeException;
 
 /**
  * Data set implementation for the output of mysqldump --xml.

@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Operation;
+namespace Joomla\Entity\Tests\DbUnit\Operation;
 
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 
 /**
  * Provides a basic interface and functionality for executing database

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\DataSet\Specification;
+namespace Joomla\Entity\Tests\DbUnit\DataSet\Specification;
 
 /**
  * An interface for data set spec factories.

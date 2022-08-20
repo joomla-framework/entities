@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database\Metadata;
+namespace Joomla\Entity\Tests\DbUnit\Database\Metadata;
 
 /**
  * Provides functionality to retrieve meta data from an Dblib (SQL Server) database.
@@ -114,7 +114,7 @@ class Dblib extends AbstractMetadata
         }
 
         $keyQuery = "SELECT COL_NAME(ic.OBJECT_ID,ic.column_id) AS ColumnName
-			FROM    sys.indexes AS i INNER JOIN 
+			FROM    sys.indexes AS i INNER JOIN
 				sys.index_columns AS ic ON  i.OBJECT_ID = ic.OBJECT_ID
 						        AND i.index_id = ic.index_id
 			WHERE   i.is_primary_key = 1 AND OBJECT_NAME(ic.OBJECT_ID) = '" . $tableName . "'";

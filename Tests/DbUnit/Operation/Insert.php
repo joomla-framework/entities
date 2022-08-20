@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Operation;
+namespace Joomla\Entity\Tests\DbUnit\Operation;
 
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\DataSet\ITable;
-use PHPUnit\DbUnit\DataSet\ITableMetadata;
+use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
 
 /**
  * This class provides functionality for inserting rows from a dataset into a database.

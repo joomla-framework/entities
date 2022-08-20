@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\DbUnit\Database;
+namespace Joomla\Entity\Tests\DbUnit\Database;
 
 use PDO;
-use PHPUnit\DbUnit\DataSet\AbstractTable;
-use PHPUnit\DbUnit\DataSet\ITableMetadata;
+use Joomla\Entity\Tests\DbUnit\DataSet\AbstractTable;
+use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
 
 /**
  * Provides the functionality to represent a database table.
