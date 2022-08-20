@@ -9,6 +9,7 @@ namespace Joomla\Entity\Tests\Helpers;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Tests\Models\UserProfile;
+use Joomla\Entity\Tests\SqliteCase;
 
 /**
  *
