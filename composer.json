@@ -11,7 +11,7 @@
     "joomla/string": "^2.0",
     "joomla/event": "^2.0",
     "doctrine/inflector": "~1.2",
-    "nesbot/carbon": "~1.29"
+    "nesbot/carbon": "^2.0"
   },
   "require-dev": {
     "joomla/coding-standards": "^3.0@dev",
