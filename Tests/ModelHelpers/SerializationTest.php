@@ -6,12 +6,11 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\ModelHelpers\Tests;
+namespace Joomla\Entity\Tests\ModelHelpers;
 
 use Joomla\Entity\Tests\Models\Banner;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\SqliteCase;
-use Joomla\Entity\Model;
 
 /**
  * @since  1.0
@@ -76,19 +75,30 @@ class SerializationTest extends SqliteCase
 		$model = new User(self::$driver);
 		$user = $model->find(42, ['id', 'username', 'password']);
 
-		$json = '{"id":42,"username":"admin","sentMessages":[{"message_id":1,"subject":"message1","user_id_from":"42"}]}';
+		$expected = json_encode([
+			"id" => 42,
+			"username" => "admin",
+			"password" => "password",
+			"sentMessages" => [
+				[
+					"message_id" => 1,
+					"subject" => "message1",
+					"user_id_from" => PHP_VERSION_ID < '80100' ? "42" : 42,
+				]
+			]
+		]);
 
 		$this->assertEquals(
-			$json,
+			$expected,
 			$user->toJson()
 		);
 
 		$user->addHidden('sentMessages');
 
-		$json = '{"id":42,"username":"admin"}';
+		$expected = '{"id":42,"username":"admin"}';
 
 		$this->assertEquals(
-			$json,
+			$expected,
 			$user->toJson()
 		);
 	}

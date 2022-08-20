@@ -4,7 +4,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\Tests;
+namespace Joomla\Entity\Tests\Helpers;
 
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Helpers\Collection;

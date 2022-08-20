@@ -4,11 +4,10 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Joomla\Entity\ModelHelpers\Tests;
+namespace Joomla\Entity\Tests\ModelHelpers;
 
 use Joomla\Entity\Exceptions\AttributeNotFoundException;
 use Joomla\Entity\Helpers\Collection;
-use Joomla\Entity\Relations\Relation;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\SqliteCase;
 use Joomla\Entity\Model;
