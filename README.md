@@ -1,4 +1,4 @@
-# The Entity Package [![Build Status](https://travis-ci.org/joomla-projects/entities.png?branch=master)](https://travis-ci.org/joomla-projects/entities)
+# The Entity Package [![Build Status](https://ci.joomla.org/api/badges/joomla-framework/entities/status.svg?ref=refs/heads/2.0-dev)](https://ci.joomla.org/joomla-framework/entities)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/entities/v/stable)](https://packagist.org/packages/joomla/entities)
 [![Total Downloads](https://poser.pugx.org/joomla/entities/downloads)](https://packagist.org/packages/joomla/entities)
