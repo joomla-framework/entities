@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of DbUnit.
  *
@@ -140,7 +141,8 @@ class Filter extends AbstractDataSet
             /* @var $table ITable */
             $tableName = $table->getTableMetaData()->getTableName();
 
-            if ((!\in_array($tableName, $this->includeTables) && !empty($this->includeTables)) ||
+            if (
+                (!\in_array($tableName, $this->includeTables) && !empty($this->includeTables)) ||
                 \in_array($tableName, $this->excludeTables)
             ) {
                 continue;

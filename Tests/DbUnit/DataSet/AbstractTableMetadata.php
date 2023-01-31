@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of DbUnit.
  *
@@ -71,7 +72,8 @@ abstract class AbstractTableMetadata implements ITableMetadata
      */
     public function matches(ITableMetadata $other)
     {
-        if ($this->getTableName() != $other->getTableName() ||
+        if (
+            $this->getTableName() != $other->getTableName() ||
             $this->getColumns() != $other->getColumns()
         ) {
             return false;

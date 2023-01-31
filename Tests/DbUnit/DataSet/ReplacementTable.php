@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of DbUnit.
  *
@@ -156,7 +157,8 @@ class ReplacementTable implements ITable
         $thisMetaData  = $this->getTableMetaData();
         $otherMetaData = $other->getTableMetaData();
 
-        if (!$thisMetaData->matches($otherMetaData) ||
+        if (
+            !$thisMetaData->matches($otherMetaData) ||
             $this->getRowCount() != $other->getRowCount()
         ) {
             return false;
