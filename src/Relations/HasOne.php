@@ -17,43 +17,42 @@ use Joomla\Entity\Helpers\Collection;
  */
 class HasOne extends HasOneOrMany
 {
-	/**
-	 * Get the results of the relation.
-	 *
-	 * @return mixed
-	 */
-	public function getResults()
-	{
-		return $this->query->first();
-	}
+    /**
+     * Get the results of the relation.
+     *
+     * @return mixed
+     */
+    public function getResults()
+    {
+        return $this->query->first();
+    }
 
-	/**
-	 * Initialize the relation on a set of models.
-	 *
-	 * @param   array   $models   the array of Model instances
-	 * @param   string  $relation relation name
-	 * @return array
-	 */
-	public function initRelation(array $models, $relation)
-	{
-		foreach ($models as $model)
-		{
-			$model->setRelation($relation, null);
-		}
+    /**
+     * Initialize the relation on a set of models.
+     *
+     * @param   array   $models   the array of Model instances
+     * @param   string  $relation relation name
+     * @return array
+     */
+    public function initRelation(array $models, $relation)
+    {
+        foreach ($models as $model) {
+            $model->setRelation($relation, null);
+        }
 
-		return $models;
-	}
+        return $models;
+    }
 
-	/**
-	 * Match the eagerly loaded results to their parents.
-	 *
-	 * @param   array        $models   the array of Model instances
-	 * @param   Collection   $results  Collection of results (Relation Instances)
-	 * @param   string       $relation relation name
-	 * @return array
-	 */
-	public function match(array $models, Collection $results, $relation)
-	{
-		return $this->matchOne($models, $results, $relation);
-	}
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param   array        $models   the array of Model instances
+     * @param   Collection   $results  Collection of results (Relation Instances)
+     * @param   string       $relation relation name
+     * @return array
+     */
+    public function match(array $models, Collection $results, $relation)
+    {
+        return $this->matchOne($models, $results, $relation);
+    }
 }

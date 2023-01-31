@@ -51,7 +51,7 @@ class AbstractTable implements ITable
             $tblName,
             $lineLength - 4,
             ' ',
-                STR_PAD_RIGHT
+            STR_PAD_RIGHT
         ) . " |\n";
         $tableString .= $lineSeparator;
         $rows = $this->rowToString($columns);

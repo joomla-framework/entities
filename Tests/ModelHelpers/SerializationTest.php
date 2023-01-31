@@ -17,89 +17,88 @@ use Joomla\Entity\Tests\SqliteCase;
  */
 class SerializationTest extends SqliteCase
 {
-	/**
-	 * @covers \Joomla\Entity\ModelHelpers\Serialization::toArray()
-	 * @return void
-	 */
-	public function testToArray()
-	{
-		/**
-		 * @improvement add cases (optional):
-		 * - model with nested relations
-		 */
+    /**
+     * @covers \Joomla\Entity\ModelHelpers\Serialization::toArray()
+     * @return void
+     */
+    public function testToArray()
+    {
+        /**
+         * @improvement add cases (optional):
+         * - model with nested relations
+         */
 
-		$model = new Banner(self::$driver);
-		$banner = $model->find(4, ['id', 'createdAt']);
+        $model  = new Banner(self::$driver);
+        $banner = $model->find(4, ['id', 'createdAt']);
 
-		$expected = ['id' => '4', 'created' => '2011-01-01 00:00:01'];
-		$this->assertEquals(
-			$expected,
-			$banner->toArray()
-		);
+        $expected = ['id' => '4', 'created' => '2011-01-01 00:00:01'];
+        $this->assertEquals(
+            $expected,
+            $banner->toArray()
+        );
 
-		$userModel = new User(self::$driver);
-		$user = $userModel->find(42, ['id']);
-		$userArray = $user->toArray();
+        $userModel = new User(self::$driver);
+        $user      = $userModel->find(42, ['id']);
+        $userArray = $user->toArray();
 
-		$expected = [
-			"id" => 42,
-			"sentMessages" => [
-				0 => [
-					"message_id" => 1,
-					"subject" => "message1",
-					"user_id_from" => "42"
-				]
-			]
-		];
+        $expected = [
+            "id"           => 42,
+            "sentMessages" => [
+                0 => [
+                    "message_id"   => 1,
+                    "subject"      => "message1",
+                    "user_id_from" => "42",
+                ],
+            ],
+        ];
 
-		$this->assertEquals(
-			$expected,
-			$userArray
-		);
+        $this->assertEquals(
+            $expected,
+            $userArray
+        );
 
-		$relationsArray = $user->getRelationsAsArray();
+        $relationsArray = $user->getRelationsAsArray();
 
-		$this->assertEquals(
-			$expected["sentMessages"],
-			$relationsArray["sentMessages"]
-		);
-	}
+        $this->assertEquals(
+            $expected["sentMessages"],
+            $relationsArray["sentMessages"]
+        );
+    }
 
-	/**
-	 * @covers \Joomla\Entity\ModelHelpers\Serialization::jsonSerialize()
-	 * @covers \Joomla\Entity\ModelHelpers\Serialization::toJson()
-	 * @return void
-	 */
-	public function testJsonSerialize()
-	{
-		$model = new User(self::$driver);
-		$user = $model->find(42, ['id', 'username', 'password']);
+    /**
+     * @covers \Joomla\Entity\ModelHelpers\Serialization::jsonSerialize()
+     * @covers \Joomla\Entity\ModelHelpers\Serialization::toJson()
+     * @return void
+     */
+    public function testJsonSerialize()
+    {
+        $model = new User(self::$driver);
+        $user  = $model->find(42, ['id', 'username', 'password']);
 
-		$expected = json_encode([
-			"id" => 42,
-			"username" => "admin",
-			"sentMessages" => [
-				[
-					"message_id" => 1,
-					"subject" => "message1",
-					"user_id_from" => PHP_VERSION_ID < '80100' ? "42" : 42,
-				]
-			]
-		]);
+        $expected = json_encode([
+            "id"           => 42,
+            "username"     => "admin",
+            "sentMessages" => [
+                [
+                    "message_id"   => 1,
+                    "subject"      => "message1",
+                    "user_id_from" => PHP_VERSION_ID < '80100' ? "42" : 42,
+                ],
+            ],
+        ]);
 
-		$this->assertEquals(
-			$expected,
-			$user->toJson()
-		);
+        $this->assertEquals(
+            $expected,
+            $user->toJson()
+        );
 
-		$user->addHidden('sentMessages');
+        $user->addHidden('sentMessages');
 
-		$expected = '{"id":42,"username":"admin"}';
+        $expected = '{"id":42,"username":"admin"}';
 
-		$this->assertEquals(
-			$expected,
-			$user->toJson()
-		);
-	}
-
+        $this->assertEquals(
+            $expected,
+            $user->toJson()
+        );
+    }
 }

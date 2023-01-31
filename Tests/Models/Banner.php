@@ -17,36 +17,36 @@ use Joomla\Entity\Model;
  */
 class Banner extends Model
 {
-	/**
-	 * The attributes that should be cast to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = array(
-		'params' => 'array'
-	);
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'params' => 'array',
+    ];
 
-	/**
-	 * The attributes that should be mutated to dates. Already aliased!
-	 *
-	 * @var array
-	 */
-	protected $dates = array(
-		'checked_out_time',
-		'publish_up',
-		'publish_down',
-		'reset',
-		'created',
-		'modified'
-	);
+    /**
+     * The attributes that should be mutated to dates. Already aliased!
+     *
+     * @var array
+     */
+    protected $dates = [
+        'checked_out_time',
+        'publish_up',
+        'publish_down',
+        'reset',
+        'created',
+        'modified',
+    ];
 
-	/**
-	 * Array with alias for "special" columns such as ordering, hits etc etc
-	 *
-	 * @var    array
-	 */
-	protected $columnAlias = array(
-		'createdAt' => 'created',
-		'updatedAt' => 'modified'
-	);
+    /**
+     * Array with alias for "special" columns such as ordering, hits etc etc
+     *
+     * @var    array
+     */
+    protected $columnAlias = [
+        'createdAt' => 'created',
+        'updatedAt' => 'modified',
+    ];
 }

@@ -6,7 +6,6 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-
 namespace Joomla\Entity\Tests\Models;
 
 use Joomla\Entity\Model;
@@ -19,33 +18,33 @@ use Joomla\Entity\Relations\Relation;
  */
 class UserProfile extends Model
 {
-	/**
-	 * Indicates if the model should be timestamped.
-	 *
-	 * @var boolean
-	 */
-	public $timestamps = false;
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var boolean
+     */
+    public $timestamps = false;
 
-	/**
-	 * The primary key for the model.
-	 *
-	 * @var string
-	 */
-	protected $primaryKey = 'user_id';
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
 
-	/**
-	 * Indicates if the IDs are auto-incrementing.
-	 *
-	 * @var boolean
-	 */
-	public $incrementing = false;
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var boolean
+     */
+    public $incrementing = false;
 
-	/**
-	 * Get the profile for the current user.
-	 * @return Relation
-	 */
-	public function user()
-	{
-		return $this->belongsTo('Joomla\Entity\Tests\Models\User', 'user');
-	}
+    /**
+     * Get the profile for the current user.
+     * @return Relation
+     */
+    public function user()
+    {
+        return $this->belongsTo('Joomla\Entity\Tests\Models\User', 'user');
+    }
 }

@@ -37,7 +37,7 @@ class Factory
     {
         return new Composite([
             self::TRUNCATE($cascadeTruncates),
-            self::INSERT()
+            self::INSERT(),
         ]);
     }
 

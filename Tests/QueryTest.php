@@ -7,6 +7,7 @@
  */
 
 namespace Joomla\Entity\Tests;
+
 use Joomla\Entity\Tests\Models\User;
 
 /**
@@ -16,106 +17,104 @@ use Joomla\Entity\Tests\Models\User;
  */
 class QueryTest extends SqliteCase
 {
-	/**
-	 * @covers \Joomla\Entity\Query::find()
-	 * @return void
-	 */
-	public function testFind()
-	{
-		$model = new User(self::$driver);
-		$user = $model->find(42);
-		$user2 = $model->find(420);
+    /**
+     * @covers \Joomla\Entity\Query::find()
+     * @return void
+     */
+    public function testFind()
+    {
+        $model = new User(self::$driver);
+        $user  = $model->find(42);
+        $user2 = $model->find(420);
 
-		$this->assertNotEmpty(
-			$user->getAttributes()
-		);
+        $this->assertNotEmpty(
+            $user->getAttributes()
+        );
 
-		$this->assertFalse(
-			$user2
-		);
-	}
+        $this->assertFalse(
+            $user2
+        );
+    }
 
-	/**
-	 * @covers \Joomla\Entity\Query::findLast()
-	 * @return void
-	 */
-	public function testFindLast()
-	{
-		$model = new User(self::$driver);
-		$user = $model->findLast();
+    /**
+     * @covers \Joomla\Entity\Query::findLast()
+     * @return void
+     */
+    public function testFindLast()
+    {
+        $model = new User(self::$driver);
+        $user  = $model->findLast();
 
-		$this->assertEquals(
-			100,
-			$user->getPrimaryKeyValue()
-		);
+        $this->assertEquals(
+            100,
+            $user->getPrimaryKeyValue()
+        );
+    }
 
-	}
+    /**
+     * @covers \Joomla\Entity\Query::first()
+     * @return void
+     */
+    public function testFirst()
+    {
+        $model = new User(self::$driver);
+        $user  = $model->first();
 
-	/**
-	 * @covers \Joomla\Entity\Query::first()
-	 * @return void
-	 */
-	public function testFirst()
-	{
-		$model = new User(self::$driver);
-		$user = $model->first();
+        $this->assertEquals(
+            42,
+            $user->getPrimaryKeyValue()
+        );
+    }
 
-		$this->assertEquals(
-			42,
-			$user->getPrimaryKeyValue()
-		);
+    /**
+     * @covers \Joomla\Entity\Query::get()
+     * @return void
+     */
+    public function testGet()
+    {
+        $model = new User(self::$driver);
+        $users = $model->get();
 
-	}
+        $this->assertCount(
+            5,
+            $users
+        );
+    }
 
-	/**
-	 * @covers \Joomla\Entity\Query::get()
-	 * @return void
-	 */
-	public function testGet()
-	{
-		$model = new User(self::$driver);
-		$users = $model->get();
+    /**
+     * @covers \Joomla\Entity\Query::count()
+     * @return void
+     */
+    public function testCount()
+    {
+        $model = new User(self::$driver);
+        $count = $model->count();
 
-		$this->assertCount(
-			5,
-			$users
-		);
-	}
+        $this->assertEquals(
+            5,
+            $count
+        );
+    }
 
-	/**
-	 * @covers \Joomla\Entity\Query::count()
-	 * @return void
-	 */
-	public function testCount()
-	{
-		$model = new User(self::$driver);
-		$count = $model->count();
+    /**
+     * @covers \Joomla\Entity\Query::filter()
+     * @return void
+     */
+    public function testFilter()
+    {
+        $model = new User(self::$driver);
+        $model->filter(
+            'sentMessages',
+            function ($query) {
+                $query->where('subject', 'message1');
+            }
+        );
 
-		$this->assertEquals(
-			5,
-			$count
-		);
-	}
+        $count = $model->count();
 
-	/**
-	 * @covers \Joomla\Entity\Query::filter()
-	 * @return void
-	 */
-	public function testFilter()
-	{
-		$model = new User(self::$driver);
-		$model->filter('sentMessages',
-			function ($query)
-			{
-				$query->where('subject', 'message1');
-			}
-		);
-
-		$count = $model->count();
-
-		$this->assertEquals(
-			1,
-			$count
-		);
-	}
+        $this->assertEquals(
+            1,
+            $count
+        );
+    }
 }

@@ -25,8 +25,8 @@ use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
  */
 abstract class RowBased implements Operation
 {
-    const ITERATOR_TYPE_FORWARD = 0;
-    const ITERATOR_TYPE_REVERSE = 1;
+    public const ITERATOR_TYPE_FORWARD = 0;
+    public const ITERATOR_TYPE_REVERSE = 1;
 
     protected $operationName;
 

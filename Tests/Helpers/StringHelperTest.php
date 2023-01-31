@@ -17,37 +17,39 @@ use PHPUnit\Framework\TestCase;
  */
 class StringHelperTest extends TestCase
 {
-	/**
-	 * @covers \Joomla\Entity\Helpers\StringHelper::contains()
-	 * @return void
-	 */
-	public function testContains()
-	{
-		$str = "Joomla Entities is the coolest GSoC Project";
-		$needle = 'GSoC';
+    /**
+     * @covers \Joomla\Entity\Helpers\StringHelper::contains()
+     * @return void
+     */
+    public function testContains()
+    {
+        $str    = "Joomla Entities is the coolest GSoC Project";
+        $needle = 'GSoC';
 
-		$this->assertTrue(StringHelper::contains($str, $needle),
-			"Test contains method, true."
-		);
-	}
+        $this->assertTrue(
+            StringHelper::contains($str, $needle),
+            "Test contains method, true."
+        );
+    }
 
-	/**
-	 * @covers \Joomla\Entity\Helpers\StringHelper::startWith()
-	 * @return void
-	 */
-	public function testStartWith()
-	{
-		$str = "Joomla Entities is the coolest GSoC Project";
-		$needle = 'Joomla';
+    /**
+     * @covers \Joomla\Entity\Helpers\StringHelper::startWith()
+     * @return void
+     */
+    public function testStartWith()
+    {
+        $str    = "Joomla Entities is the coolest GSoC Project";
+        $needle = 'Joomla';
 
-		$this->assertTrue(StringHelper::startWith($str, $needle),
-			"Test startWith method, true."
-		);
+        $this->assertTrue(
+            StringHelper::startWith($str, $needle),
+            "Test startWith method, true."
+        );
 
-		$needle = 'NotJoomla';
-		$this->assertFalse(StringHelper::startWith($str, $needle),
-			"Test startWith method, false."
-		);
-	}
+        $needle = 'NotJoomla';
+        $this->assertFalse(
+            StringHelper::startWith($str, $needle),
+            "Test startWith method, false."
+        );
+    }
 }
-

@@ -15,30 +15,29 @@ namespace Joomla\Entity\Helpers;
  */
 class StringHelper extends \Joomla\String\StringHelper
 {
+    /**
+     * Check if a String contains a subString
+     *
+     * @param   string   $str     String being examined
+     * @param   string   $search  String being searched for
+     *
+     * @return boolean
+     */
+    public static function contains($str, $search)
+    {
+        return !(parent::strpos($str, $search) == false);
+    }
 
-	/**
-	 * Check if a String contains a subString
-	 *
-	 * @param   string   $str     String being examined
-	 * @param   string   $search  String being searched for
-	 *
-	 * @return boolean
-	 */
-	public static function contains($str, $search)
-	{
-		return !(parent::strpos($str, $search) == false);
-	}
-
-	/**
-	 * Check if a String starts with a subString
-	 *
-	 * @param   string   $str     String being examined
-	 * @param   string   $search  String being searched for
-	 *
-	 * @return boolean
-	 */
-	public static function startWith($str, $search)
-	{
-		return (parent::strpos($str, $search) === 0);
-	}
+    /**
+     * Check if a String starts with a subString
+     *
+     * @param   string   $str     String being examined
+     * @param   string   $search  String being searched for
+     *
+     * @return boolean
+     */
+    public static function startWith($str, $search)
+    {
+        return (parent::strpos($str, $search) === 0);
+    }
 }

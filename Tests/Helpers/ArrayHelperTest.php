@@ -17,21 +17,22 @@ use PHPUnit\Framework\TestCase;
  */
 class ArrayHelperTest extends TestCase
 {
-	/**
-	 * @covers \Joomla\Entity\Helpers\ArrayHelper::set()
-	 * @return void
-	 */
-	public function testAll()
-	{
-		$array = [];
-		$key = 'test->set->method';
-		$value = 'works';
+    /**
+     * @covers \Joomla\Entity\Helpers\ArrayHelper::set()
+     * @return void
+     */
+    public function testAll()
+    {
+        $array = [];
+        $key   = 'test->set->method';
+        $value = 'works';
 
-		ArrayHelper::set($array, $key, $value);
+        ArrayHelper::set($array, $key, $value);
 
-		$this->assertEquals($array['test']['set']['method'],
-			'works',
-			"Test set for test->set->method key."
-		);
-	}
+        $this->assertEquals(
+            $array['test']['set']['method'],
+            'works',
+            "Test set for test->set->method key."
+        );
+    }
 }

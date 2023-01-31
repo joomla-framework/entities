@@ -17,46 +17,46 @@ use RuntimeException;
  */
 class AttributeNotFoundException extends RuntimeException
 {
-	/**
-	 * The name of the affected model.
-	 *
-	 * @var string
-	 */
-	public $model;
+    /**
+     * The name of the affected model.
+     *
+     * @var string
+     */
+    public $model;
 
-	/**
-	 * The name of the attribute.
-	 *
-	 * @var string
-	 */
-	public $attribute;
+    /**
+     * The name of the attribute.
+     *
+     * @var string
+     */
+    public $attribute;
 
-	/**
-	 * The action the user tries to do.
-	 *
-	 * @var string
-	 */
-	public $method;
+    /**
+     * The action the user tries to do.
+     *
+     * @var string
+     */
+    public $method;
 
-	/**
-	 * Create a new exception instance.
-	 *
-	 * @param   mixed  $model     model
-	 * @param   string $attribute attribute's key
-	 * @param   string $method    get or set
-	 *
-	 * @return static
-	 */
-	public static function make($model, $attribute, $method)
-	{
-		$class = get_class($model);
+    /**
+     * Create a new exception instance.
+     *
+     * @param   mixed  $model     model
+     * @param   string $attribute attribute's key
+     * @param   string $method    get or set
+     *
+     * @return static
+     */
+    public static function make($model, $attribute, $method)
+    {
+        $class = get_class($model);
 
-		$instance = new static("Trying to [{$method}] undefined attribute [{$attribute}] on model [{$class}].");
+        $instance = new static("Trying to [{$method}] undefined attribute [{$attribute}] on model [{$class}].");
 
-		$instance->model     = $model;
-		$instance->attribute = $attribute;
-		$instance->method    = $method;
+        $instance->model     = $model;
+        $instance->attribute = $attribute;
+        $instance->method    = $method;
 
-		return $instance;
-	}
+        return $instance;
+    }
 }

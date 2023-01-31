@@ -17,19 +17,19 @@ use Joomla\Entity\Model;
  */
 class Message extends Model
 {
-	/**
-	 * The attributes that should be mutated to dates. Already aliased!
-	 *
-	 * @var array
-	 */
-	protected $dates = array(
-		'date_time'
-	);
+    /**
+     * The attributes that should be mutated to dates. Already aliased!
+     *
+     * @var array
+     */
+    protected $dates = [
+        'date_time',
+    ];
 
-	/**
-	 * The primary key for the model.
-	 *
-	 * @var string
-	 */
-	protected $primaryKey = 'message_id';
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'message_id';
 }

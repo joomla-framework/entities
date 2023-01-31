@@ -28,7 +28,7 @@ abstract class AbstractMetadata implements Metadata
         'sqlite2'  => Sqlite::class,
         'sqlsrv'   => SqlSrv::class,
         'firebird' => Firebird::class,
-        'dblib'    => Dblib::class
+        'dblib'    => Dblib::class,
     ];
 
     /**
@@ -167,13 +167,13 @@ abstract class AbstractMetadata implements Metadata
         if (($dot = \strpos($fullTableName, '.')) !== false) {
             return [
                 'schema' => \substr($fullTableName, 0, $dot),
-                'table'  => \substr($fullTableName, $dot + 1)
+                'table'  => \substr($fullTableName, $dot + 1),
             ];
         }
 
         return [
                 'schema' => null,
-                'table'  => $fullTableName
+                'table'  => $fullTableName,
             ];
     }
 

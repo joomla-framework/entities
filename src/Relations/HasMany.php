@@ -17,43 +17,42 @@ use Joomla\Entity\Helpers\Collection;
  */
 class HasMany extends HasOneOrMany
 {
-	/**
-	 * Get the results of the relation.
-	 *
-	 * @return mixed
-	 */
-	public function getResults()
-	{
-		return $this->query->get();
-	}
+    /**
+     * Get the results of the relation.
+     *
+     * @return mixed
+     */
+    public function getResults()
+    {
+        return $this->query->get();
+    }
 
-	/**
-	 * Initialize the relation on a set of models.
-	 *
-	 * @param   array   $models   the array of Model instances
-	 * @param   string  $relation ?
-	 * @return array
-	 */
-	public function initRelation(array $models, $relation)
-	{
-		foreach ($models as $model)
-		{
-			$model->setRelation($relation, new Collection);
-		}
+    /**
+     * Initialize the relation on a set of models.
+     *
+     * @param   array   $models   the array of Model instances
+     * @param   string  $relation ?
+     * @return array
+     */
+    public function initRelation(array $models, $relation)
+    {
+        foreach ($models as $model) {
+            $model->setRelation($relation, new Collection());
+        }
 
-		return $models;
-	}
+        return $models;
+    }
 
-	/**
-	 * Match the eagerly loaded results to their parents.
-	 *
-	 * @param   array       $models   array of model instances
-	 * @param   Collection  $results  Collection of results (Relation Instances)
-	 * @param   string      $relation relation name
-	 * @return array
-	 */
-	public function match(array $models, Collection $results, $relation)
-	{
-		return $this->matchMany($models, $results, $relation);
-	}
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param   array       $models   array of model instances
+     * @param   Collection  $results  Collection of results (Relation Instances)
+     * @param   string      $relation relation name
+     * @return array
+     */
+    public function match(array $models, Collection $results, $relation)
+    {
+        return $this->matchMany($models, $results, $relation);
+    }
 }

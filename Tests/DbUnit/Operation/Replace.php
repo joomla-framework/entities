@@ -28,8 +28,8 @@ class Replace extends RowBased
      */
     public function execute(Connection $connection, IDataSet $dataSet): void
     {
-        $insertOperation = new Insert;
-        $updateOperation = new Update;
+        $insertOperation = new Insert();
+        $updateOperation = new Update();
         $databaseDataSet = $connection->createDataSet();
 
         foreach ($dataSet as $table) {
