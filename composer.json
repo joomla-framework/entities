@@ -11,7 +11,7 @@
     "joomla/database": "3.0.x-dev",
     "joomla/string": "3.0.x-dev",
     "joomla/event": "3.0.x-dev",
-    "doctrine/inflector": "^2.0",
+    "doctrine/inflector": "^1.2",
     "nesbot/carbon": "^2.0"
   },
   "require-dev": {
