@@ -690,8 +690,8 @@ class Query
      * Filter based on relation value using left join.
      * For now, filter based on single relation value is possible.
      *
-     * @param   string  $relation   relation name
-     * @param   mixed   $callback   callback function, ! all foreign attributes must have qualified names.
+     * @param   string    $relation   relation name
+     * @param   Closure   $callback   callback function, ! all foreign attributes must have qualified names.
      *
      * @return  $this
      */

@@ -66,7 +66,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * The model associated query. On each call to the database, the query is reset in the Query class.
      *
-     * @var string
+     * @var Query
      */
     protected $query;
 

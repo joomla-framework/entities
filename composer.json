@@ -6,18 +6,20 @@
   "homepage": "https://github.com/joomla-framework/entities",
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": "~8.1.0",
+    "php": "^8.1.0",
     "ext-json": "*",
     "joomla/database": "3.0.x-dev",
     "joomla/string": "3.0.x-dev",
     "joomla/event": "3.0.x-dev",
-    "doctrine/inflector": "~1.2",
+    "doctrine/inflector": "^2.0",
     "nesbot/carbon": "^2.0"
   },
   "require-dev": {
     "joomla/test": "3.0.x-dev",
     "phpunit/phpunit": "^9.5.28",
-    "squizlabs/php_codesniffer": "~3.7.1"
+    "squizlabs/php_codesniffer": "~3.7.2",
+    "phpstan/phpstan": "^1.10.7",
+    "phan/phan": "^5.4.2"
   },
   "autoload": {
     "psr-4": {
