@@ -12,7 +12,7 @@
     "joomla/string": "3.0.x-dev",
     "joomla/event": "3.0.x-dev",
     "doctrine/inflector": "^1.2",
-    "nesbot/carbon": "^2.0"
+    "nesbot/carbon": "^2.51"
   },
   "require-dev": {
     "joomla/test": "3.0.x-dev",
