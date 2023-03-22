@@ -356,13 +356,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
         if ($this->exists) {
             $saved = $this->isDirty() ?
                 $this->performUpdate($this->query, $nulls) : true;
-        }
-
-        /** If the model is brand new, we'll insert it into our database and set the
-         * ID attribute on the model to the value of the newly inserted row's ID
-         * which is typically an auto-increment value managed by the database.
-         */
-        else {
+        } else {
+            /** If the model is brand new, we'll insert it into our database and set the
+             * ID attribute on the model to the value of the newly inserted row's ID
+             * which is typically an auto-increment value managed by the database.
+             */
             $saved = $this->performInsert($this->query, $nulls);
         }
 

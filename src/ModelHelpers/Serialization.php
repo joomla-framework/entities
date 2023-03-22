@@ -181,13 +181,11 @@ trait Serialization
              */
             if ($value instanceof Model || $value instanceof Collection) {
                 $relation = $value->toArray();
-            }
-
-            /** If the value is null, we'll still go ahead and set it in this list of
-             * attributes since null is used to represent empty relationships if
-             * if it a has one or belongs to type relationships on the models.
-             */
-            elseif (is_null($value)) {
+            } elseif (is_null($value)) {
+                /** If the value is null, we'll still go ahead and set it in this list of
+                 * attributes since null is used to represent empty relationships if
+                 * if it a has one or belongs to type relationships on the models.
+                 */
                 $relation = $value;
             }
 
