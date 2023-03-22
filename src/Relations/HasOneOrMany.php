@@ -198,7 +198,7 @@ abstract class HasOneOrMany extends Relation
         $attributes = $this->convertAliasedToRaw($attributes);
 
         if (is_null($instance = $this->where($attributes)->first())) {
-            $instance = $this->related->newInstance($this->getDb(), $attributes + $values);
+            $instance = $this->related->newInstance($this->getDb(), array_merge($attributes, $values));
 
             $this->setForeignAttributesForCreate($instance);
         }
