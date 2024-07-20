@@ -9,15 +9,15 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
-use Joomla\Entity\Exceptions\AttributeNotFoundException;
-use Joomla\String\Normalise;
 use Carbon\Carbon;
 use DateTimeInterface;
-use LogicException;
+use Joomla\Entity\Exceptions\AttributeNotFoundException;
 use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Helpers\ArrayHelper;
 use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Relations\Relation;
+use Joomla\String\Normalise;
+use LogicException;
 
 /**
  * Attribute Trait

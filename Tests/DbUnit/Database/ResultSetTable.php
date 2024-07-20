@@ -11,10 +11,10 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Database;
 
-use PDO;
-use PDOStatement;
 use Joomla\Entity\Tests\DbUnit\DataSet\AbstractTable;
 use Joomla\Entity\Tests\DbUnit\DataSet\DefaultTableMetadata;
+use PDO;
+use PDOStatement;
 
 /**
  * Provides the functionality to represent a database result set as a DBUnit

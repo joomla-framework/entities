@@ -11,11 +11,11 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Database;
 
-use PDO;
 use Joomla\Entity\Tests\DbUnit\Database\Metadata\AbstractMetadata;
 use Joomla\Entity\Tests\DbUnit\Database\Metadata\Metadata;
 use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 use Joomla\Entity\Tests\DbUnit\DataSet\QueryTable;
+use PDO;
 
 /**
  * Provides a basic interface for communicating with a database.

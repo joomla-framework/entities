@@ -11,8 +11,8 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Database\Metadata;
 
-use PDO;
 use Joomla\Entity\Tests\DbUnit\RuntimeException;
+use PDO;
 use ReflectionClass;
 
 /**

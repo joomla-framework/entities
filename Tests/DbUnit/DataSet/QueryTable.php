@@ -11,8 +11,8 @@
 
 namespace Joomla\Entity\Tests\DbUnit\DataSet;
 
-use PDO;
 use Joomla\Entity\Tests\DbUnit\Database\Connection;
+use PDO;
 
 /**
  * Provides the functionality to represent a database table.

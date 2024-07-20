@@ -9,9 +9,9 @@
 
 namespace Joomla\Entity\Relations;
 
+use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Model;
 use Joomla\Entity\Query;
-use Joomla\Entity\Helpers\Collection;
 
 /**
  * Joomla Framework Has one or many relation

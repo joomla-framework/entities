@@ -11,11 +11,11 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Operation;
 
-use PDO;
-use PDOException;
 use Joomla\Entity\Tests\DbUnit\Database\Connection;
 use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use PDO;
+use PDOException;
 
 /**
  * Executes a truncate against all tables in a dataset.

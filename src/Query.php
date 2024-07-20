@@ -10,15 +10,15 @@
 namespace Joomla\Entity;
 
 use BadMethodCallException;
+use Closure;
+use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
-use Joomla\Entity\Exceptions\RelationNotFoundException;
 use Joomla\Database\Query\LimitableInterface;
 use Joomla\Database\QueryInterface;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Entity\Exceptions\RelationNotFoundException;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Relations\Relation;
-use Closure;
 
 /**
  * Base Query Class

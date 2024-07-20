@@ -11,10 +11,10 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Operation;
 
-use PDOException;
 use Joomla\Entity\Tests\DbUnit\Database\Connection;
 use Joomla\Entity\Tests\DbUnit\DataSet\IDataSet;
 use Joomla\Entity\Tests\DbUnit\DataSet\ITable;
+use PDOException;
 
 /**
  * Deletes all rows from all tables in a dataset.

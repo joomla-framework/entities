@@ -10,9 +10,9 @@
 namespace Joomla\Entity\Relations;
 
 use Closure;
+use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Model;
 use Joomla\Entity\Query;
-use Joomla\Entity\Helpers\Collection;
 
 /**
  * Joomla Framework Base relation class

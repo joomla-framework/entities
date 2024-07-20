@@ -9,12 +9,12 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Model;
-use Joomla\Entity\Helpers\Collection;
-use Joomla\Entity\Relations\HasOne;
-use Joomla\Entity\Relations\HasMany;
 use Joomla\Entity\Relations\BelongsTo;
+use Joomla\Entity\Relations\HasMany;
+use Joomla\Entity\Relations\HasOne;
 use Joomla\String\Inflector;
 use Joomla\String\Normalise;
 

@@ -11,7 +11,6 @@
 
 namespace Joomla\Entity\Tests\DbUnit;
 
-use PDO;
 use Joomla\Entity\Tests\DbUnit\Constraint\DataSetIsEqual;
 use Joomla\Entity\Tests\DbUnit\Constraint\TableIsEqual;
 use Joomla\Entity\Tests\DbUnit\Constraint\TableRowCount;
@@ -25,6 +24,7 @@ use Joomla\Entity\Tests\DbUnit\DataSet\MysqlXmlDataSet;
 use Joomla\Entity\Tests\DbUnit\DataSet\XmlDataSet;
 use Joomla\Entity\Tests\DbUnit\Operation\Factory;
 use Joomla\Entity\Tests\DbUnit\Operation\Operation;
+use PDO;
 
 trait TestCaseTrait
 {

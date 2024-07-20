@@ -11,9 +11,9 @@
 
 namespace Joomla\Entity\Tests\DbUnit\Database;
 
-use PDO;
 use Joomla\Entity\Tests\DbUnit\DataSet\AbstractTable;
 use Joomla\Entity\Tests\DbUnit\DataSet\ITableMetadata;
+use PDO;
 
 /**
  * Provides the functionality to represent a database table.

@@ -9,9 +9,9 @@ namespace Joomla\Entity\Tests\ModelHelpers;
 
 use Joomla\Entity\Exceptions\AttributeNotFoundException;
 use Joomla\Entity\Helpers\Collection;
+use Joomla\Entity\Model;
 use Joomla\Entity\Tests\Models\User;
 use Joomla\Entity\Tests\SqliteCase;
-use Joomla\Entity\Model;
 
 /**
  * @since  1.0

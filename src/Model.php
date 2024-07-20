@@ -12,12 +12,12 @@ namespace Joomla\Entity;
 use ArrayAccess;
 use BadMethodCallException;
 use Closure;
-use Joomla\Entity\Helpers\ArrayHelper;
-use JsonSerializable;
 use Joomla\Database\DatabaseDriver;
-use Joomla\String\Inflector;
+use Joomla\Entity\Helpers\ArrayHelper;
 use Joomla\Entity\Helpers\StringHelper;
+use Joomla\String\Inflector;
 use Joomla\String\Normalise;
+use JsonSerializable;
 
 /**
  * Base Entity class for items

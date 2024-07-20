@@ -10,13 +10,13 @@
 namespace Joomla\Entity\Helpers;
 
 use ArrayAccess;
+use ArrayIterator;
 use Closure;
 use Countable;
-use Joomla\Entity\Exceptions\JsonEncodingException;
-use JsonSerializable;
 use IteratorAggregate;
-use ArrayIterator;
+use Joomla\Entity\Exceptions\JsonEncodingException;
 use Joomla\Entity\Model;
+use JsonSerializable;
 
 /**
  * Collection Helper class
