@@ -31,11 +31,11 @@ interface Connection
      * names are specified then it will created a dataset over the entire
      * database.
      *
-     * @param array $tableNames
+     * @param array|null $tableNames
      *
      * @return IDataSet
      */
-    public function createDataSet(array $tableNames = null);
+    public function createDataSet(?array $tableNames = null);
 
     /**
      * Creates a table with the result of the specified SQL statement.

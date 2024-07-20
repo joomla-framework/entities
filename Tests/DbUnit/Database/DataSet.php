@@ -40,10 +40,11 @@ class DataSet extends AbstractDataSet
      * Creates the query necessary to pull all of the data from a table.
      *
      * @param ITableMetadata $tableMetaData
+     * @param Connection|null $databaseConnection
      *
      * @return string
      */
-    public static function buildTableSelect(ITableMetadata $tableMetaData, Connection $databaseConnection = null)
+    public static function buildTableSelect(ITableMetadata $tableMetaData, ?Connection $databaseConnection = null)
     {
         if ($tableMetaData->getTableName() == '') {
             $e = new RuntimeException('Empty Table Name');

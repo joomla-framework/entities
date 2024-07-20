@@ -241,7 +241,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      * @param   Closure|null  $callback  callback function for sorting
      * @return static
      */
-    public function sort(Closure $callback = null)
+    public function sort(?Closure $callback = null)
     {
         $items = $this->items;
 
