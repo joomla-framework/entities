@@ -63,7 +63,7 @@ class ReplacementTableIterator implements OuterIterator, ITableIterator
     /**
      * Adds a new substr replacement
      *
-     * Substr replacements will replace all occurances of the substr in every column
+     * Substr replacements will replace all occurrences of the substr in every column
      *
      * @param string $value
      * @param string $replacement

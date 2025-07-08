@@ -100,7 +100,7 @@ class YamlDataSet extends AbstractDataSet
      * Creates a unique list of columns from all the rows in a table.
      * If the table is defined another time in the Yaml, and if the Yaml
      * parser could return the multiple occerrences, then this would be
-     * insufficient unless we grouped all the occurences of the table
+     * insufficient unless we grouped all the occurrences of the table
      * into onwe row set.  sfYaml, however, does not provide multiple tables
      * with the same name, it only supplies the last table.
      *
