@@ -63,7 +63,7 @@ class DefaultTable extends AbstractTable
     }
 
     /**
-     * Sets the specified column of the specied row to the specified value.
+     * Sets the specified column of the specified row to the specified value.
      *
      * @param int    $row
      * @param string $column

@@ -394,7 +394,7 @@ class Query
     }
 
     /**
-     * Count the number fo rows which satisfy the current instance query
+     * Count the number of rows which satisfy the current instance query
      *
      * @return  integer
      */

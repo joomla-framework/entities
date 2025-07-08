@@ -399,7 +399,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Perform a model insert operation.
      *
-     * @param   Query    $query   istance of query
+     * @param   Query    $query   instance of query
      * @param   boolean  $nulls   True to update null fields or false to ignore them.
      * @return boolean
      */
@@ -417,7 +417,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Perform a model insert operation.
      *
-     * @param   Query  $query istance of query
+     * @param   Query  $query instance of query
      * @return boolean
      */
     protected function performDelete($query)
@@ -722,7 +722,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function setColumnAlias($column, $columnAlias)
     {
-        // Santize the column name alias
+        // Sanitize the column name alias
         $column = strtolower($column);
         $column = preg_replace('#[^A-Z0-9_]#i', '', $column);
 
