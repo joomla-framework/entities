@@ -9,13 +9,13 @@
 
 namespace Joomla\Entity\ModelHelpers;
 
+use Doctrine\Inflector\InflectorFactory;
 use Joomla\Entity\Helpers\Collection;
 use Joomla\Entity\Helpers\StringHelper;
 use Joomla\Entity\Model;
 use Joomla\Entity\Relations\BelongsTo;
 use Joomla\Entity\Relations\HasMany;
 use Joomla\Entity\Relations\HasOne;
-use Joomla\String\Inflector;
 use Joomla\String\Normalise;
 
 /**
@@ -151,7 +151,8 @@ trait Relations
     {
         $instance = $this->newRelatedInstance($related);
 
-        $foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
+        $inflector = InflectorFactory::create()->build();
+        $foreignKey = $foreignKey ?: $inflector->singularize(StringHelper::substr($this->table, 3)) . '_id';
 
         $localKey = $localKey ?: $this->getPrimaryKey();
 
@@ -170,7 +171,8 @@ trait Relations
     {
         $instance = $this->newRelatedInstance($related);
 
-        $foreignKey = $foreignKey ?: Inflector::singularize(StringHelper::substr($this->table, 3)) . '_id';
+        $inflector = InflectorFactory::create()->build();
+        $foreignKey = $foreignKey ?: $inflector->singularize(StringHelper::substr($this->table, 3)) . '_id';
 
         $localKey = $localKey ?: $this->getPrimaryKey();
 

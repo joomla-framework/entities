@@ -12,10 +12,10 @@ namespace Joomla\Entity;
 use ArrayAccess;
 use BadMethodCallException;
 use Closure;
+use Doctrine\Inflector\InflectorFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Entity\Helpers\ArrayHelper;
 use Joomla\Entity\Helpers\StringHelper;
-use Joomla\String\Inflector;
 use Joomla\String\Normalise;
 use JsonSerializable;
 
@@ -533,7 +533,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
         $tableArray = explode(" ", strtolower(Normalise::fromCamelCase($className)));
 
-        $plural = Inflector::pluralize(end($tableArray));
+        $inflector = InflectorFactory::create()->build();
+        $plural = $inflector->pluralize(end($tableArray));
 
         $tableArray[key($tableArray)] = $plural;
 
