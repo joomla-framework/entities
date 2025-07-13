@@ -14,12 +14,12 @@ since.
 
 ## Installation via Composer
 
-Add `"joomla/entities": "3.0-dev"` to the require block in your composer.json and then run `composer install`.
+Add `"joomla/entities": "4.0-dev"` to the require block in your composer.json and then run `composer install`.
 
 ```json
 {
 	"require": {
-		"joomla/entities": "3.0-dev"
+		"joomla/entities": "4.0-dev"
 	}
 }
 ```
@@ -27,11 +27,11 @@ Add `"joomla/entities": "3.0-dev"` to the require block in your composer.json an
 Alternatively, you can simply run the following from the command line:
 
 ```sh
-composer require joomla/entities "3.0-dev"
+composer require joomla/entities "4.0-dev"
 ```
 
 If you want to include the test sources and docs, use
 
 ```sh
-composer require --prefer-source joomla/entities "3.0-dev"
+composer require --prefer-source joomla/entities "4.0-dev"
 ```
