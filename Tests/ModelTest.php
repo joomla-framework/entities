@@ -50,9 +50,9 @@ class ModelTest extends SqliteCase
 
         $user->profile()->save($userProfile);
 
-        $retirevedUserProfile = $user->find(101)->profile;
+        $retrievedUserProfile = $user->find(101)->profile;
 
-        $this->assertTrue($userProfile->is($retirevedUserProfile));
+        $this->assertTrue($userProfile->is($retrievedUserProfile));
     }
 
     /**

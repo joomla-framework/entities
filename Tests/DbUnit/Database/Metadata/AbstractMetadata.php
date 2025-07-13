@@ -33,7 +33,7 @@ abstract class AbstractMetadata implements Metadata
     ];
 
     /**
-     * The PDO connection used to retreive database meta data
+     * The PDO connection used to retrieve database meta data
      *
      * @var PDO
      */
@@ -155,7 +155,7 @@ abstract class AbstractMetadata implements Metadata
     }
 
     /**
-     * Seperates the schema and the table from a fully qualified table name.
+     * Separates the schema and the table from a fully qualified table name.
      *
      * Returns an associative array containing the 'schema' and the 'table'.
      *

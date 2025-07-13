@@ -223,7 +223,7 @@ trait Attributes
         /**
          * If the attribute has a get mutator, there are two possible cases:
          * 1. The mutator is designed for an existing attribute,
-         * case in which we have to have the column in the attriubtesRaw
+         * case in which we have to have the column in the attributesRaw
          * 2. The mutator returns a completely new attribute,
          * case in which there is no $value to be passes to the mutator
          */
