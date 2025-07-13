@@ -164,7 +164,7 @@ abstract class Relation
     /**
      * Get the underlying query for the relation.
      *
-     * @return  \Joomla\Entity\Query;
+     * @return  \Joomla\Entity\Query
      */
     public function getQuery()
     {
