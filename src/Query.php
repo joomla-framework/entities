@@ -13,7 +13,6 @@ use BadMethodCallException;
 use Closure;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
-use Joomla\Database\Query\LimitableInterface;
 use Joomla\Database\QueryInterface;
 use Joomla\Entity\Exceptions\RelationNotFoundException;
 use Joomla\Entity\Helpers\Collection;
@@ -234,10 +233,6 @@ class Query
      */
     public function findLast($columns = ['*'])
     {
-        if (!($this->query instanceof LimitableInterface)) {
-            throw new \BadMethodCallException('Query class does not support limit by');
-        }
-
         $this->query->order('id DESC')
             ->setLimit(1);
 
