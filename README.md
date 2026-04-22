@@ -1,9 +1,17 @@
+# EOL
+
+This packages is no longer maintained and archived. No replacement by the Joomla Project is planned. 
+
 # The Entity Package [![Build Status](https://github.com/joomla-framework/entities/actions/workflows/ci.yml/badge.svg?branch=3.x-dev)](https://github.com/joomla-framework/entities)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/entities/v/stable)](https://packagist.org/packages/joomla/entities)
 [![Total Downloads](https://poser.pugx.org/joomla/entities/downloads)](https://packagist.org/packages/joomla/entities)
 [![Latest Unstable Version](https://poser.pugx.org/joomla/entities/v/unstable)](https://packagist.org/packages/joomla/entities)
 [![License](https://poser.pugx.org/joomla/entities/license)](https://packagist.org/packages/joomla/entities)
+
+## Deprecated
+
+The joomla/entities package has been deprecated. No further updates are planned.
 
 ## Introduction
 
